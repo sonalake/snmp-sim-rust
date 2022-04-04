@@ -1,0 +1,3 @@
+[yanked]
+enabled = true # Warn for yanked crates in Cargo.lock (default: true)
+

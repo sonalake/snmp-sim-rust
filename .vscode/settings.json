@@ -1,0 +1,4 @@
+{
+    "debug.allowBreakpointsEverywhere": true,
+    "editor.formatOnSave": true, // General VSCode setting to allow a formatter, in this case rustfmt, to format text on save
+}

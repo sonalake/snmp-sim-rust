@@ -1,0 +1,5 @@
+application:
+  host: 0.0.0.0
+  port: 8080
+  uri_prefix: "mngmt/v1"
+  level: "error"

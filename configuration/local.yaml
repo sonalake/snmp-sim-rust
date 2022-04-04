@@ -1,0 +1,5 @@
+application:
+  host: localhost
+  port: 8180
+  uri_prefix: ""
+  level: "trace"

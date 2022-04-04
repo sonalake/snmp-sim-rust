@@ -1,0 +1,2 @@
+[registries]
+#sonalake = { index = "https://packages.sonalake.com/basic/cargo-crates/cargo/index.git" }

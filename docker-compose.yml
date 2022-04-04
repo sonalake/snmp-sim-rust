@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  snmp-sim:
+    image: snmp-sim
+    build:
+      context: .
+    ports:
+      - 8161:8161/udp
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "100k"
+        max-file: "3"
