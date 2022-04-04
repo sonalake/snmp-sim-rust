@@ -98,3 +98,15 @@ snmpget -v1 -c public localhost:8161 .1.3.6.1.4.1.11.2.14.11.5.1.1.2
 snmpget -v2c -c public localhost:8161 .1.3.6.1.4.1.11.2.14.11.5.1.1.2
 snmpget -v3 -c public localhost:8161 .1.3.6.1.4.1.11.2.14.11.5.1.1.2
 ```
+
+## License
+
+This SNMP Simulator CLI tool is licensed under the [APACHE-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
+
+## Contributing
+
+Want to contribute? Great 🎉
+
+There are many ways to give back to the project, whether it be writing new code, fixing bugs, or just reporting errors. All forms of contributions are encouraged!
+
+For instructions on how to contribute, see our [Guide to contributing](https://github.com/sonalake/snmp-sim-rust/blob/main/CONTRIBUTING.md).
