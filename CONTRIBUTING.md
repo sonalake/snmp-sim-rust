@@ -116,8 +116,6 @@ In repositories where CD has not been implemented yet, the release process is tr
 
 Typically, for non CD repositories we only update/regenerate the [CHANGELOG file](CHANGELOG.md) with the latest changes on a new version release, where all changes since the last release are then added to the changelog file.
 
-If a repository is for a library, or perhaps multiple libraries, then often no release artefact is produced. A tag would always be added to the repository on each release though, these tags can be viewed in the `/releases` page of each repository. Repositories which do produce artefacts, such as `.AppImage`, `.dmg` or `.exe` files, will have the release files available in the repository's `/release` page, or instructions there on how to obtain it.
-
 ## Support
 
 Contributors and users can get support through the following official channels:
