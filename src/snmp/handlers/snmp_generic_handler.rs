@@ -20,7 +20,7 @@ pub fn handle_generic_snmp_message(
         if let Err(error) = match generic_request {
             GenericSnmpMessage::V1Message(message) => handle_snmp_message_v1(message, peer, sink).await,
             GenericSnmpMessage::V2Message(message) => handle_snmp_message_v2(message, peer, sink).await,
-            GenericSnmpMessage::V3Message(message) => handle_snmp_message_v3(message, peer, sink).await,
+            GenericSnmpMessage::V3Message(message) => handle_snmp_message_v3(*message, peer, sink).await,
         } {
             tracing::error!("Request handler failed: {error}");
         }

@@ -3,6 +3,7 @@ name = "snmp-sim-cli"
 version = "0.1.0"
 authors = ["Frank Horvath <fhorvath80@gmail.com>"]
 description = "SNMP Simulator Management CLI"
+repository = "https://github.com/sonalake/snmp-sim-rust/tree/main/snmp-sim-cli"
 keywords = ["snmp", "simulator", "cli"]
 license = "Apache-2.0"
 edition = "2021"
@@ -10,5 +11,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+shared-common = { path = "../crates/shared-common" }
+
 anyhow = "1"
 clap = { version = "3.1", default-features = false, features = ["derive", "std"] }
+color-eyre = "0.6.1"
+human-panic = "1.0.3"
+thiserror = "1.0.30"
+tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.32"
+tracing-subscriber = { version = "0.3.10", features = ["env-filter"] }

@@ -1,0 +1,17 @@
+[package]
+name = "telemetry"
+version = "0.1.0"
+authors = ["Frank Horvath <fhorvath80@gmail.com>"]
+description = "SNMP Simulator Telemetry library"
+repository = "https://github.com/sonalake/snmp-sim-rust/tree/main/crates/telemetry"
+keywords = ["snmp", "simulator", "telemetry"]
+license = "Apache-2.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tracing = "0.1.32"
+tracing-subscriber = { version = "0.3.10", features = ["registry", "env-filter"] }
+tracing-bunyan-formatter = "0.3.2"
+tracing-log = "0.1.2"

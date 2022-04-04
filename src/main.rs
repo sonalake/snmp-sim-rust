@@ -1,11 +1,10 @@
 pub mod configuration;
 pub mod settings;
 pub mod snmp;
-pub mod telemetry;
 pub mod udp_server;
 
 use crate::configuration::get_configuration;
-use crate::telemetry::{get_subscriber, init_subscriber};
+use telemetry::{get_subscriber, init_subscriber};
 
 use actix_web::{web, App, HttpResponse, HttpServer};
 use anyhow::Context;
@@ -29,9 +28,9 @@ async fn main() -> anyhow::Result<()> {
 
     // start an instance of http restful api
     HttpServer::new(move || {
-        App::new().wrap(TracingLogger::default()).service(
-            web::scope(&configuration.application.uri_prefix).service(web::resource("/").to(|| HttpResponse::Ok())),
-        )
+        App::new()
+            .wrap(TracingLogger::default())
+            .service(web::scope(&configuration.application.uri_prefix).service(web::resource("/").to(HttpResponse::Ok)))
     })
     .bind(binding_address)?
     .disable_signals()

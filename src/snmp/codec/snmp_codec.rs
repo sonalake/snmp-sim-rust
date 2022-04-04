@@ -15,7 +15,7 @@ use rasn_snmp::{v2::Pdus as SnmpV2Pdus, v2c::Message as SnmpV2CMessage};
 pub enum GenericSnmpMessage {
     V1Message(SnmpV1Message<SnmpV1Pdus>),
     V2Message(SnmpV2CMessage<SnmpV2Pdus>),
-    V3Message(SnmpV3Message),
+    V3Message(Box<SnmpV3Message>), // Large variant size differnce => use boxing to prevent the memory layout penalization of that enum
 }
 
 #[derive(Default)]
@@ -60,22 +60,22 @@ impl Decoder for SnmpCodec {
         }
 
         tracing::debug!("Received data: {:02X?}", data.as_ref());
-        let version: rasn::types::Integer = rasn::ber::decode(pop(&data)).map_err(|e| CodecError::Decoder(e))?;
+        let version: rasn::types::Integer = rasn::ber::decode(pop(data)).map_err(CodecError::Decoder)?;
 
         let mut decoder = rasn::ber::de::Decoder::new(data, DecoderOptions::der());
 
         let result = match version.to_u32().unwrap_or(std::u32::MIN) {
             SnmpCodec::SNMP_VERSION1 => decode(&mut decoder)
                 .map(|de| Some(GenericSnmpMessage::V1Message(de)))
-                .map_err(|e| CodecError::Decoder(e)),
+                .map_err(CodecError::Decoder),
 
             SnmpCodec::SNMP_VERSION2 => decode(&mut decoder)
                 .map(|de| Some(GenericSnmpMessage::V2Message(de)))
-                .map_err(|e| CodecError::Decoder(e)),
+                .map_err(CodecError::Decoder),
 
             SnmpCodec::SNMP_VERSION3 => decode(&mut decoder)
-                .map(|de| Some(GenericSnmpMessage::V3Message(de)))
-                .map_err(|e| CodecError::Decoder(e)),
+                .map(|de| Some(GenericSnmpMessage::V3Message(Box::new(de))))
+                .map_err(CodecError::Decoder),
 
             ver_u32 => Err(CodecError::InvalidVersion(ver_u32)),
         };
@@ -106,7 +106,7 @@ impl Encoder<GenericSnmpMessage> for SnmpCodec {
                     // Write the encoded message into the buffer
                     result.extend_from_slice(&data);
                 })
-                .map_err(|e| CodecError::Encoder(e)),
+                .map_err(CodecError::Encoder),
 
             GenericSnmpMessage::V2Message(content) => rasn::ber::encode(&content)
                 .map(|data| {
@@ -116,7 +116,7 @@ impl Encoder<GenericSnmpMessage> for SnmpCodec {
                     // Write the encoded message into the buffer
                     result.extend_from_slice(&data);
                 })
-                .map_err(|e| CodecError::Encoder(e)),
+                .map_err(CodecError::Encoder),
 
             GenericSnmpMessage::V3Message(content) => rasn::ber::encode(&content)
                 .map(|data| {
@@ -126,7 +126,7 @@ impl Encoder<GenericSnmpMessage> for SnmpCodec {
                     // Write the encoded message into the buffer
                     result.extend_from_slice(&data);
                 })
-                .map_err(|e| CodecError::Encoder(e)),
+                .map_err(CodecError::Encoder),
         }
     }
 }

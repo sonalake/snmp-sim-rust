@@ -18,25 +18,21 @@ pub async fn handle_snmp_message_v1(
     peer: SocketAddr,
     sink: &mut SplitSink<UdpFramed<SnmpCodec>, (GenericSnmpMessage, SocketAddr)>,
 ) -> Result<(), CodecError> {
-    match v1_request.data {
-        GetRequest(get_request_pdu) => {
-            // TODO: intern implementation to be replaced
-            // the following code repesents an example how to construct and send a SNMP get
-            // response message
-            let mut get_response_pdu = get_request_pdu.0.clone();
-            get_response_pdu.variable_bindings[0].value =
-                ObjectSyntax::Simple(SimpleSyntax::Number(Integer::from(0 as i32)));
-            let response: rasn_snmp::v1::Message<rasn_snmp::v1::Pdus> = rasn_snmp::v1::Message {
-                version: v1_request.version,
-                community: v1_request.community,
-                data: rasn_snmp::v1::Pdus::GetResponse(GetResponse(get_response_pdu)),
-            };
+    if let GetRequest(get_request_pdu) = v1_request.data {
+        // TODO: intern implementation to be replaced
+        // the following code repesents an example how to construct and send a SNMP get
+        // response message
+        let mut get_response_pdu = get_request_pdu.0.clone();
+        get_response_pdu.variable_bindings[0].value = ObjectSyntax::Simple(SimpleSyntax::Number(Integer::from(0_i32)));
+        let response: rasn_snmp::v1::Message<rasn_snmp::v1::Pdus> = rasn_snmp::v1::Message {
+            version: v1_request.version,
+            community: v1_request.community,
+            data: rasn_snmp::v1::Pdus::GetResponse(GetResponse(get_response_pdu)),
+        };
 
-            sink.send((GenericSnmpMessage::V1Message(response), peer))
-                .await?
-        }
-        _ => {}
-    };
+        sink.send((GenericSnmpMessage::V1Message(response), peer))
+            .await?
+    }
 
     Ok(())
 }

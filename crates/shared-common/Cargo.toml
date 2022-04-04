@@ -1,6 +1,11 @@
 [package]
 name = "shared-common"
 version = "1.0.0"
+authors = ["Frank Horvath <fhorvath80@gmail.com>"]
+description = "SNMP Simulator Telemetry shared common library"
+repository = "https://github.com/sonalake/snmp-sim-rust/tree/main/crates/shared-common"
+keywords = ["snmp", "simulator", "common"]
+license = "Apache-2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

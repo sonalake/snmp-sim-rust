@@ -16,36 +16,37 @@ path = "src/main.rs"
 name = "snmp_sim"
 
 [dependencies]
+shared-common = { path = "./crates/shared-common" }
+telemetry = { path = "./crates/telemetry" }
+
 actix = "0.13.0"
 actix-web = { version = "4.0.1", default_features = false, features = [
    "macros",
 ] }
-anyhow = "1"
+anyhow = "1.0.56"
 arrayref = "0.3.6"
 bytes = "1.1.0"
-config = { version = "0.12.0", default-features = false, features = ["yaml"] }
+config = { version = "0.13.0", default-features = false, features = ["yaml"] }
 futures = "0.3.21"
 num-traits = "0.2.14"
 num-bigint = "0.4.3"
 rasn-snmp = "0.5.0"
 rasn-smi = "0.5.0"
 rasn = "0.5.3"
-serde = { version = "1.0", features = ["derive"] }
+serde = { version = "1.0.136", features = ["derive"] }
 serde-aux = "3.0.1"
-thiserror = "1"
+thiserror = "1.0.30"
 tokio = "1.17.0"
 tokio-util = { version = "0.7.1", features = ["codec", "net"] }
-tracing-actix-web = "0.5"
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
-tracing-bunyan-formatter = "0.3"
-tracing-log = "0.1.1"
-visibility = { version = "0", optional = true }
-
-shared-common = { path = "./crates/shared-common" }
+tracing-actix-web = "0.5.1"
+tracing = "0.1.32"
+tracing-subscriber = { version = "0.3.10", features = ["registry", "env-filter"] }
+tracing-bunyan-formatter = "0.3.2"
+tracing-log = "0.1.2"
+visibility = { version = "0.0.1", optional = true }
 
 [dev-dependencies]
-snmp-sim = { path = ".", features = ["integration-tests"] }
+#snmp-sim = { path = ".", features = ["integration-tests"] }
 
 [features]
 integration-tests = ["visibility"]
@@ -59,4 +60,6 @@ opt-level = 3
 [workspace]
 members = [
    "snmp-sim-cli",
+   "crates/shared-common",
+   "crates/telemetry",
 ]

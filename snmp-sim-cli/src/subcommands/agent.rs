@@ -1,8 +1,10 @@
-use crate::CommandHandler;
+use crate::cli::CommandHandler;
+use crate::operations::agent::{create_agent, delete_agent, list_agents, update_agent};
 use clap::{Args, Subcommand};
 
 #[derive(Debug, Subcommand)]
-pub enum AgentCommands {
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) enum AgentCommands {
     /// List SNMP Agents
     Ls,
 
@@ -17,14 +19,16 @@ pub enum AgentCommands {
 }
 
 #[derive(Debug, Args)]
-pub struct CreateAgent {
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) struct CreateAgent {
     // name of the agent to be created
     #[clap(short, long)]
     name: String,
 }
 
 #[derive(Debug, Args)]
-pub struct UpdateAgent {
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) struct UpdateAgent {
     // unique identifier of an existing agent
     #[clap(short, long)]
     id: String,
@@ -35,7 +39,8 @@ pub struct UpdateAgent {
 }
 
 #[derive(Debug, Args)]
-pub struct DeleteAgent {
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) struct DeleteAgent {
     // unique identifier of an existing agent
     #[clap(short, long)]
     id: String,
@@ -50,24 +55,4 @@ impl CommandHandler for AgentCommands {
             AgentCommands::Rm(args) => delete_agent(args),
         }
     }
-}
-
-fn list_agents() -> Result<(), anyhow::Error> {
-    println!("Get all agents");
-    Ok(())
-}
-
-fn create_agent(agent: CreateAgent) -> Result<(), anyhow::Error> {
-    println!("Creating agent {:?}", agent);
-    Ok(())
-}
-
-fn update_agent(agent: UpdateAgent) -> Result<(), anyhow::Error> {
-    println!("Updating agent {:?}", agent);
-    Ok(())
-}
-
-fn delete_agent(agent: DeleteAgent) -> Result<(), anyhow::Error> {
-    println!("Deleting agent {:?}", agent);
-    Ok(())
 }
