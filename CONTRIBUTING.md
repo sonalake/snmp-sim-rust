@@ -48,7 +48,7 @@ We ask that if you are working on a particular issue, you ensure that the issue 
 
 ### Code Style
 
-In our [Rust Programming Language](https://www.rust-lang.org/) repositories we follow the company-wide code style guide that you can find in the [the Rust Style document](https://github.com/maidsafe/QA/blob/master/Documentation/Rust%20Style.md). You should install `rustfmt` and `clippy` and run them before each of your Git commits.
+In our [Rust Programming Language](https://www.rust-lang.org/) repositories we follow the company-wide code style guide that you can find in the [the Rust Style document](https://github.com/sonalake/snmp-sim-rust/blob/main/docs/rust_style.md). You should install `rustfmt` and `clippy` and run them before each of your Git commits.
 
 For all our repositories we follow the standard lint suggestions, pre-linting before commit. We encourage our contributors to use a sensible naming convention, split their files up accordingly, and include accompanying tests.
 
