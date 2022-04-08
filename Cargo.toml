@@ -6,6 +6,7 @@ description = "SNMP Simulator running as a service managed remotely through HTTP
 keywords = ["snmp", "simulator"]
 license = "Apache-2.0"
 edition = "2021"
+default-run = "snmp_sim"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
@@ -15,14 +16,17 @@ path = "src/lib.rs"
 path = "src/main.rs"
 name = "snmp_sim"
 
+[[bin]]
+path = "src/bin/generate_spec.rs"
+name = "generate_spec"
+
 [dependencies]
 shared-common = { path = "./crates/shared-common" }
 telemetry = { path = "./crates/telemetry" }
+paperclip-restful = { path = "./crates/paperclip-restful" }
 
 actix = "0.13.0"
-actix-web = { version = "4.0.1", default_features = false, features = [
-   "macros",
-] }
+actix-web = { version = "4.0.1", default_features = false, features = ["macros"] }
 anyhow = "1.0.56"
 arrayref = "0.3.6"
 bytes = "1.1.0"
@@ -44,6 +48,14 @@ tracing-subscriber = { version = "0.3.10", features = ["registry", "env-filter"]
 tracing-bunyan-formatter = "0.3.2"
 tracing-log = "0.1.2"
 visibility = { version = "0.0.1", optional = true }
+paperclip = { version = "0.7.0", features = ["actix4", "uuid", "v3", "swagger-ui"] }
+serde_json = "1.0.79"
+uuid_dev = { version = "0.8", features = ["serde"], package = "uuid" }
+#rust-embed = { version = "6.3" }
+#swagger-ui = { version = "0.1", default-features = false, features = [] }
+sqlx = { version = "0.5", default-features = false, features = [ "runtime-actix-rustls", "macros", "sqlite", "uuid", "chrono", "migrate", "offline"] }
+sea-orm = { version = "0.7", features = ["sqlx-sqlite", "runtime-actix-rustls", "macros", "with-uuid"], default-features = false}
+chrono = "0.4.19"
 
 [dev-dependencies]
 #snmp-sim = { path = ".", features = ["integration-tests"] }
@@ -62,4 +74,9 @@ members = [
    "snmp-sim-cli",
    "crates/shared-common",
    "crates/telemetry",
+   "crates/paperclip-restful",
 ]
+
+[patch.crates-io]
+paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }
+#paperclip = { path = "../paperclip" }

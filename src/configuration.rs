@@ -8,6 +8,7 @@ use std::path::PathBuf;
 /// Represents the implemented settings of the SNMP Simulator service.
 pub struct Settings {
     pub application: ApplicationSettings,
+    pub database: DatabaseSettings,
 }
 
 /// Returns the SNMP Simulator configuration

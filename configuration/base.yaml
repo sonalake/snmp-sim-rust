@@ -3,3 +3,6 @@ application:
   port: 8080
   uri_prefix: "mngmt/v1"
   level: "error"
+
+database:
+  connection_uri: "sqlite://~/.snmp-sim/snmp-sim.db"
