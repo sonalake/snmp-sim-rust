@@ -58,7 +58,7 @@ pub(crate) async fn update_agent<'db>(
     agent: Agent,
 ) -> Result<UpdateResult<Agent>, DomainError> {
     if let Err(DomainError::NotFound(_)) = get_agent(conn, &agent.id).await {
-        // Auth Server not exists yet => create a new instance
+        // Agent not exists yet => create a new instance
         let result = create_agent(conn, &agent).await?;
         if let CreateResult::Created(created_agent) = result {
             return Ok(UpdateResult::Created(created_agent));
