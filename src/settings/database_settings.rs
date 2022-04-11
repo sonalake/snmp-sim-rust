@@ -14,6 +14,8 @@ fn default_tests_skip_drop() -> bool {
 
 impl DatabaseSettings {
     pub fn options(&self) -> sqlx::Result<SqliteConnectOptions> {
-        Ok(SqliteConnectOptions::from_str(&self.connection_uri)?.journal_mode(SqliteJournalMode::Wal))
+        Ok(SqliteConnectOptions::from_str(&self.connection_uri)?
+            .journal_mode(SqliteJournalMode::Wal)
+            .create_if_missing(true))
     }
 }

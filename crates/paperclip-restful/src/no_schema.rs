@@ -37,14 +37,11 @@ impl<T> DerefMut for NoSchema<T> {
 
 impl<T: Default> Default for NoSchema<T> {
     fn default() -> NoSchema<T> {
-        NoSchema {
-            t: Default::default(),
-        }
+        NoSchema { t: Default::default() }
     }
 }
 
-type NoSchemaFromFuture<T> =
-    fn(Result<T, <T as FromRequest>::Error>) -> Result<NoSchema<T>, <T as FromRequest>::Error>;
+type NoSchemaFromFuture<T> = fn(Result<T, <T as FromRequest>::Error>) -> Result<NoSchema<T>, <T as FromRequest>::Error>;
 
 impl<T: FromRequest> FromRequest for NoSchema<T> {
     type Error = T::Error;

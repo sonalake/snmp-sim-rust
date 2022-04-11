@@ -3,7 +3,8 @@
 //! Type [`UpdateResult`] represents an optional value: every [`UpdateResult`]
 //! is either [`Created`] or [`Updated`], and contains a value.
 
-/// The `UpdateResult` type. See [the module level documentation](self) for more.
+/// The `UpdateResult` type. See [the module level documentation](self) for
+/// more.
 #[derive(Clone, PartialEq, PartialOrd, Eq, Ord, Debug, Hash)]
 pub enum UpdateResult<T> {
     Created(T),
@@ -17,7 +18,8 @@ pub enum UpdateResult<T> {
 impl<T> UpdateResult<T> {
     /// Returns the contained [`Created`] value, consuming the `self` value.
     ///
-    /// Because this function may panic, its use is dedicated for integration tests only.
+    /// Because this function may panic, its use is dedicated for integration
+    /// tests only.
     #[cfg(feature = "integration-tests")]
     #[inline]
     #[allow(dead_code)]
@@ -30,7 +32,8 @@ impl<T> UpdateResult<T> {
 
     /// Returns the contained [`Updated`] value, consuming the `self` value.
     ///
-    /// Because this function may panic, its use is dedicated for integration tests only.
+    /// Because this function may panic, its use is dedicated for integration
+    /// tests only.
     #[cfg(feature = "integration-tests")]
     #[inline]
     #[allow(dead_code)]
@@ -41,8 +44,8 @@ impl<T> UpdateResult<T> {
         }
     }
 
-    /// Returns the contained [`Created`] or [`Updated`] value, consuming the `self` value.
-    /// # Examples
+    /// Returns the contained [`Created`] or [`Updated`] value, consuming the
+    /// `self` value. # Examples
     ///
     /// ```
     /// use auth_config::domain::entity::UpdateResult;
@@ -104,12 +107,13 @@ impl<T> UpdateResult<T> {
         matches!(*self, UpdateResult::Updated(_))
     }
 
-    /// Maps an `UpdateResult<T>` to `UpdateResult<U>` by applying a function to a contained value.
+    /// Maps an `UpdateResult<T>` to `UpdateResult<U>` by applying a function to
+    /// a contained value.
     ///
     /// # Examples
     ///
-    /// Converts an <code>UpdateResult<[String]></code> into an <code>UpdateResult<[usize]></code>, consuming
-    /// the original:
+    /// Converts an <code>UpdateResult<[String]></code> into an
+    /// <code>UpdateResult<[usize]></code>, consuming the original:
     ///
     /// [String]: ../../std/string/struct.String.html "String"
     /// ```

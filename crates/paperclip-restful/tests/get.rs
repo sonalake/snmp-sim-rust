@@ -12,12 +12,7 @@ fn test_get_response() {
         last_name: String,
     }
 
-    #[api_v2_errors(
-        code = 400,
-        description = "Bad request",
-        code = 404,
-        description = "Not found"
-    )]
+    #[api_v2_errors(code = 400, description = "Bad request", code = 404, description = "Not found")]
     #[derive(Debug, thiserror::Error)]
     enum PersonError {
         #[error("unexpected error")]

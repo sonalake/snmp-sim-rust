@@ -12,12 +12,7 @@ fn test_delete_response() {
         last_name: String,
     }
 
-    #[api_v2_errors(
-        code = 400,
-        description = "Bad request",
-        code = 404,
-        description = "Not found"
-    )]
+    #[api_v2_errors(code = 400, description = "Bad request", code = 404, description = "Not found")]
     #[derive(Debug, thiserror::Error)]
     enum PersonError {
         #[error("unexpected error")]
@@ -32,9 +27,7 @@ fn test_delete_response() {
 
     #[api_v2_operation]
     #[delete("/")]
-    async fn delete_person(
-        _: HttpRequest,
-    ) -> Result<DeleteResponse<Person>, JsonError<PersonError>> {
+    async fn delete_person(_: HttpRequest) -> Result<DeleteResponse<Person>, JsonError<PersonError>> {
         Err(JsonError::from(PersonError::Unexpected))
     }
 

@@ -3,7 +3,8 @@
 //! Type [`CreateResult`] represents an optional value: every [`CreateResult`]
 //! is either [`Created`] or [`Duplicate`], and contains a value.
 
-/// The `CreateResult` type. See [the module level documentation](self) for more.
+/// The `CreateResult` type. See [the module level documentation](self) for
+/// more.
 #[derive(Clone, PartialEq, PartialOrd, Eq, Ord, Debug, Hash)]
 pub enum CreateResult<T> {
     Created(T),
@@ -17,7 +18,8 @@ pub enum CreateResult<T> {
 impl<T> CreateResult<T> {
     /// Returns the contained [`Created`] value, consuming the `self` value.
     ///
-    /// Because this function may panic, its use is dedicated for integration tests only.
+    /// Because this function may panic, its use is dedicated for integration
+    /// tests only.
     #[cfg(feature = "integration-tests")]
     #[inline]
     #[allow(dead_code)]
@@ -30,7 +32,8 @@ impl<T> CreateResult<T> {
 
     /// Returns the contained [`Duplicate`] value, consuming the `self` value.
     ///
-    /// Because this function may panic, its use is dedicated for integration tests only.
+    /// Because this function may panic, its use is dedicated for integration
+    /// tests only.
     #[cfg(feature = "integration-tests")]
     #[inline]
     #[allow(dead_code)]
@@ -41,8 +44,8 @@ impl<T> CreateResult<T> {
         }
     }
 
-    /// Returns the contained [`Created`] or [`Duplicate`] value, consuming the `self` value.
-    /// # Examples
+    /// Returns the contained [`Created`] or [`Duplicate`] value, consuming the
+    /// `self` value. # Examples
     ///
     /// ```
     /// use auth_config::domain::entity::CreateResult;
@@ -104,12 +107,13 @@ impl<T> CreateResult<T> {
         matches!(*self, CreateResult::Duplicate(_))
     }
 
-    /// Maps an `CreateResult<T>` to `CreateResult<U>` by applying a function to a contained value.
+    /// Maps an `CreateResult<T>` to `CreateResult<U>` by applying a function to
+    /// a contained value.
     ///
     /// # Examples
     ///
-    /// Converts an <code>CreateResult<[String]></code> into an <code>CreateResult<[usize]></code>, consuming
-    /// the original:
+    /// Converts an <code>CreateResult<[String]></code> into an
+    /// <code>CreateResult<[usize]></code>, consuming the original:
     ///
     /// [String]: ../../std/string/struct.String.html "String"
     /// ```

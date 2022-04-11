@@ -15,7 +15,8 @@ use rasn_snmp::{v2::Pdus as SnmpV2Pdus, v2c::Message as SnmpV2CMessage};
 pub enum GenericSnmpMessage {
     V1Message(SnmpV1Message<SnmpV1Pdus>),
     V2Message(SnmpV2CMessage<SnmpV2Pdus>),
-    V3Message(Box<SnmpV3Message>), // Large variant size differnce => use boxing to prevent the memory layout penalization of that enum
+    V3Message(Box<SnmpV3Message>), /* Large variant size differnce => use boxing to prevent the memory layout
+                                    * penalization of that enum */
 }
 
 #[derive(Default)]
