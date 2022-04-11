@@ -1,0 +1,11 @@
+[package]
+name = "rust-client-snmp-sim"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rust-client-snmp-sim-lib = { path = "./rust-client-snmp-sim-lib"  }
+
+[build-dependencies]
+service = {path = "../../", package = "snmp-sim"}
+openapi-generator = { path = "../../crates/openapi-generator" }

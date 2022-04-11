@@ -1,0 +1,15 @@
+.gitignore
+.travis.yml
+Cargo.toml
+README.md
+docs/AgentsApi.md
+docs/RequestAgent.md
+docs/ResponseAgent.md
+git_push.sh
+src/apis/agents_api.rs
+src/apis/configuration.rs
+src/apis/mod.rs
+src/lib.rs
+src/models/mod.rs
+src/models/request_agent.rs
+src/models/response_agent.rs

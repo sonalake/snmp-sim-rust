@@ -51,8 +51,6 @@ visibility = { version = "0.0.1", optional = true }
 paperclip = { version = "0.7.0", features = ["actix4", "uuid", "v3", "swagger-ui"] }
 serde_json = "1.0.79"
 uuid_dev = { version = "0.8", features = ["serde"], package = "uuid" }
-#rust-embed = { version = "6.3" }
-#swagger-ui = { version = "0.1", default-features = false, features = [] }
 sqlx = { version = "0.5", default-features = false, features = [ "runtime-actix-rustls", "macros", "sqlite", "uuid", "chrono", "migrate", "offline"] }
 sea-orm = { version = "0.7", features = ["sqlx-sqlite", "runtime-actix-rustls", "macros", "with-uuid"], default-features = false}
 chrono = "0.4.19"
@@ -72,9 +70,11 @@ opt-level = 3
 [workspace]
 members = [
    "snmp-sim-cli",
+   "crates/openapi-generator",
    "crates/shared-common",
    "crates/telemetry",
    "crates/paperclip-restful",
+   "clients/rust",
 ]
 
 [patch.crates-io]
