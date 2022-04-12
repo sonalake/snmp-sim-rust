@@ -1,5 +1,6 @@
 use crate::cli::CommandHandler;
 use crate::operations::agent::{create_agent, delete_agent, list_agents, update_agent};
+use async_trait::async_trait;
 use clap::{Args, Subcommand};
 
 #[derive(Debug, Subcommand)]
@@ -46,13 +47,14 @@ pub(crate) struct DeleteAgent {
     id: String,
 }
 
+#[async_trait]
 impl CommandHandler for AgentCommands {
-    fn handle(self) -> Result<(), anyhow::Error> {
+    async fn handle(self) -> Result<(), anyhow::Error> {
         match self {
-            AgentCommands::Ls => list_agents(),
-            AgentCommands::Add(args) => create_agent(args),
-            AgentCommands::Update(args) => update_agent(args),
-            AgentCommands::Rm(args) => delete_agent(args),
+            AgentCommands::Ls => list_agents().await,
+            AgentCommands::Add(args) => create_agent(args).await,
+            AgentCommands::Update(args) => update_agent(args).await,
+            AgentCommands::Rm(args) => delete_agent(args).await,
         }
     }
 }

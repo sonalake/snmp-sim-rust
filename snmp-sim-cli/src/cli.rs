@@ -1,10 +1,12 @@
 use crate::subcommands::agent::AgentCommands;
+use async_trait::async_trait;
 use clap::Parser;
 use clap::Subcommand;
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+#[async_trait]
 pub(crate) trait CommandHandler {
-    fn handle(self) -> anyhow::Result<()>;
+    async fn handle(self) -> anyhow::Result<()>;
 }
 
 #[derive(Debug, Subcommand)]
@@ -18,11 +20,12 @@ pub(crate) enum SnmpSimCliCommands {
     Agent(AgentCommands),
 }
 
+#[async_trait]
 impl CommandHandler for SnmpSimCliCommands {
-    fn handle(self) -> anyhow::Result<()> {
+    async fn handle(self) -> anyhow::Result<()> {
         match self {
-            SnmpSimCliCommands::Agents => AgentCommands::Ls.handle(),
-            SnmpSimCliCommands::Agent(agent_cmd) => agent_cmd.handle(),
+            SnmpSimCliCommands::Agents => AgentCommands::Ls.handle().await,
+            SnmpSimCliCommands::Agent(agent_cmd) => agent_cmd.handle().await,
         }
     }
 }
@@ -33,6 +36,9 @@ impl CommandHandler for SnmpSimCliCommands {
 #[clap(about, long_about = None)]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) struct SnmpSimCli {
+    #[clap(env = "SNMP_SIM_URL")]
+    url: String,
+
     #[clap(subcommand)]
     /// SNMP Simulator CLI Commands
     command: SnmpSimCliCommands,
@@ -40,6 +46,6 @@ pub(crate) struct SnmpSimCli {
 
 impl SnmpSimCli {
     pub async fn run(self) -> anyhow::Result<()> {
-        self.command.handle()
+        self.command.handle().await
     }
 }
