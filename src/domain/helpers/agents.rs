@@ -40,7 +40,7 @@ pub(crate) async fn delete_agent<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Listing authservers", skip(conn))]
+#[tracing::instrument(name = "[BL] Listing agents", skip(conn))]
 pub(crate) async fn list_agents<'db>(
     conn: &'db impl ConnectionTrait,
     page: usize,

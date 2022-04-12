@@ -48,7 +48,7 @@ impl<T> CreateResult<T> {
     /// `self` value. # Examples
     ///
     /// ```
-    /// use auth_config::domain::entity::CreateResult;
+    /// use snmp_sim::domain::entity::CreateResult;
     ///
     /// let x = CreateResult::Created("created instance");
     /// assert_eq!(x.unwrap(), "created instance");
@@ -74,7 +74,7 @@ impl<T> CreateResult<T> {
     /// # Examples
     ///
     /// ```
-    /// use auth_config::domain::entity::CreateResult;
+    /// use snmp_sim::domain::entity::CreateResult;
     ///
     /// let x = CreateResult::Created(2);
     /// assert_eq!(x.is_created(), true);
@@ -93,7 +93,7 @@ impl<T> CreateResult<T> {
     /// # Examples
     ///
     /// ```
-    /// use auth_config::domain::entity::CreateResult;
+    /// use snmp_sim::domain::entity::CreateResult;
     ///
     /// let x = CreateResult::Duplicate(2);
     /// assert_eq!(x.is_duplicate(), true);
@@ -117,7 +117,7 @@ impl<T> CreateResult<T> {
     ///
     /// [String]: ../../std/string/struct.String.html "String"
     /// ```
-    /// use auth_config::domain::entity::CreateResult;
+    /// use snmp_sim::domain::entity::CreateResult;
     ///
     /// let maybe_duplicate_string = CreateResult::Duplicate(String::from("Hello, World!"));
     ///

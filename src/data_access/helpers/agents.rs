@@ -13,7 +13,7 @@ pub(crate) async fn create_agent<'db>(
     agent_name: &str,
 ) -> Result<CreateResult<AgentsModel>, DbErr> {
     let result = Agents::find()
-        .filter(AgentsColumn::Id.eq(id.as_bytes().to_vec()))
+        .filter(AgentsColumn::Id.eq(id.to_string()))
         .one(conn)
         .await?;
 
@@ -22,9 +22,10 @@ pub(crate) async fn create_agent<'db>(
     }
 
     let mut agent = AgentsActiveModel {
-        id: ActiveValue::set(id.as_bytes().to_vec()),
+        id: ActiveValue::set(id.to_string()),
         name: ActiveValue::set(agent_name.to_string()),
-        ..Default::default()
+        created_at: ActiveValue::set(chrono::Utc::now()),
+        modified_at: ActiveValue::set(chrono::Utc::now()),
     };
 
     let insert_result = Agents::insert(agent.clone())
@@ -38,14 +39,14 @@ pub(crate) async fn create_agent<'db>(
 #[tracing::instrument(name = "[DA] Finding an agent", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn get_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -> Result<Option<AgentsModel>, DbErr> {
-    Agents::find_by_id(id.as_bytes().to_vec()).one(conn).await
+    Agents::find_by_id(id.to_string()).one(conn).await
 }
 
 #[tracing::instrument(name = "[DA] Deleting an agent", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn delete_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -> Result<DeleteResult, DbErr> {
     Delete::one(AgentsActiveModel {
-        id: ActiveValue::set(id.as_bytes().to_vec()),
+        id: ActiveValue::set(id.to_string()),
         // keep the default here, since we want to delete the entity by key only, all the resut of the fields are unset
         ..Default::default()
     })
@@ -71,10 +72,10 @@ pub(crate) async fn update_agent<'db>(
     id: &Uuid,
     agent_name: &str,
 ) -> Result<AgentsModel, DbErr> {
-    let agent = AgentsActiveModel {
-        id: ActiveValue::set(id.as_bytes().to_vec()),
-        name: ActiveValue::set(agent_name.to_string()),
-        ..Default::default()
-    };
+    let pear: Option<AgentsModel> = Agents::find_by_id(id.to_string()).one(conn).await?;
+    let mut agent: AgentsActiveModel = pear.unwrap().into();
+
+    agent.name = ActiveValue::set(agent_name.to_string());
+
     agent.update(conn).await
 }

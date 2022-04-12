@@ -48,7 +48,7 @@ impl<T> UpdateResult<T> {
     /// `self` value. # Examples
     ///
     /// ```
-    /// use auth_config::domain::entity::UpdateResult;
+    /// use snmp_sim::domain::entity::UpdateResult;
     ///
     /// let x = UpdateResult::Created("created instance");
     /// assert_eq!(x.unwrap(), "created instance");
@@ -74,7 +74,7 @@ impl<T> UpdateResult<T> {
     /// # Examples
     ///
     /// ```
-    /// use auth_config::domain::entity::UpdateResult;
+    /// use snmp_sim::domain::entity::UpdateResult;
     ///
     /// let x = UpdateResult::Created(2);
     /// assert_eq!(x.is_created(), true);
@@ -93,7 +93,7 @@ impl<T> UpdateResult<T> {
     /// # Examples
     ///
     /// ```
-    /// use auth_config::domain::entity::UpdateResult;
+    /// use snmp_sim::domain::entity::UpdateResult;
     ///
     /// let x = UpdateResult::Updated(2);
     /// assert_eq!(x.is_updated(), true);
@@ -117,7 +117,7 @@ impl<T> UpdateResult<T> {
     ///
     /// [String]: ../../std/string/struct.String.html "String"
     /// ```
-    /// use auth_config::domain::entity::UpdateResult;
+    /// use snmp_sim::domain::entity::UpdateResult;
     ///
     /// let maybe_Updated_string = UpdateResult::Updated(String::from("Hello, World!"));
     ///
