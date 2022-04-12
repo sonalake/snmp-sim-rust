@@ -2,7 +2,6 @@ use crate::data_access::entity::agents::{
     ActiveModel as AgentsActiveModel, Column as AgentsColumn, Entity as Agents, Model as AgentsModel,
 };
 use crate::domain::CreateResult;
-use chrono::{DateTime, Utc};
 use sea_orm::{entity::prelude::*, ActiveValue, ConnectionTrait, DbErr, Delete, DeleteResult, EntityTrait};
 use uuid_dev::Uuid;
 
@@ -24,9 +23,8 @@ pub(crate) async fn create_agent<'db>(
 
     let mut agent = AgentsActiveModel {
         id: ActiveValue::set(id.as_bytes().to_vec()),
-        created_at: ActiveValue::set(chrono::Utc::now().to_string()),
-        modified_at: ActiveValue::set(chrono::Utc::now().to_string()),
         name: ActiveValue::set(agent_name.to_string()),
+        ..Default::default()
     };
 
     let insert_result = Agents::insert(agent.clone())
@@ -72,13 +70,11 @@ pub(crate) async fn update_agent<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
     agent_name: &str,
-    created_at: &DateTime<Utc>,
 ) -> Result<AgentsModel, DbErr> {
     let agent = AgentsActiveModel {
         id: ActiveValue::set(id.as_bytes().to_vec()),
         name: ActiveValue::set(agent_name.to_string()),
-        created_at: ActiveValue::unchanged(created_at.to_string()),
-        modified_at: ActiveValue::set(chrono::Utc::now().to_string()),
+        ..Default::default()
     };
     agent.update(conn).await
 }

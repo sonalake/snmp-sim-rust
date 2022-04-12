@@ -4,7 +4,7 @@ IMAGE                   ?= $(shell basename $(shell git rev-parse --show-topleve
 IMAGE_TAG               ?= $(shell git describe --tags 2> /dev/null || echo latest)
 RELEASE_OR_DEBUG        ?= release
 
-.PHONY: all build run stop
+.PHONY: all build run stop db-model
 
 all: build
 
@@ -20,3 +20,10 @@ run:
 
 stop:
 	docker stop snmp-sim
+
+db-entity:
+	sea-orm-cli generate entity -o ./src/data_access/entity
+	sed -i 's/DateTime/DateTimeUtc/g' ./src/data_access/entity/*.rs
+
+db-migrate:
+	sqlx migrate run

@@ -65,7 +65,7 @@ pub(crate) async fn update_agent<'db>(
         }
     };
 
-    let result = crate::data_access::helpers::update_agent(conn, &agent.id, &agent.name, &agent.created_at).await?;
+    let result = crate::data_access::helpers::update_agent(conn, &agent.id, &agent.name).await?;
 
     Ok(UpdateResult::Updated(result.into()))
 }

@@ -1,5 +1,5 @@
 use crate::data_access::entity::agents::{ActiveModel, Model};
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::{DateTime, Utc};
 use sea_orm::ActiveValue;
 use uuid_dev::Uuid;
 
@@ -17,16 +17,8 @@ impl From<Model> for Agent {
         Self {
             id: Uuid::from_slice(&model.id).unwrap(),
             name: model.name,
-            created_at: model
-                .created_at
-                .parse::<DateTime<FixedOffset>>()
-                .map(|dt| dt.with_timezone(&Utc))
-                .unwrap(),
-            modified_at: model
-                .modified_at
-                .parse::<DateTime<FixedOffset>>()
-                .map(|dt| dt.with_timezone(&Utc))
-                .unwrap(),
+            created_at: model.created_at,
+            modified_at: model.modified_at,
         }
     }
 }
@@ -36,18 +28,8 @@ impl From<ActiveModel> for Agent {
         Self {
             id: Uuid::from_slice(&am.id.unwrap()).unwrap(),
             name: am.name.unwrap(),
-            created_at: am
-                .created_at
-                .unwrap()
-                .parse::<DateTime<FixedOffset>>()
-                .map(|dt| dt.with_timezone(&Utc))
-                .unwrap(),
-            modified_at: am
-                .modified_at
-                .unwrap()
-                .parse::<DateTime<FixedOffset>>()
-                .map(|dt| dt.with_timezone(&Utc))
-                .unwrap(),
+            created_at: am.created_at.unwrap(),
+            modified_at: am.modified_at.unwrap(),
         }
     }
 }
@@ -56,8 +38,8 @@ impl From<Agent> for Model {
     fn from(agent: Agent) -> Self {
         Self {
             id: agent.id.as_bytes().to_vec(),
-            created_at: agent.created_at.to_string(),
-            modified_at: agent.modified_at.to_string(),
+            created_at: agent.created_at,
+            modified_at: agent.modified_at,
             name: agent.name,
         }
     }
@@ -67,8 +49,8 @@ impl From<Agent> for ActiveModel {
     fn from(agent: Agent) -> Self {
         Self {
             id: ActiveValue::set(agent.id.as_bytes().to_vec()),
-            created_at: ActiveValue::set(agent.created_at.to_string()),
-            modified_at: ActiveValue::set(agent.modified_at.to_string()),
+            created_at: ActiveValue::set(agent.created_at),
+            modified_at: ActiveValue::set(agent.modified_at),
             name: ActiveValue::set(agent.name),
         }
     }
