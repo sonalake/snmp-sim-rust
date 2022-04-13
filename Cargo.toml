@@ -3,9 +3,18 @@ name = "snmp-sim"
 version = "0.1.0"
 authors = ["Frank Horvath <fhorvath80@gmail.com>"]
 description = "SNMP Simulator running as a service managed remotely through HTTP Rest API"
-keywords = ["snmp", "simulator"]
 license = "Apache-2.0"
 edition = "2021"
+documentation = "https://github.com/sonalake/snmp-sim-rust"
+homepage = "https://github.com/sonalake/snmp-sim-rust"
+repository = "https://github.com/sonalake/snmp-sim-rust.git"
+readme = "README.md"
+keywords = ["snmp", "simulator"]
+categories = [
+  "command-line-utilities",
+  "simulation",
+  "simulation::snmp",
+]
 default-run = "snmp_sim"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
