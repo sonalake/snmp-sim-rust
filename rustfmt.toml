@@ -7,3 +7,7 @@ wrap_comments = true
 normalize_comments = true
 #fn_args_density = "Compressed"
 #use_small_heuristics = false
+
+ignore = [
+	"clients/rust"
+]
