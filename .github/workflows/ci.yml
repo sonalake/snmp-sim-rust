@@ -24,7 +24,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: install
-          args: cargo-make
+          args: --force cargo-make
       - name: Run CI
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
         uses: actions-rs/cargo@v1
