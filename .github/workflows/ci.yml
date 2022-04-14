@@ -10,7 +10,8 @@ jobs:
       fail-fast: false
       matrix:
         rust: [1.60]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest]
+        #, windows-latest, macOS-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,7 +25,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: install
-          args: --force cargo-make
+          args: cargo-make --force
       - name: Run CI
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
         uses: actions-rs/cargo@v1
