@@ -1,7 +1,7 @@
 ### Build arguments
 ARG APP_NAME=snmp_sim
 ARG BASE_IMAGE=debian:10-slim
-ARG BUILDER_IMAGE=lukemathwalker/cargo-chef:latest-rust-1.59-slim
+ARG BUILDER_IMAGE=lukemathwalker/cargo-chef:latest-rust-1.60-slim
 ARG CARGO_REGISTRY_URL=
 ARG RELEASE_OR_DEBUG=release
 

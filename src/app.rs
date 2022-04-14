@@ -33,8 +33,8 @@ pub fn spec_modifier(spec: &mut DefaultApiRaw) {
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub async fn get_database_connection(configuration: &DatabaseSettings) -> anyhow::Result<Option<DatabaseConnection>> {
-    if !configuration.connection_uri.is_empty() {
-        Ok(Some(Database::connect(&configuration.connection_uri).await?))
+    if !configuration.connection_uri()?.is_empty() {
+        Ok(Some(Database::connect(&configuration.connection_uri()?).await?))
     } else {
         Ok(None)
     }
@@ -52,22 +52,24 @@ impl Service {
         );
         init_subscriber(subscriber);
 
-        let mut connection = SqliteConnection::connect_with(&configuration.database.options()?)
+        let database_options = configuration.database.options()?;
+
+        let mut connection = SqliteConnection::connect_with(&database_options)
             .await
-            .context(format!("connection URI {}", &configuration.database.connection_uri))
+            .context(format!("connection URI {}", &configuration.database.connection_uri()?))
             .context("Failed to connect to SQLite database.")?;
 
         sqlx::migrate!("./migrations/")
             .run(&mut connection)
             .await
-            .context(format!("connection_uri {}", &configuration.database.connection_uri))
+            .context(format!("connection_uri {}", &configuration.database.connection_uri()?))
             .context("Failed to migrate the database")?;
 
         connection.close();
 
         let db_conn = get_database_connection(&configuration.database)
             .await
-            .context(format!("connection_uri {}", &configuration.database.connection_uri))
+            .context(format!("connection_uri {}", &configuration.database.connection_uri()?))
             .context("Failed to initialize sea-orm, SQLite database failure!")?
             .expect("Failed to initiate a database connection");
 

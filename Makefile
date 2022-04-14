@@ -1,5 +1,5 @@
 BASE_IMAGE              ?= gcr.io/distroless/cc
-BUILDER_IMAGE           ?= lukemathwalker/cargo-chef:latest-rust-1.59-slim
+BUILDER_IMAGE           ?= lukemathwalker/cargo-chef:latest-rust-1.60-slim
 IMAGE                   ?= $(shell basename $(shell git rev-parse --show-toplevel))
 IMAGE_TAG               ?= $(shell git describe --tags 2> /dev/null || echo latest)
 RELEASE_OR_DEBUG        ?= release
@@ -16,7 +16,7 @@ build:
 	.
 
 run:
-	docker run -d --rm --name snmp-sim -p "127.0.0.1:8161:8161/udp" -t snmp-sim
+	docker run -d --rm --name snmp-sim -p "127.0.0.1:8161:8161/udp" -p "127.0.0.1:8080:8080" -t snmp-sim
 
 stop:
 	docker stop snmp-sim

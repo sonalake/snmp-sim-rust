@@ -17,4 +17,7 @@ paperclip = { version = "0.7", features = ["actix4", "v3", "swagger-ui"] }
 
 [dev-dependencies]
 thiserror = "1"
-serde = {version = "1", features = ["derive"]}
+serde = { version = "1", features = ["derive"] }
+
+[patch.crates-io]
+paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }

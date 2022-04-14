@@ -6,6 +6,7 @@ SNMP Simulator
 To only compile the application manually you'll need to install:
 
 - [Rust](https://www.rust-lang.org/tools/install)
+- [cargo-make](https://github.com/sagiegurari/cargo-make#installation)
 
 To use the automated build/test tools, we recommend that you install:
 
