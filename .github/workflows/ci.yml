@@ -1,47 +1,163 @@
-name: CI
-on: [push, pull_request]
-env:
-  CLICOLOR_FORCE: 1
+name: ci
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
 jobs:
-  ci:
-    name: CI
+  job-matrix:
+    name: ${{ matrix.make.name }} (${{ matrix.rust }}; ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        rust: [stable]
-        os: [ubuntu-latest]
-        #, windows-latest, macOS-latest]
+        os:
+          - ubuntu-latest
+          #, windows-latest, macOS-latest]
+        rust:
+          #- nightly
+          - stable
+          #- 1.56.0  # MSRV
+        make:
+          - name: format
+            task: format
+          - name: lint
+            task: lint
+          - name: test
+            task: build test
+          #- name: example-run
+          #  task: example-run
+          #- name: doc
+          #  task: doc
+          #- name: deadlink
+          #  task: deadlink
+          #  install-cargo-deadlinks: true
+          #  install-mlc: true
+          - name: codecov
+            task: lcov
+            install-grcov: true
+          - name: copyright
+            task: copyright
+            rust-free: true
+        exclude:
+          - rust: nightly
+            make:
+              name: format
+          - rust: 1.56.0
+            make:
+              name: format
+          - rust: nightly
+            make:
+              name: lint
+          - rust: 1.56.0
+            make:
+              name: lint
+          - rust: nightly
+            make:
+              name: doc
+          - rust: 1.56.0
+            make:
+              name: doc
+          - rust: nightly
+            make:
+              name: deadlink
+          - rust: 1.56.0
+            make:
+              name: deadlink
+          - rust: stable
+            make:
+              name: codecov
+          - rust: 1.56.0
+            make:
+              name: codecov
+          - rust: nightly
+            make:
+              name: copyright
+          - rust: 1.56.0
+            make:
+              name: copyright
+    env:
+      RUST_BACKTRACE: full
+      CACHE_RESET_KEY: 20220419-01
+      CLICOLOR_FORCE: 1
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install rust
+      - uses: actions/checkout@v2
+
+      - name: Install Rust ${{ matrix.rust }}
+        if: ${{ ! matrix.make.rust-free }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
           profile: minimal
+          components: rustfmt, clippy, llvm-tools-preview
           override: true
+
+      - name: Cache cargo registry
+        if: ${{ ! matrix.make.rust-free }}
+        uses: actions/cache@v2
+        continue-on-error: false
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ env.CACHE_RESET_KEY }}-${{ runner.os }}-${{ matrix.rust }}-cargo-${{ matrix.make.name }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ env.CACHE_RESET_KEY }}-${{ runner.os }}-${{ matrix.rust }}-cargo-${{ matrix.make.name }}-
+            ${{ env.CACHE_RESET_KEY }}-${{ runner.os }}-${{ matrix.rust }}-cargo-
+
       - name: Install cargo-make
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-make --force
-      - name: Run CI
-        if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: --target-dir target/ci -- make ci-flow
-      - name: Run CI (Allow Failures)
-        if: matrix.rust == 'nightly'
-        continue-on-error: true
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: --target-dir target/ci -- make ci-flow
-      - name: Run CI (Minimal Supported Rust Version)
-        if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: ci-flow
+        env:
+          BASE_URL: https://github.com/sagiegurari/cargo-make/releases/download
+          VERSION: 0.35.10
+        run: |
+          FILE_BASE=cargo-make-v${VERSION}-x86_64-unknown-linux-musl
+          mkdir -p ${HOME}/.local/bin
+          curl -L "${BASE_URL}/${VERSION}/${FILE_BASE}.zip" --output /tmp/cargo-make.zip
+          unzip /tmp/cargo-make.zip -d /tmp/cargo-make
+          mv -f /tmp/cargo-make/${FILE_BASE}/cargo-make $HOME/.local/bin/cargo-make
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install cargo-deadlinks
+        if: ${{ matrix.make.install-cargo-deadlinks }}
+        env:
+          BASE_URL: https://github.com/deadlinks/cargo-deadlinks/releases/download
+          VERSION: 0.8.1
+        run: |
+          FILE_BASE=cargo-deadlinks-linux
+          curl -L "${BASE_URL}/${VERSION}/${FILE_BASE}" --output $HOME/.local/bin/cargo-deadlinks
+          chmod +x $HOME/.local/bin/cargo-deadlinks
+          cargo deadlinks --version
+
+      - name: Install mlc
+        if: ${{ matrix.make.install-mlc }}
+        env:
+          BASE_URL: https://github.com/becheran/mlc/releases/download
+          VERSION: 0.14.3
+        run: |
+          FILE_BASE=mlc-x86_64-linux
+          curl -L "${BASE_URL}/v${VERSION}/${FILE_BASE}" --output $HOME/.local/bin/mlc
+          chmod +x $HOME/.local/bin/mlc
+          mlc --version
+
+      - name: Install grcov
+        if: ${{ matrix.make.install-grcov }}
+        env:
+          BASE_URL: https://github.com/mozilla/grcov/releases/download
+          VERSION: 0.8.7
+        run: |
+          FILE_BASE=grcov-linux-x86_64
+          curl -L "${BASE_URL}/v${VERSION}/${FILE_BASE}.tar.bz2" --output /tmp/grcov.tar.bz2
+          tar xvf /tmp/grcov.tar.bz2 --directory=$HOME/.local/bin/
+          grcov --version
+
+      - name: ${{ matrix.make.name }}
+        run: |
+          for task in ${{ matrix.make.task }} ; do
+            cargo make ${task}
+          done
