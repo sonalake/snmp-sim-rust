@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - main
-      - "feature/**"
+      - feature/*
   workflow_dispatch:
 
 env:
@@ -36,11 +36,13 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Install OpenAPI Generator
+      - name: Install NPM
         uses: actions/setup-node@v3
         with:
           node-version: "14"
           cache: "npm"
+
+      - name: Install OpenAPI Generator
         run: npm install @openapitools/openapi-generator-cli -g
 
       - name: Install cargo-make
