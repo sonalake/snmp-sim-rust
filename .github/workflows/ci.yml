@@ -27,13 +27,22 @@ jobs:
         #, windows-latest, macOS-latest]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
+
+      - name: Install OpenAPI Generator
+        uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+          cache: "npm"
+        run: npm install @openapitools/openapi-generator-cli -g
+
       - name: Install cargo-make
         uses: actions-rs/cargo@v1
         with:
