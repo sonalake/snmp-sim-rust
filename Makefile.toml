@@ -1,5 +1,12 @@
-[env]
-PROJ_NAME = "SNMP Simulator Rust"
+[config]
+default_to_workspace = false
 
-[tasks.audit]
-ignore_errors = true
+[tasks.install-openapi]
+script = '''
+sudo apt update && sudo apt install -y python3 python3-pip protobuf-compiler openjdk-11-jre-headless curl maven jq
+pip3 install yq
+mkdir -p ~/bin/openapitools
+curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin/utils/openapi-generator-cli.sh > ~/bin/openapitools/openapi-generator
+chmod u+x ~/bin/openapitools/openapi-generator
+export PATH="$PATH:~/bin/openapitools"
+'''

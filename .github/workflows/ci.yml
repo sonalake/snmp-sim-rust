@@ -36,26 +36,26 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Install NPM
-        uses: actions/setup-node@v3
-        with:
-          node-version: "14"
-          cache: "npm"
-
-      - name: Install OpenAPI Generator
-        run: npm install @openapitools/openapi-generator-cli -g
-
       - name: Install cargo-make
         uses: actions-rs/cargo@v1
         with:
           command: install
           args: cargo-make --force
+
+      - name: Install OpenAPI Generator
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
+          args: install-openapi
+
       - name: Run CI
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
         uses: actions-rs/cargo@v1
         with:
           command: make
           args: ci-flow
+
       - name: Run CI (Allow Failures)
         if: matrix.rust == 'nightly'
         continue-on-error: true
@@ -63,6 +63,7 @@ jobs:
         with:
           command: make
           args: ci-flow
+
       - name: Run CI (Minimal Supported Rust Version)
         if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
         uses: actions-rs/cargo@v1
