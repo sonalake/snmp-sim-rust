@@ -23,7 +23,7 @@ export PATH="$PATH:~/bin/openapitools"
 
 [tasks.format]
 description = "Runs the cargo rustfmt plugin."
-install_crate = "rustfmt"
+#install_crate = "rustfmt"
 command = "cargo"
 args = ["+nightly", "fmt", "--", "--check"]
 
