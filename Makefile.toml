@@ -36,3 +36,11 @@ cargo clippy --workspace --all-targets --all-features -- -D warnings
 
 [tasks.coverage]
 alias="coverage_grcov"
+
+[tasks.install-llvm-tools]
+category = "Tools"
+description = "Installs llvm-tools-preview rustup component."
+install_crate = { rustup_component_name = "llvm-tools-preview" }
+
+[tasks.install-deps]
+dependencies = [ "install-llvm-tools" ]

@@ -121,6 +121,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install LLVM tools
+        run: cargo make install-llvm-tools
+
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
