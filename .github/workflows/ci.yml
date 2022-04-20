@@ -67,7 +67,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
-          components: clippy
+          components: clippy llvm-tools-preview
 
       - name: Install nightly rust with formatter
         if: matrix.make.task == 'format'
