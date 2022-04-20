@@ -31,7 +31,7 @@ args = ["fmt", "--", "--check"]
 description = "Runs the cargo clippy plugin."
 script = ['''
 #!/usr/bin/env bash -eux
-RUSTFLAGS='-D warnings' cargo clippy --workspace --all-targets --all-features
+cargo clippy --workspace --all-targets --all-features -- -D warnings
 ''']
 
 [tasks.coverage]
