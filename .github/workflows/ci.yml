@@ -30,9 +30,7 @@ jobs:
             task: format
           - name: lint
             task: clippy
-          - name: Integration tests
-            task: test
-          - name: code coverage
+          - name: test with coverage
             task: coverage
     steps:
       - name: Checkout

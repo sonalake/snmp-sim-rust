@@ -23,9 +23,9 @@ export PATH="$PATH:~/bin/openapitools"
 
 [tasks.format]
 description = "Runs the cargo rustfmt plugin."
-#install_crate = "rustfmt"
+toolchain = "nightly"
 command = "cargo"
-args = ["+nightly", "fmt", "--", "--check"]
+args = ["fmt", "--", "--check"]
 
 [tasks.lint]
 description = "Runs the cargo clippy plugin."
