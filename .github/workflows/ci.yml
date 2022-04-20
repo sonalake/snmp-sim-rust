@@ -36,6 +36,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/bin/openapitools/openapi-generator
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}
+
+      - name: Cache Cargo
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+
+      - name: Cache Rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./target
+            ./snmp-sim-cli/target
+          key: ${{ runner.os }}-rust-snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -55,28 +77,6 @@ jobs:
         with:
           command: make
           args: install-openapi
-
-      - name: Cache OpenAPI Generator
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/bin/openapitools/openapi-generator
-          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}
-
-      - name: Cache Cargo
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo
-          key: ${{ runner.os }}-cargo-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
-
-      - name: Cache Rust
-        uses: actions/cache@v2
-        with:
-          path: |
-            ./target
-            ./snmp-sim-cli/target
-          key: ${{ runner.os }}-rust-snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
 
       - name: Run CI
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
