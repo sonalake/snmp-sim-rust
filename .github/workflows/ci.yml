@@ -67,7 +67,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
-          components: cargo-make clippy
+          components: clippy
 
       - name: Install nightly rust with formatter
         if: matrix.make.task == 'format'
@@ -78,11 +78,11 @@ jobs:
           override: true
           components: rustfmt
 
-      # - name: Install cargo-make
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: install
-      #     args: cargo-make
+      - name: Install cargo-make
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: cargo-make
 
       - name: Install OpenAPI Generator
         if: matrix.os == 'ubuntu-latest'
