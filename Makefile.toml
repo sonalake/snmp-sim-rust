@@ -1,5 +1,15 @@
+extend= [
+  { path = "coverage_grcov.makefile.toml" }
+]
+
+[env]
+PROJ_NAME = "snmp-sim"
+
 [config]
 default_to_workspace = false
+
+[tasks.audit]
+ignore_errors = true
 
 [tasks.install-openapi]
 script = '''
@@ -10,3 +20,19 @@ curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin
 chmod u+x ~/bin/openapitools/openapi-generator
 export PATH="$PATH:~/bin/openapitools"
 '''
+
+[tasks.format]
+description = "Runs the cargo rustfmt plugin."
+install_crate = "rustfmt"
+command = "cargo"
+args = ["+nightly", "fmt", "--", "--check"]
+
+[tasks.lint]
+description = "Runs the cargo clippy plugin."
+script = ['''
+#!/usr/bin/env bash -eux
+RUSTFLAGS='-D warnings' cargo clippy --workspace --all-targets --all-features
+''']
+
+[tasks.coverage]
+alias="coverage_grcov"

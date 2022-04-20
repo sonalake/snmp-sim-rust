@@ -25,6 +25,15 @@ jobs:
         #, beta, nightly, 1.56.0
         os: [ubuntu-latest]
         #, windows-latest, macOS-latest]
+        make:
+          - name: format
+            task: format
+          - name: lint
+            task: clippy
+          - name: Integration tests
+            task: test
+          - name: code coverage
+            task: coverage
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,12 +58,28 @@ jobs:
           command: make
           args: install-openapi
 
+      - name: Cache Cargo
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo
+          key: ${{ runner.os }}-cargo-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+
+      - name: Cache Rust
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./target
+            ./snmp-sim-cli/target
+          key: ${{ runner.os }}-rust-snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+
       - name: Run CI
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: ci-flow
+      - name: ${{ matrix.make.name }}
+        run: |
+          for task in ${{ matrix.make.task }} ; do
+            cargo make ${task}
+          done
 
       - name: Run CI (Allow Failures)
         if: matrix.rust == 'nightly'
@@ -62,11 +87,27 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: make
-          args: ci-flow
+          args: build
 
       - name: Run CI (Minimal Supported Rust Version)
         if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
         uses: actions-rs/cargo@v1
         with:
           command: make
-          args: ci-flow
+          args: build
+
+  coverage_report:
+    name: Generate coverage report
+    needs: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      # ... Generate LCOV files or download it from a different job
+      - name: Report code coverage
+        uses: zgosalvez/github-actions-report-lcov@v1
+        with:
+          coverage-files: target/lcov.info
+          minimum-coverage: 75
+          artifact-name: code-coverage-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
