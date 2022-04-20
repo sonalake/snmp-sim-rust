@@ -75,7 +75,6 @@ jobs:
 
       - name: Run CI
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
-      - name: ${{ matrix.make.name }}
         run: |
           for task in ${{ matrix.make.task }} ; do
             cargo make ${task}
@@ -103,7 +102,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      # ... Generate LCOV files or download it from a different job
+
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
