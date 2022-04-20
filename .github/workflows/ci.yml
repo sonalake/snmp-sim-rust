@@ -47,7 +47,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: install
-          args: cargo-make --force
+          args: cargo-make
 
       - name: Install OpenAPI Generator
         if: matrix.os == 'ubuntu-latest'
@@ -55,6 +55,13 @@ jobs:
         with:
           command: make
           args: install-openapi
+
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/bin/openapitools/openapi-generator
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}
 
       - name: Cache Cargo
         uses: actions/cache@v2
