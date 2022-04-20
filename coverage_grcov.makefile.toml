@@ -100,7 +100,10 @@ install_crate= {crate_name="grcov"}
 [tasks.coverage_grcov_nightly]
 condition = { rust_version = { max = "1.59.9" } }
 workspace=true
-env = {"RUSTUP_TOOLCHAIN"="nightly"}
+
+  [tasks.coverage_grcov_nightly.env]
+  "RUSTUP_TOOLCHAIN"="nightly"
+
 script = '''
 #!/usr/bin/env bash
 set -eux

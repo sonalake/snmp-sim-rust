@@ -78,6 +78,9 @@ jobs:
           override: true
           components: rustfmt
 
+      - name: Install LLVM tools
+        run: cargo make install-llvm-tools
+
       - name: Install cargo-make
         uses: actions-rs/cargo@v1
         with:
@@ -120,9 +123,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Install LLVM tools
-        run: cargo make install-llvm-tools
 
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
