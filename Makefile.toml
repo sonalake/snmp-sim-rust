@@ -12,6 +12,7 @@ default_to_workspace = false
 ignore_errors = true
 
 [tasks.install-openapi]
+condition = { files_not_exist = "~/bin/openapitools/openapi-generator"}
 script = '''
 sudo apt update && sudo apt install -y python3 python3-pip protobuf-compiler openjdk-11-jre-headless curl maven jq
 pip3 install yq

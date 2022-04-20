@@ -116,18 +116,30 @@ jobs:
           command: make
           args: build
 
+      - name: Temporarily save LCOV artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: lcov-info
+          path: ./target/lcov.info
+          retention-days: 1
+
   coverage_report:
     name: Generate coverage report
     needs: CI
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: lcov-info
+          path: ./target/lcov.info
+
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
         with:
-          coverage-files: target/lcov.info
+          coverage-files: ./target/lcov.info
           minimum-coverage: 75
           artifact-name: code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
