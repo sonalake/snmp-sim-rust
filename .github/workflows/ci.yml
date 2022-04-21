@@ -24,24 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache Cargo
-        uses: Swatinem/rust-cache@v1
-
-      - name: Cache Rust
-        uses: actions/cache@v3
-        with:
-          path: |
-            ./target
-            ./snmp-sim-cli/target
-          key: ${{ runner.os }}-rust_snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
-
-      - name: Cache OpenAPI Generator
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/bin/openapitools/
-          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/bin/openapitools/openapi-generator') }}
-
       - name: Install ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
         with:
@@ -61,6 +43,24 @@ jobs:
         with:
           command: make
           args: install-openapi
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v1
+
+      - name: Cache Rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./target
+            ./snmp-sim-cli/target
+          key: ${{ runner.os }}-rust_snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/bin/openapitools/
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/bin/openapitools/openapi-generator') }}
 
       - name: CI flow
         if: github.ref == 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
