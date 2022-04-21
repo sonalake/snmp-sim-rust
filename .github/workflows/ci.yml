@@ -25,19 +25,6 @@ jobs:
         #, beta, nightly, 1.56.0
         os: [ubuntu-latest]
         #, windows-latest, macOS-latest]
-        make:
-          - name: format
-            task: format
-          - name: lint
-            task: clippy
-          #- name: audit
-          #  task: audit
-          - name: build
-            task: ci-flow
-          - name: coverage
-            task: coverage-flow
-          - name: codecov
-            task: codecov-flow
     steps:
       - name: Checkout
         uses: actions/checkout@v3
