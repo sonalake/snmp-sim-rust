@@ -1,0 +1,41 @@
+[config]
+default_to_workspace = false
+additional_profiles = [
+  "all-default-tasks",
+  "docs-all-modification-tasks",
+  "ci-coverage-tasks",
+  "ci-all-build-tasks",
+  "ci-static-code-analysis-tasks",
+  "publish-pre-cleanup",
+]
+
+[env]
+CARGO_MAKE_COVERAGE_PROVIDER = "tarpaulin"
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "snmp_sim_api_tests-[a-z0-9]*$"
+
+[tasks.audit]
+ignore_errors = true
+
+[tasks.install-openapi]
+condition = { files_not_exist = ["~/bin/openapitools/openapi-generator"] }
+script = '''
+sudo apt update && sudo apt install -y python3 python3-pip protobuf-compiler openjdk-11-jre-headless curl maven jq
+pip3 install yq
+mkdir -p ~/bin/openapitools
+curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin/utils/openapi-generator-cli.sh > ~/bin/openapitools/openapi-generator
+chmod u+x ~/bin/openapitools/openapi-generator
+export PATH="$PATH:~/bin/openapitools"
+'''
+
+[tasks.format]
+description = "Runs the cargo rustfmt plugin."
+toolchain = "nightly"
+command = "cargo"
+args = ["fmt", "--", "--check"]
+
+[tasks.lint]
+description = "Runs the cargo clippy plugin."
+script = '''
+#!/usr/bin/env bash -eux
+cargo clippy --workspace --all-targets --all-features -- -D clippy::all
+'''

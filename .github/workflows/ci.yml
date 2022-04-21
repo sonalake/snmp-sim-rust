@@ -1,46 +1,77 @@
 name: CI
-on: [push, pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+  workflow_dispatch:
+
 env:
   CLICOLOR_FORCE: 1
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: all
+
 jobs:
-  ci:
-    name: CI
+  prerequisites:
+    name: CI prerequisites
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        rust: [1.60]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        rust: [stable]
+        #, beta, nightly, 1.56.0
+        os: [ubuntu-latest]
+        #, windows-latest, macOS-latest]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install rust
+      - uses: actions/checkout@v3
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v1
+
+      - name: Cache Rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./target
+            ./snmp-sim-cli/target
+          key: ${{ runner.os }}-rust_snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/bin/openapitools/
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/bin/openapitools/openapi-generator') }}
+
+      - name: Install ${{ matrix.rust }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
+
       - name: Install cargo-make
         uses: actions-rs/cargo@v1
         with:
           command: install
           args: cargo-make
-      - name: Run CI
-        if: matrix.rust == 'stable' || matrix.rust == 'beta'
+
+      - name: Install OpenAPI Generator
+        if: matrix.os == 'ubuntu-latest'
         uses: actions-rs/cargo@v1
         with:
-          command: run
-          args: --target-dir target/ci -- make ci-flow
-      - name: Run CI (Allow Failures)
-        if: matrix.rust == 'nightly'
-        continue-on-error: true
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: --target-dir target/ci -- make ci-flow
-      - name: Run CI (Minimal Supported Rust Version)
-        if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
+          command: make
+          args: install-openapi
+
+      - name: CI flow
+        if: github.ref == 'refs/heads/master' && (matrix.rust == 'stable' || matrix.rust == 'beta')
         uses: actions-rs/cargo@v1
         with:
           command: make
           args: ci-flow
+
+      - name: Build
+        if: github.ref != 'refs/heads/master' && (matrix.rust == 'stable' || matrix.rust == 'beta')
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
+          args: build
