@@ -17,14 +17,13 @@ CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "snmp_sim_api_tests-[a-z0-9]*$"
 ignore_errors = true
 
 [tasks.install-openapi]
-condition = { files_not_exist = ["~/bin/openapitools/openapi-generator"] }
+condition = { files_not_exist = ["~/.local/bin/openapi-generator"] }
 script = '''
 sudo apt update && sudo apt install -y python3 python3-pip protobuf-compiler openjdk-11-jre-headless curl maven jq
 pip3 install yq
-mkdir -p ~/bin/openapitools
-curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin/utils/openapi-generator-cli.sh > ~/bin/openapitools/openapi-generator
-chmod u+x ~/bin/openapitools/openapi-generator
-export PATH="$PATH:~/bin/openapitools"
+mkdir -p ~/.local/bin/
+curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/master/bin/utils/openapi-generator-cli.sh > ~/.local/bin/openapi-generator
+chmod u+x ~/.local/bin/openapi-generator
 '''
 
 [tasks.format]

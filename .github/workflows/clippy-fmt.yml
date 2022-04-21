@@ -18,6 +18,10 @@ jobs:
           toolchain: nightly
           profile: minimal
           components: rustfmt
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v1
+
       - name: Check with rustfmt
         uses: actions-rs/cargo@v1
         with:
@@ -50,6 +54,13 @@ jobs:
           command: make
           args: install-openapi
 
+      - name: Cache OpenAPI Generator
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.local/bin/openapi-generator
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles(~/.local/bin/openapi-generator') }}
+
       - name: Generate Cargo.lock
         uses: actions-rs/cargo@v1
         with: { command: generate-lockfile }
@@ -74,6 +85,9 @@ jobs:
           toolchain: stable
           profile: minimal
           components: rust-docs
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v1
 
       - name: Check for broken intra-doc links
         uses: actions-rs/cargo@v1

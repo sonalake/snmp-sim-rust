@@ -51,8 +51,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/bin/openapitools/
-          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/bin/openapitools/openapi-generator') }}
+            ~/.local/bin/openapi-generator
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles(~/.local/bin/openapi-generator') }}
 
       - name: CI flow
         if: github.ref == 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
