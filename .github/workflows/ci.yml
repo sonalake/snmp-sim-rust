@@ -7,11 +7,11 @@ on:
   push:
     branches:
       - main
-      - feature/*
   workflow_dispatch:
 
 env:
   CLICOLOR_FORCE: 1
+  CARGO_TERM_COLOR: always
   RUST_BACKTRACE: all
 
 jobs:
@@ -42,7 +42,7 @@ jobs:
           path: |
             ./target
             ./snmp-sim-cli/target
-          key: ${{ runner.os }}-rust-snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
+          key: ${{ runner.os }}-rust_snmp_sim-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('./Cargo.toml') }}
 
       - name: Cache OpenAPI Generator
         uses: actions/cache@v3
@@ -57,15 +57,6 @@ jobs:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
-          components: clippy
-
-      - name: Install nightly rust with formatter
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          profile: minimal
-          override: true
-          components: rustfmt
 
       - name: Install cargo-make
         uses: actions-rs/cargo@v1
@@ -80,22 +71,9 @@ jobs:
           command: make
           args: install-openapi
 
-      - name: Format
-        if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        run: cargo make format
-
-      - name: Clippy
-        if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        run: cargo make clippy
-
       - name: CI flow
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        run: cargo make ci-flow
-
-      - name: Coverage
-        if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        run: cargo make coverage-flow
-
-      - name: Codecov
-        if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        run: cargo make codecov-flow
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
+          args: ci-flow

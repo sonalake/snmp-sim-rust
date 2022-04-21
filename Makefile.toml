@@ -37,6 +37,4 @@ args = ["fmt", "--", "--check"]
 description = "Runs the cargo clippy plugin."
 script = ['''
 #!/usr/bin/env bash -eux
-cargo clippy --workspace --all-targets --all-features -- -D warnings
-''']
-
+cargo clippy --workspace --all-targets --all-features -- -D clippy::all
