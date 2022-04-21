@@ -21,6 +21,7 @@ jobs:
       - name: Check with rustfmt
         uses: actions-rs/cargo@v1
         with:
+          toolchain: nightly
           command: fmt
           args: --all -- --check
 
@@ -32,7 +33,7 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           profile: minimal
           components: clippy
           override: true
@@ -70,3 +71,4 @@ jobs:
         with:
           command: doc
           args: --no-deps --all-features --workspace
+        continue-on-error: true
