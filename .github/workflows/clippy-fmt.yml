@@ -59,7 +59,7 @@ jobs:
         with:
           path: |
             ~/.local/bin/openapi-generator
-          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles(~/.local/bin/openapi-generator') }}
+          key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/.local/bin/openapi-generator') }}
 
       - name: Generate Cargo.lock
         uses: actions-rs/cargo@v1
