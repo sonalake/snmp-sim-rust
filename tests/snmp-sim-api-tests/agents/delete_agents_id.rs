@@ -22,7 +22,7 @@ demonstrate! {
             context "nonexistent" {
                 before {
                     let response = Client::new()
-                        .delete(format!("{}/agents/{}", app.address, Uuid::new_v4().to_string()))
+                        .delete(format!("{}/agents/{}", app.address, Uuid::new_v4()))
                         .send()
                         .await
                         .expect("Failed to execute request");
@@ -43,7 +43,7 @@ demonstrate! {
             context "nonexistent" {
                 before {
                     let response = Client::new()
-                        .delete(format!("{}/agents/{}", app.address, Uuid::new_v4().to_string()))
+                        .delete(format!("{}/agents/{}", app.address, Uuid::new_v4()))
                         .send()
                         .await
                         .expect("Failed to execute request");

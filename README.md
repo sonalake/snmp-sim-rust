@@ -1,6 +1,10 @@
 # snmp-sim-rust
 SNMP Simulator
 
+[![Build](https://github.com/sonalake/snmp-sim-rust/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sonalake/snmp-sim-rust/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/sonalake/snmp-sim-rust/branch/main/graph/badge.svg?token=23507AD585)](https://codecov.io/gh/sonalake/snmp-sim-rust)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 # Pre-requisite
 
 To only compile the application manually you'll need to install:

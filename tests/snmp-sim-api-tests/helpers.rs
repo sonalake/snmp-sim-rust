@@ -35,7 +35,7 @@ impl Drop for TestRunGuard {
 #[cfg(test)]
 #[ctor::ctor]
 fn init() {
-    if let None = testing_service_endpoint_env() {
+    if testing_service_endpoint_env().is_none() {
         // TESTING_ENV_SERVICE_URL is not defined => start a testing instance of the
         // service get the snmp_sim binary path
         let mut service_command = get_binary("snmp_sim").expect("snmp_sim binary not found");

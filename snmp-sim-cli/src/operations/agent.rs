@@ -6,8 +6,10 @@ use tracing::{self, trace};
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn list_agents() -> Result<(), anyhow::Error> {
     trace!("List all agents");
-    let mut configuration = Configuration::default();
-    configuration.base_path = "http://127.0.0.1:8180".to_string();
+    let configuration = Configuration {
+        base_path: "http://127.0.0.1:8180".to_string(),
+        ..Default::default()
+    };
     let agents = agents_get(&configuration, None, None).await?;
     for agent in agents.iter() {
         println!("{:?}", agent);

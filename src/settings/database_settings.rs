@@ -18,7 +18,7 @@ fn default_tests_skip_drop() -> bool {
 impl DatabaseSettings {
     pub fn connection_uri(&self) -> anyhow::Result<String> {
         Ok(self.connection_uri.replace(
-            "~",
+            '~',
             dirs::home_dir()
                 .context("Failed to get the HOME directory")?
                 .into_os_string()
@@ -33,7 +33,7 @@ impl DatabaseSettings {
             fs::create_dir_all(
                 Path::new(&target_ri)
                     .parent()
-                    .unwrap_or(Path::new(&target_ri)),
+                    .unwrap_or_else(|| Path::new(&target_ri)),
             )?;
         }
 
