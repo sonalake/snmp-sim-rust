@@ -1,12 +1,17 @@
-extend= [
-  { path = "coverage_grcov.makefile.toml" }
+[config]
+default_to_workspace = false
+additional_profiles = [
+  "all-default-tasks",
+  "docs-all-modification-tasks",
+  "ci-coverage-tasks",
+  "ci-all-build-tasks",
+  "ci-static-code-analysis-tasks",
+  "publish-pre-cleanup",
 ]
 
 [env]
-PROJ_NAME = "snmp-sim"
-
-[config]
-default_to_workspace = false
+CARGO_MAKE_COVERAGE_PROVIDER = "kcov"
+CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "snmp_sim_api_tests-[a-z0-9]*$"
 
 [tasks.audit]
 ignore_errors = true
@@ -35,13 +40,3 @@ script = ['''
 cargo clippy --workspace --all-targets --all-features -- -D warnings
 ''']
 
-[tasks.coverage]
-alias="coverage_grcov"
-
-[tasks.install-llvm-tools]
-category = "Tools"
-description = "Installs llvm-tools-preview rustup component."
-install_crate = { rustup_component_name = "llvm-tools-preview" }
-
-[tasks.install-deps]
-dependencies = [ "install-llvm-tools" ]
