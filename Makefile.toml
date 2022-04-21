@@ -10,7 +10,7 @@ additional_profiles = [
 ]
 
 [env]
-CARGO_MAKE_COVERAGE_PROVIDER = "kcov"
+CARGO_MAKE_COVERAGE_PROVIDER = "tarpaulin"
 CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "snmp_sim_api_tests-[a-z0-9]*$"
 
 [tasks.audit]
@@ -35,6 +35,7 @@ args = ["fmt", "--", "--check"]
 
 [tasks.lint]
 description = "Runs the cargo clippy plugin."
-script = ['''
+script = '''
 #!/usr/bin/env bash -eux
 cargo clippy --workspace --all-targets --all-features -- -D clippy::all
+'''
