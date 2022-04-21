@@ -52,7 +52,6 @@ jobs:
           key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/bin/openapitools/openapi-generator') }}
 
       - name: Install rust
-        if: matrix.make.name != 'format'
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
@@ -61,7 +60,6 @@ jobs:
           components: clippy
 
       - name: Install nightly rust with formatter
-        if: matrix.make.task == 'format'
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
