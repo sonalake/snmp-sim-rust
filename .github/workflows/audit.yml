@@ -1,23 +1,17 @@
 name: Security audit
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
   push:
-  workflow_dispatch:
-
-env:
-  CLICOLOR_FORCE: 1
-  CARGO_TERM_COLOR: always
+    paths:
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
 
 jobs:
-  audit:
+  security_audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/audit-check@v1
-        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
