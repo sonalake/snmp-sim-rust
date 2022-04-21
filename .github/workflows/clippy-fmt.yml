@@ -38,18 +38,24 @@ jobs:
           components: clippy
           override: true
 
-      - name: Generate Cargo.lock
+      - name: Install cargo-make
         uses: actions-rs/cargo@v1
-        with: { command: generate-lockfile }
-
-      - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v1
+        with:
+          command: install
+          args: cargo-make
 
       - name: Install OpenAPI Generator
         uses: actions-rs/cargo@v1
         with:
           command: make
           args: install-openapi
+
+      - name: Generate Cargo.lock
+        uses: actions-rs/cargo@v1
+        with: { command: generate-lockfile }
+
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v1
 
       - name: Check with Clippy
         uses: actions-rs/clippy-check@v1
