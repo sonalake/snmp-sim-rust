@@ -46,7 +46,6 @@ jobs:
         uses: Swatinem/rust-cache@v1
 
       - name: Install OpenAPI Generator
-        if: matrix.os == 'ubuntu-latest'
         uses: actions-rs/cargo@v1
         with:
           command: make
