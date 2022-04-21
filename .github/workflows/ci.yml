@@ -82,9 +82,6 @@ jobs:
           override: true
           components: rustfmt
 
-      # - name: Install LLVM tools
-      #   run: cargo make install-llvm-tools
-
       - name: Install cargo-make
         uses: actions-rs/cargo@v1
         with:
@@ -98,24 +95,22 @@ jobs:
           command: make
           args: install-openapi
 
-      - name: Run CI
+      - name: Format
         if: matrix.rust == 'stable' || matrix.rust == 'beta'
-        run: |
-          for task in ${{ matrix.make.task }} ; do
-            cargo make ${task}
-          done
+        run: cargo make format
 
-      - name: Run CI (Allow Failures)
-        if: matrix.rust == 'nightly'
-        continue-on-error: true
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: build
+      - name: Clippy
+        if: matrix.rust == 'stable' || matrix.rust == 'beta'
+        run: cargo make clippy
 
-      - name: Run CI (Minimal Supported Rust Version)
-        if: matrix.rust != 'stable' && matrix.rust != 'beta' && matrix.rust != 'nightly' && matrix.os == 'ubuntu-latest'
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: build
+      - name: CI flow
+        if: matrix.rust == 'stable' || matrix.rust == 'beta'
+        run: cargo make ci-flow
+
+      - name: Coverage
+        if: matrix.rust == 'stable' || matrix.rust == 'beta'
+        run: cargo make coverage-flow
+
+      - name: Codecov
+        if: matrix.rust == 'stable' || matrix.rust == 'beta'
+        run: cargo make codecov-flow
