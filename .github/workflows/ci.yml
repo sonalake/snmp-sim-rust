@@ -63,14 +63,14 @@ jobs:
           args: install-openapi
 
       - name: CI flow
-        if: github.ref == 'refs/heads/master' && (matrix.rust == 'stable' || matrix.rust == 'beta')
+        if: github.ref == 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
         uses: actions-rs/cargo@v1
         with:
           command: make
           args: ci-flow
 
       - name: Build
-        if: github.ref != 'refs/heads/master' && (matrix.rust == 'stable' || matrix.rust == 'beta')
+        if: github.ref != 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
         uses: actions-rs/cargo@v1
         with:
           command: make
