@@ -28,7 +28,7 @@ impl Drop for TestRunGuard {
         let service_process = SERVICE_PROCESS.lock().unwrap();
         if service_process.is_some() {
             // temporarily disabled to avoid tarpaulin crash disabled
-            //let _ = (*service_process).as_mut().unwrap().kill();
+            // let _ = (*service_process).as_mut().unwrap().kill();
         }
     }
 }
