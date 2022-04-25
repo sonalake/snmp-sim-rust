@@ -11,7 +11,8 @@ additional_profiles = [
 
 [env]
 CARGO_MAKE_COVERAGE_PROVIDER = "tarpaulin"
-CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "snmp_sim_api_tests-[a-z0-9]*$"
+#CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER  = "snmp_sim_api_tests-[a-z0-9]*$"
+#CARGO_MAKE_TEST_COVERAGE_BINARY_FILTER = "${CARGO_MAKE_TEST_COVERAGE_DEFAULT_BINARY_FILTER}"
 
 [tasks.audit]
 ignore_errors = true

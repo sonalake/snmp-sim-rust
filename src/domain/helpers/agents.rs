@@ -16,7 +16,7 @@ pub(crate) async fn create_agent<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Finding an authserver", skip(conn))]
+#[tracing::instrument(name = "[BL] Finding an agent", skip(conn))]
 pub(crate) async fn get_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -> Result<Agent, DomainError> {
     crate::data_access::helpers::get_agent(conn, id)
         .await?
@@ -25,7 +25,7 @@ pub(crate) async fn get_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Deleting an authserver", skip(conn))]
+#[tracing::instrument(name = "[BL] Deleting an agent", skip(conn))]
 pub(crate) async fn delete_agent<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
@@ -52,7 +52,7 @@ pub(crate) async fn list_agents<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Updating authserver", skip(conn))]
+#[tracing::instrument(name = "[BL] Updating agent", skip(conn))]
 pub(crate) async fn update_agent<'db>(
     conn: &'db impl ConnectionTrait,
     agent: Agent,

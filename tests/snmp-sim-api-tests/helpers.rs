@@ -25,9 +25,10 @@ static mut TEST_RUN_GUARD: TestRunGuard = TestRunGuard {};
 
 impl Drop for TestRunGuard {
     fn drop(&mut self) {
-        let mut service_process = SERVICE_PROCESS.lock().unwrap();
+        let service_process = SERVICE_PROCESS.lock().unwrap();
         if service_process.is_some() {
-            let _ = (*service_process).as_mut().unwrap().kill();
+            // temporarily disabled to avoid tarpaulin crash disabled
+            //let _ = (*service_process).as_mut().unwrap().kill();
         }
     }
 }

@@ -24,18 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install ${{ matrix.rust }}
-        uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
           profile: minimal
           override: true
 
-      - name: Install cargo-make
-        uses: actions-rs/cargo@v1
-        with:
-          command: install
-          args: cargo-make
+      - uses: davidB/rust-cargo-make@v1
 
       - name: Install OpenAPI Generator
         if: matrix.os == 'ubuntu-latest'
@@ -44,8 +39,10 @@ jobs:
           command: make
           args: install-openapi
 
-      - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v1
+      - uses: actions-rs/cargo@v1
+        with: { command: generate-lockfile }
+
+      - uses: Swatinem/rust-cache@v1
 
       - name: Cache OpenAPI Generator
         uses: actions/cache@v3

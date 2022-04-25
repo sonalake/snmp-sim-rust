@@ -27,10 +27,10 @@ demonstrate! {
             context "update_nonexisting" {
 
                 before {
-                    let authserver_id = Uuid::new_v4();
+                    let agent_id = Uuid::new_v4();
                     let name = Uuid::new_v4().to_string();
                     let response = Client::new()
-                        .put(format!("{}/agents/{}", app.address, authserver_id))
+                        .put(format!("{}/agents/{}", app.address, agent_id))
                         .json(&serde_json::json!(
                             {
                                 "name": name,
