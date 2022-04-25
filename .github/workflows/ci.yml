@@ -42,7 +42,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with: { command: generate-lockfile }
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v1
 
       - name: Cache OpenAPI Generator
         uses: actions/cache@v3
