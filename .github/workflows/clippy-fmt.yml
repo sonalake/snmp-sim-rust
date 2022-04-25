@@ -20,7 +20,7 @@ jobs:
           components: rustfmt
 
       - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v1
+        uses: Swatinem/rust-cache@v2
 
       - name: Check with rustfmt
         uses: actions-rs/cargo@v1
@@ -62,7 +62,7 @@ jobs:
         with: { command: generate-lockfile }
 
       - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v3
+        uses: Swatinem/rust-cache@v2
 
       - name: Check with Clippy
         uses: actions-rs/clippy-check@v1
@@ -83,7 +83,7 @@ jobs:
           components: rust-docs
 
       - name: Cache Dependencies
-        uses: Swatinem/rust-cache@v3
+        uses: Swatinem/rust-cache@v2
 
       - name: Check for broken intra-doc links
         uses: actions-rs/cargo@v1
