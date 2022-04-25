@@ -3,8 +3,8 @@ reorder_imports = true
 edition = "2021"
 chain_width = 60
 
-wrap_comments = true
-normalize_comments = true
+#wrap_comments = true
+#normalize_comments = true
 #fn_args_density = "Compressed"
 #use_small_heuristics = false
 

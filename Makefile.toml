@@ -39,3 +39,8 @@ script = '''
 #!/usr/bin/env bash -eux
 cargo clippy --workspace --all-targets --all-features -- -D clippy::all
 '''
+
+[tasks.coverage]
+clear = true
+command = "cargo"
+args = ["tarpaulin", "--ignore-tests", "--follow-exec", "--forward", "--out", "Xml"]

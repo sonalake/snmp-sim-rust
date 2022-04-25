@@ -68,14 +68,13 @@ dirs = "4.0"
 [dev-dependencies]
 snmp-sim = { path = ".", features = ["integration-tests"] }
 actix-rt = "2.6"
-tokio = { version = "1.15", features = ["macros"] }
+tokio = { version = "1.17", features = ["macros", "process"] }
 reqwest = { version = "0.11", default-features = false, features = [
   "json",
   "rustls-tls",
 ] }
 claim = "0.5.0"
 demonstrate = "0.4.5"
-ctor = "0.1"
 cancellation = "0.1"
 lazy_static = "1.4"
 static_init = "1.0"
