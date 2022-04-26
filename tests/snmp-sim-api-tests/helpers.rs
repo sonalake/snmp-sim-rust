@@ -52,8 +52,8 @@ impl Drop for TestRunGuard {
         let mut service_process = SERVICE_PROCESS.lock().unwrap();
         if service_process.is_some() {
             signal::kill(
-                Pid::from_raw((*service_process).as_ref().unwrap().id().unwrap() as i32),
-                Signal::SIGINT,
+                (*service_process).as_ref().unwrap().id().unwrap() as i32,
+                Signal::SIGTERM,
             )
             .unwrap();
             (*service_process) = None;
