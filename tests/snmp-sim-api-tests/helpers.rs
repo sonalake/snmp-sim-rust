@@ -2,6 +2,8 @@ use crate::service_scope::ServiceScope;
 use crate::test_app::TestApp;
 use cancellation::CancellationTokenSource;
 use lazy_static::lazy_static;
+use nix::sys::signal::{self, Signal};
+use nix::unistd::Pid;
 use sea_orm::DatabaseConnection;
 use snmp_sim::configuration::get_configuration;
 use snmp_sim::configuration::Settings;
@@ -28,13 +30,12 @@ async fn setup_service_singleton() {
 
             // spawn an instance of snmp_sim service
             let service_process = service_command
-                // disabled to unblock tarpaulin code coverage hang
+                // disabled to avoid tarpaulin hang
                 // .kill_on_drop(true)
                 .spawn()
                 .expect("Failed to start an instance of snmp_sim service");
 
-            // store the child process handle => needs to be killed at the end of the test
-            // run
+            // store the child process handle => needs to be killed at the end of the test run
             *value = Some(service_process);
         }
     }
@@ -50,7 +51,11 @@ impl Drop for TestRunGuard {
     fn drop(&mut self) {
         let mut service_process = SERVICE_PROCESS.lock().unwrap();
         if service_process.is_some() {
-            // temporarily disabled to avoid tarpaulin crash disabled
+            signal::kill(
+                Pid::from_raw((*service_process).as_ref().unwrap().id().unwrap() as i32),
+                Signal::SIGINT,
+            )
+            .unwrap();
             (*service_process) = None;
         }
     }

@@ -78,6 +78,7 @@ demonstrate = "0.4.5"
 cancellation = "0.1"
 lazy_static = "1.4"
 static_init = "1.0"
+nix = "0.24"
 
 [features]
 integration-tests = ["visibility"]
