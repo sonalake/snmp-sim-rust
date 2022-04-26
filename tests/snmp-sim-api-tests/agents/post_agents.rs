@@ -20,6 +20,7 @@ demonstrate! {
         context "generated_name_realm" {
             before {
                 let name = Uuid::new_v4().to_string();
+                let snmp_data_url = Uuid::new_v4().to_string();
             }
 
             context "seeded_database" {
@@ -34,6 +35,7 @@ demonstrate! {
                             .post(format!("{}/agents", app.address))
                             .json(&serde_json::json!({
                                 "name": name,
+                                "snmp_data_url": snmp_data_url
                             }))
                             .send()
                             .await
@@ -47,6 +49,7 @@ demonstrate! {
                     async it "returns_the_right_object" {
                         let agent: response::Agent = response.json().await.unwrap();
                         assert_eq!(agent.name, name);
+                        assert_eq!(agent.snmp_data_url, snmp_data_url);
                     }
 
                     async it "creates_the_object_in_database" {
@@ -72,6 +75,7 @@ demonstrate! {
                             .post(format!("{}/agents", app.address))
                             .json(&serde_json::json!({
                                 "name": name,
+                                "snmp_data_url": snmp_data_url
                             }))
                             .send()
                             .await
@@ -85,6 +89,7 @@ demonstrate! {
                     async it "returns_the_right_object" {
                         let agent: response::Agent = response.json().await.unwrap();
                         assert_eq!(agent.name, name);
+                        assert_eq!(agent.snmp_data_url, snmp_data_url);
                     }
 
                     async it "creates_the_object_in_database" {

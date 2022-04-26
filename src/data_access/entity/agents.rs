@@ -10,6 +10,8 @@ pub struct Model {
     pub created_at: DateTimeUtc,
     pub modified_at: DateTimeUtc,
     pub name: String,
+    pub snmp_data_url: String,
+    pub description: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter)]

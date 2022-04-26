@@ -56,7 +56,7 @@ demonstrate! {
 
             context "existent" {
                 before {
-                    let obj = create_agent(db_conn, &Uuid::new_v4(), &Uuid::new_v4().to_string())
+                    let obj = create_agent(db_conn, &Uuid::new_v4(), &Uuid::new_v4().to_string(), &Some(Uuid::new_v4().to_string()), &Uuid::new_v4().to_string())
                         .await
                         .unwrap()
                         .unwrap_created();

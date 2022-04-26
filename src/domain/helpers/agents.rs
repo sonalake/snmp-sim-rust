@@ -8,9 +8,15 @@ pub(crate) async fn create_agent<'db>(
     conn: &'db impl ConnectionTrait,
     agent: &Agent,
 ) -> Result<CreateResult<Agent>, DomainError> {
-    let result = crate::data_access::helpers::create_agent(conn, &agent.id, &agent.name)
-        .await
-        .map_err(DomainError::from)?;
+    let result = crate::data_access::helpers::create_agent(
+        conn,
+        &agent.id,
+        &agent.name,
+        &agent.description,
+        &agent.snmp_data_url,
+    )
+    .await
+    .map_err(DomainError::from)?;
 
     Ok(result.map(|agent| agent.into()))
 }
@@ -65,7 +71,14 @@ pub(crate) async fn update_agent<'db>(
         }
     };
 
-    let result = crate::data_access::helpers::update_agent(conn, &agent.id, &agent.name).await?;
+    let result = crate::data_access::helpers::update_agent(
+        conn,
+        &agent.id,
+        &agent.name,
+        &agent.description,
+        &agent.snmp_data_url,
+    )
+    .await?;
 
     Ok(UpdateResult::Updated(result.into()))
 }

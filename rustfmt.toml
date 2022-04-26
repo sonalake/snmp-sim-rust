@@ -8,6 +8,4 @@ chain_width = 60
 #fn_args_density = "Compressed"
 #use_small_heuristics = false
 
-ignore = [
-	"clients/rust"
-]
+ignore = ["clients/rust"]

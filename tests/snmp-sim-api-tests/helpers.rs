@@ -126,9 +126,15 @@ async fn setup_service() -> ServiceScope {
 pub async fn seed_agents(conn: &DatabaseConnection, agents_count: usize) {
     use snmp_sim::data_access::helpers::*;
     for _ in 0..agents_count {
-        let _ = create_agent(conn, &Uuid::new_v4(), &Uuid::new_v4().to_string())
-            .await
-            .unwrap()
-            .unwrap_created();
+        let _ = create_agent(
+            conn,
+            &Uuid::new_v4(),
+            &Uuid::new_v4().to_string(),
+            &Some(Uuid::new_v4().to_string()),
+            &Uuid::new_v4().to_string(),
+        )
+        .await
+        .unwrap()
+        .unwrap_created();
     }
 }

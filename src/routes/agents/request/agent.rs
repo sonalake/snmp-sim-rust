@@ -11,6 +11,11 @@ use uuid_dev::Uuid;
 pub struct Agent {
     /// The name of this agent.
     name: String,
+
+    /// The URL to the SNMP data f.e. "file://./os/linux.dat"
+    snmp_data_url: String,
+
+    description: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Apiv2Schema)]
@@ -33,6 +38,8 @@ impl TryFrom<Agent> for crate::domain::Agent {
             created_at: chrono::Utc::now(),
             modified_at: chrono::Utc::now(),
             name: value.name,
+            description: value.description,
+            snmp_data_url: value.snmp_data_url,
         })
     }
 }
@@ -44,8 +51,10 @@ impl TryFrom<(Uuid, Agent)> for crate::domain::Agent {
         Ok(Self {
             id,
             name: value.name,
+            description: value.description,
             created_at: chrono::Utc::now(),
             modified_at: chrono::Utc::now(),
+            snmp_data_url: value.snmp_data_url,
         })
     }
 }

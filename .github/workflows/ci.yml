@@ -51,16 +51,23 @@ jobs:
             ~/.local/bin/openapi-generator
           key: ${{ runner.os }}-openapi-generator-${{ steps.rust_toolchain.outputs.rustc_hash }}-${{ hashFiles('~/.local/bin/openapi-generator') }}
 
-      - name: CI flow
-        if: github.ref == 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
-        uses: actions-rs/cargo@v1
-        with:
-          command: make
-          args: ci-flow
+      # - name: CI flow
+      #   if: github.ref == 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: make
+      #     args: ci-flow
 
       - name: Build
-        if: github.ref != 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
+        # if: github.ref != 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
         uses: actions-rs/cargo@v1
         with:
           command: make
           args: build
+
+      - name: Test
+        # if: github.ref != 'refs/heads/main' && (matrix.rust == 'stable' || matrix.rust == 'beta')
+        uses: actions-rs/cargo@v1
+        with:
+          command: make
+          args: test

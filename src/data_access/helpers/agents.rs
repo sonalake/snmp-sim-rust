@@ -11,6 +11,8 @@ pub(crate) async fn create_agent<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
     agent_name: &str,
+    description: &Option<String>,
+    snmp_data_url: &str,
 ) -> Result<CreateResult<AgentsModel>, DbErr> {
     let result = Agents::find()
         .filter(AgentsColumn::Id.eq(id.to_string()))
@@ -24,6 +26,8 @@ pub(crate) async fn create_agent<'db>(
     let mut agent = AgentsActiveModel {
         id: ActiveValue::set(id.to_string()),
         name: ActiveValue::set(agent_name.to_string()),
+        description: ActiveValue::set(description.clone()),
+        snmp_data_url: ActiveValue::set(snmp_data_url.to_string()),
         created_at: ActiveValue::set(chrono::Utc::now()),
         modified_at: ActiveValue::set(chrono::Utc::now()),
     };
@@ -70,12 +74,16 @@ pub(crate) async fn list_agents<'db>(
 pub(crate) async fn update_agent<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
-    agent_name: &str,
+    agent_name: &String,
+    agent_description: &Option<String>,
+    snmp_data_url: &str,
 ) -> Result<AgentsModel, DbErr> {
-    let pear: Option<AgentsModel> = Agents::find_by_id(id.to_string()).one(conn).await?;
-    let mut agent: AgentsActiveModel = pear.unwrap().into();
+    let am: Option<AgentsModel> = Agents::find_by_id(id.to_string()).one(conn).await?;
+    let mut agent: AgentsActiveModel = am.unwrap().into();
 
     agent.name = ActiveValue::set(agent_name.to_string());
+    agent.description = ActiveValue::set(agent_description.clone());
+    agent.snmp_data_url = ActiveValue::set(snmp_data_url.to_string());
 
     agent.update(conn).await
 }

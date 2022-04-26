@@ -12,6 +12,8 @@ impl From<ActiveModel> for Model {
             created_at: am.created_at.unwrap(),
             modified_at: am.modified_at.unwrap(),
             name: am.name.unwrap(),
+            description: am.description.unwrap(),
+            snmp_data_url: am.snmp_data_url.unwrap(),
         }
     }
 }

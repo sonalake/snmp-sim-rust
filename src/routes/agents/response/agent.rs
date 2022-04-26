@@ -9,8 +9,14 @@ pub struct Agent {
     /// The unique identifier of this agent.
     pub id: Uuid,
 
-    /// The name of this agent.
+    /// Agent's name.
     pub name: String,
+
+    /// Agent's optional description.
+    pub description: Option<String>,
+
+    /// The URL to the SNMP data f.e. "file://./os/linux.dat"
+    pub snmp_data_url: String,
 }
 
 impl From<crate::domain::Agent> for Agent {
@@ -18,6 +24,8 @@ impl From<crate::domain::Agent> for Agent {
         Self {
             id: agent.id,
             name: agent.name,
+            description: agent.description,
+            snmp_data_url: agent.snmp_data_url,
         }
     }
 }
@@ -27,6 +35,8 @@ impl From<&domain::Agent> for Agent {
         Self {
             id: agent.id,
             name: agent.name.clone(),
+            description: agent.description.clone(),
+            snmp_data_url: agent.snmp_data_url.clone(),
         }
     }
 }
