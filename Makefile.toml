@@ -43,4 +43,4 @@ cargo clippy --workspace --all-targets --all-features -- -D clippy::all
 [tasks.coverage]
 clear = true
 command = "cargo"
-args = ["tarpaulin", "--ignore-tests", "--follow-exec", "--forward", "--out", "Xml"]
+args = ["tarpaulin", "--ignore-tests", "--follow-exec", "--forward", "--workspace", "--exclude", "snmp-sim-cli", "--exclude-files", "clients/rust*", "--out", "Xml"]

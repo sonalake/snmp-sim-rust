@@ -2,16 +2,15 @@ use crate::service_scope::ServiceScope;
 use crate::test_app::TestApp;
 use cancellation::CancellationTokenSource;
 use lazy_static::lazy_static;
-use nix::sys::signal::{self, Signal};
-use nix::unistd::Pid;
 use sea_orm::DatabaseConnection;
+use signal_child::Signalable;
 use snmp_sim::configuration::get_configuration;
 use snmp_sim::configuration::Settings;
 use static_init::dynamic;
 use std::io::{Error as IoError, ErrorKind};
+use std::process::{Child, Command};
 use std::sync::Mutex;
 use std::time::Duration;
-use tokio::process::{Child, Command};
 use uuid_dev::Uuid;
 
 // used to store the child process handle
@@ -19,7 +18,9 @@ lazy_static! {
     pub static ref SERVICE_PROCESS: Mutex<Option<Child>> = Mutex::new(None);
 }
 
-async fn setup_service_singleton() {
+#[cfg(test)]
+#[ctor::ctor]
+fn setup_service_singleton() {
     if testing_service_endpoint_env().is_none() {
         let mut value = SERVICE_PROCESS.lock().unwrap();
         if (*value).is_none() {
@@ -50,12 +51,9 @@ static mut TEST_RUN_GUARD: TestRunGuard = TestRunGuard {};
 impl Drop for TestRunGuard {
     fn drop(&mut self) {
         let mut service_process = SERVICE_PROCESS.lock().unwrap();
-        if service_process.is_some() {
-            signal::kill(
-                (*service_process).as_ref().unwrap().id().unwrap() as i32,
-                Signal::SIGTERM,
-            )
-            .unwrap();
+        if let Some(child) = service_process.as_mut() {
+            let _ = child.term();
+            let _ = child.wait();
             (*service_process) = None;
         }
     }
@@ -88,12 +86,10 @@ fn get_binary(bin_name: &str) -> Result<Command, IoError> {
     }
 }
 
-async fn testing_service_endpoint(config: &Settings) -> String {
+fn testing_service_endpoint(config: &Settings) -> String {
     match testing_service_endpoint_env() {
         Some(var) => var,
         _ => {
-            setup_service_singleton().await;
-
             format!("http://{}:{}", config.application.host, config.application.port)
         }
     }
@@ -112,7 +108,7 @@ fn testing_service_endpoint_env() -> Option<String> {
 
 async fn setup_service() -> ServiceScope {
     let config = get_configuration(None).expect("Failed to read configuration.");
-    let address = testing_service_endpoint(&config).await;
+    let address = testing_service_endpoint(&config);
 
     let cts = CancellationTokenSource::new();
     cts.cancel_after(Duration::from_millis(20000));
