@@ -14,16 +14,23 @@
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RequestAgent {
+    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// The name of this agent.
     #[serde(rename = "name")]
     pub name: String,
+    /// The URL to the SNMP data f.e. \"file://./os/linux.dat\"
+    #[serde(rename = "snmp_data_url")]
+    pub snmp_data_url: String,
 }
 
 impl RequestAgent {
     /// An agent as a response body.
-    pub fn new(name: String) -> RequestAgent {
+    pub fn new(name: String, snmp_data_url: String) -> RequestAgent {
         RequestAgent {
+            description: None,
             name,
+            snmp_data_url,
         }
     }
 }

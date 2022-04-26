@@ -14,20 +14,28 @@
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ResponseAgent {
+    /// Agent's optional description.
+    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// The unique identifier of this agent.
     #[serde(rename = "id")]
     pub id: String,
-    /// The name of this agent.
+    /// Agent's name.
     #[serde(rename = "name")]
     pub name: String,
+    /// The URL to the SNMP data f.e. \"file://./os/linux.dat\"
+    #[serde(rename = "snmp_data_url")]
+    pub snmp_data_url: String,
 }
 
 impl ResponseAgent {
     /// An agent as a response body.
-    pub fn new(id: String, name: String) -> ResponseAgent {
+    pub fn new(id: String, name: String, snmp_data_url: String) -> ResponseAgent {
         ResponseAgent {
+            description: None,
             id,
             name,
+            snmp_data_url,
         }
     }
 }
