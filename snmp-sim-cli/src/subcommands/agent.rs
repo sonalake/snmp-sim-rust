@@ -1,5 +1,5 @@
-use crate::cli::CommandHandler;
-use crate::operations::agent::{create_agent, delete_agent, list_agents, update_agent};
+use crate::cli::{CliContext, CommandHandler};
+use crate::operations::agent::{create_agent, delete_agent, get_agent, list_agents, update_agent};
 use async_trait::async_trait;
 use clap::{Args, Subcommand};
 
@@ -9,52 +9,70 @@ pub(crate) enum AgentCommands {
     /// List SNMP Agents
     Ls,
 
+    /// Get Agent by ID
+    Get(Agent),
+
     /// Create a new instance of SNMP Agent
     Add(CreateAgent),
 
     /// Update an existing instance of SNMP Agent
     Update(UpdateAgent),
 
-    /// Remove one or more SNMP Agents
-    Rm(DeleteAgent),
+    /// Remove Agent by ID
+    Rm(Agent),
 }
 
 #[derive(Debug, Args)]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) struct CreateAgent {
-    // name of the agent to be created
-    #[clap(short, long)]
-    name: String,
+    // agent name
+    #[clap(long)]
+    pub name: String,
+
+    // agent description
+    #[clap(long)]
+    pub description: Option<String>,
+
+    #[clap(long, parse(from_os_str), value_hint = clap::ValueHint::FilePath)]
+    pub snmp_data_file: std::path::PathBuf,
 }
 
 #[derive(Debug, Args)]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) struct UpdateAgent {
     // unique identifier of an existing agent
-    #[clap(short, long)]
-    id: String,
+    #[clap(long)]
+    pub id: String,
 
-    // new name of an agent
-    #[clap(short, long)]
-    name: String,
+    // agent name
+    #[clap(long)]
+    pub name: String,
+
+    // agent description
+    #[clap(long)]
+    pub description: Option<String>,
+
+    #[clap(long, parse(from_os_str), value_hint = clap::ValueHint::FilePath)]
+    pub snmp_data_file: std::path::PathBuf,
 }
 
 #[derive(Debug, Args)]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-pub(crate) struct DeleteAgent {
+pub(crate) struct Agent {
     // unique identifier of an existing agent
     #[clap(short, long)]
-    id: String,
+    pub id: String,
 }
 
 #[async_trait]
 impl CommandHandler for AgentCommands {
-    async fn handle(self) -> Result<(), anyhow::Error> {
+    async fn handle(self, ctx: &CliContext) -> Result<(), anyhow::Error> {
         match self {
-            AgentCommands::Ls => list_agents().await,
-            AgentCommands::Add(args) => create_agent(args).await,
-            AgentCommands::Update(args) => update_agent(args).await,
-            AgentCommands::Rm(args) => delete_agent(args).await,
+            AgentCommands::Ls => list_agents(ctx).await,
+            AgentCommands::Add(args) => create_agent(ctx, args).await,
+            AgentCommands::Update(args) => update_agent(ctx, args).await,
+            AgentCommands::Rm(args) => delete_agent(ctx, args).await,
+            AgentCommands::Get(args) => get_agent(ctx, args).await,
         }
     }
 }

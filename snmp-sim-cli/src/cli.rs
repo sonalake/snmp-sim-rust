@@ -6,7 +6,7 @@ use clap::Subcommand;
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 #[async_trait]
 pub(crate) trait CommandHandler {
-    async fn handle(self) -> anyhow::Result<()>;
+    async fn handle(self, ctx: &CliContext) -> anyhow::Result<()>;
 }
 
 #[derive(Debug, Subcommand)]
@@ -22,11 +22,27 @@ pub(crate) enum SnmpSimCliCommands {
 
 #[async_trait]
 impl CommandHandler for SnmpSimCliCommands {
-    async fn handle(self) -> anyhow::Result<()> {
+    async fn handle(self, ctx: &CliContext) -> anyhow::Result<()> {
         match self {
-            SnmpSimCliCommands::Agents => AgentCommands::Ls.handle().await,
-            SnmpSimCliCommands::Agent(agent_cmd) => agent_cmd.handle().await,
+            SnmpSimCliCommands::Agents => AgentCommands::Ls.handle(ctx).await,
+            SnmpSimCliCommands::Agent(agent_cmd) => agent_cmd.handle(ctx).await,
         }
+    }
+}
+
+#[derive(Debug)]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) struct CliContext<'a> {
+    url: &'a str,
+}
+
+impl<'a> CliContext<'a> {
+    pub fn new(url: &'a str) -> Self {
+        CliContext { url }
+    }
+
+    pub fn url(&self) -> String {
+        self.url.to_string()
     }
 }
 
@@ -46,6 +62,6 @@ pub(crate) struct SnmpSimCli {
 
 impl SnmpSimCli {
     pub async fn run(self) -> anyhow::Result<()> {
-        self.command.handle().await
+        self.command.handle(&CliContext::new(&self.url)).await
     }
 }
