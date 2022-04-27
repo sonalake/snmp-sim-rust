@@ -4,7 +4,7 @@ IMAGE                   ?= $(shell basename $(shell git rev-parse --show-topleve
 IMAGE_TAG               ?= $(shell git describe --tags 2> /dev/null || echo latest)
 RELEASE_OR_DEBUG        ?= release
 
-.PHONY: all build run stop db-model
+.PHONY: all build run stop db-entity db-migrate rust-client
 
 all: build
 
@@ -27,3 +27,8 @@ db-entity:
 
 db-migrate:
 	sqlx migrate run
+
+rust-client:
+	cd ./clients/rust
+	cargo build
+	cd ../..

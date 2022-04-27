@@ -44,3 +44,7 @@ cargo clippy --workspace --all-targets --all-features -- -D clippy::all
 # clear = true
 # command = "cargo"
 # args = ["tarpaulin", "--ignore-tests", "--follow-exec", "--forward", "--workspace", "--exclude", "snmp-sim-cli", "--exclude-files", "clients/rust*", "--out", "Xml"]
+
+[tasks.rust-client]
+command = "make"
+args = ["rust-client"]

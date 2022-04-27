@@ -19,7 +19,7 @@ jobs:
         if: steps.swagger-ui.outputs.current_tag != steps.swagger-ui.outputs.release_tag
         env:
           RELEASE_TAG: ${{ steps.swagger-ui.outputs.release_tag }}
-          SWAGGER_YAML: "swagger.yaml"
+          SWAGGER_YAML: "openapi.json"
         run: |
           # Delete the dist directory and docs/index.html
           rm -fr docs/dist docs/index.html

@@ -16,7 +16,7 @@ fn main() {
     .trim()
     .to_string();
 
-    let openapi_spec_path = format!("{}/openapi.json", &base_path);
+    let openapi_spec_path = format!("{}/docs/openapi.json", &base_path);
 
     let spec = generate_spec(Some(PathBuf::from(&base_path)));
     fs::write(&openapi_spec_path, spec.to_string()).unwrap();
