@@ -40,7 +40,7 @@ where
     <Codec as Decoder>::Error: Display,
     Closure: Fn(Message, SocketAddr, &mut SplitSink<UdpFramed<Codec>, (Message, SocketAddr)>) + std::marker::Unpin,
 {
-    #[tracing::instrument(name = "UdpServer::restarting", level = "debug", skip(self, _ctx))]
+    #[tracing::instrument(level = "debug", name = "UdpServer::restarting", skip(self, _ctx))]
     fn restarting(&mut self, _ctx: &mut Context<Self>) {}
 }
 
@@ -56,7 +56,7 @@ where
 {
     type Context = Context<Self>;
 
-    #[tracing::instrument(name = "UdpServer::started", level = "debug", skip(self, ctx))]
+    #[tracing::instrument(level = "debug", name = "UdpServer::started", skip(self, ctx))]
     fn started(&mut self, ctx: &mut Self::Context) {
         let binding_address = format!("{}:{}", self.host, self.port);
         tracing::debug!("UdpServer binding address: {}", binding_address);
@@ -81,7 +81,7 @@ where
     <Codec as Decoder>::Error: Display,
     Closure: Fn(Message, SocketAddr, &mut SplitSink<UdpFramed<Codec>, (Message, SocketAddr)>) + std::marker::Unpin,
 {
-    #[tracing::instrument(name = "UdpServer::handle", level = "debug", skip(self, data, _ctx))]
+    #[tracing::instrument(level = "debug", name = "UdpServer::handle", skip(self, data, _ctx))]
     fn handle(&mut self, data: UdpDataMsg<Message>, _ctx: &mut Self::Context) {
         match data.0 {
             Ok((message, peer)) => {

@@ -14,12 +14,15 @@ pub struct Model {
     pub description: Option<String>,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter)]
-pub enum Relation {}
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+pub enum Relation {
+    #[sea_orm(has_many = "super::managed_devices::Entity")]
+    ManagedDevices,
+}
 
-impl RelationTrait for Relation {
-    fn def(&self) -> RelationDef {
-        panic!("No RelationDef")
+impl Related<super::managed_devices::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::ManagedDevices.def()
     }
 }
 

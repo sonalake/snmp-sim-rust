@@ -13,7 +13,7 @@ pub(crate) async fn list_agents(ctx: &CliContext<'_>) -> Result<(), anyhow::Erro
 
     let agents = agents_get(&configuration, None, None).await?;
     for agent in agents.iter() {
-        println!("{:?}", agent);
+        println!("{:#?}", agent);
     }
 
     Ok(())
@@ -21,7 +21,7 @@ pub(crate) async fn list_agents(ctx: &CliContext<'_>) -> Result<(), anyhow::Erro
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn create_agent(ctx: &CliContext<'_>, create_agent: CreateAgent) -> Result<(), anyhow::Error> {
-    trace!("Create a new instance of agent={:?}", create_agent);
+    trace!("Create a new instance of agent={:#?}", create_agent);
     let mut configuration = Configuration::new();
     configuration.base_path = ctx.url();
 
@@ -36,14 +36,14 @@ pub(crate) async fn create_agent(ctx: &CliContext<'_>, create_agent: CreateAgent
     agent.description = create_agent.description;
 
     let created_agent = agents_post(&configuration, agent).await?;
-    println!("{:?}", created_agent);
+    println!("{:#?}", created_agent);
 
     Ok(())
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn update_agent(ctx: &CliContext<'_>, update_agent: UpdateAgent) -> Result<(), anyhow::Error> {
-    trace!("Update an existing agent={:?}", update_agent);
+    trace!("Update an existing agent={:#?}", update_agent);
     let mut configuration = Configuration::new();
     configuration.base_path = ctx.url();
 
@@ -58,31 +58,31 @@ pub(crate) async fn update_agent(ctx: &CliContext<'_>, update_agent: UpdateAgent
     agent.description = update_agent.description;
 
     let updated_agent = agents_id_put(&configuration, &update_agent.id, agent).await?;
-    println!("{:?}", updated_agent);
+    println!("{:#?}", updated_agent);
 
     Ok(())
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn delete_agent(ctx: &CliContext<'_>, agent: Agent) -> Result<(), anyhow::Error> {
-    trace!("Delete an existing agent={:?}", agent);
+    trace!("Delete an existing agent={:#?}", agent);
     let mut configuration = Configuration::new();
     configuration.base_path = ctx.url();
 
     let deleted_agent = agents_id_delete(&configuration, &agent.id).await?;
-    println!("{:?}", deleted_agent);
+    println!("{:#?}", deleted_agent);
 
     Ok(())
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn get_agent(ctx: &CliContext<'_>, agent: Agent) -> Result<(), anyhow::Error> {
-    trace!("Delete an existing agent={:?}", agent);
+    trace!("Delete an existing agent={:#?}", agent);
     let mut configuration = Configuration::new();
     configuration.base_path = ctx.url();
 
     let agent = agents_id_get(&configuration, &agent.id).await?;
-    println!("{:?}", agent);
+    println!("{:#?}", agent);
 
     Ok(())
 }

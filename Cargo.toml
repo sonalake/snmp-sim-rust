@@ -83,6 +83,7 @@ sea-orm = { version = "0.7", features = [
 ], default-features = false }
 chrono = "0.4.19"
 dirs = "4.0"
+strum = { version = "0.24", features = ["derive"] }
 
 [dev-dependencies]
 snmp-sim = { path = ".", features = ["integration-tests"] }

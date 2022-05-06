@@ -13,7 +13,7 @@ use rasn_smi::v1::SimpleSyntax;
 use rasn_snmp::v1::GetResponse;
 use rasn_snmp::v2::Pdus::GetRequest;
 
-#[tracing::instrument(name = "handle_snmp_message_v2", level = "info", skip(sink, peer))]
+#[tracing::instrument(level = "debug", name = "handle_snmp_message_v2", skip(sink, peer))]
 pub async fn handle_snmp_message_v2(
     v2_request: rasn_snmp::v2c::Message<rasn_snmp::v2::Pdus>,
     peer: SocketAddr,

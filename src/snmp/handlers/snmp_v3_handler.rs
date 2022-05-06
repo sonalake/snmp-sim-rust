@@ -13,7 +13,7 @@ use tokio_util::udp::UdpFramed;
 // use rasn_snmp::v1::GetResponse;
 // use rasn_snmp::v1::Pdus::GetRequest;
 
-#[tracing::instrument(name = "handle_snmp_message_v3", level = "info", skip(_sink, _peer))]
+#[tracing::instrument(level = "debug", name = "handle_snmp_message_v3", skip(_sink, _peer))]
 pub async fn handle_snmp_message_v3(
     _message: rasn_snmp::v3::Message,
     _peer: SocketAddr,

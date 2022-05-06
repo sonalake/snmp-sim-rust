@@ -1,5 +1,5 @@
 use crate::configuration::Settings;
-use crate::routes::agents_config;
+use crate::routes::{agents_config, devices_config};
 use crate::settings::DatabaseSettings;
 use actix_web::dev::ServiceFactory;
 use actix_web::middleware::{Compat, NormalizePath, TrailingSlash};
@@ -24,7 +24,11 @@ where
         InitError = (),
     >,
 {
-    app.service(scope(uri_prefix).configure(agents_config))
+    app.service(
+        scope(uri_prefix)
+            .configure(agents_config)
+            .configure(devices_config),
+    )
 }
 
 pub fn spec_modifier(spec: &mut DefaultApiRaw) {

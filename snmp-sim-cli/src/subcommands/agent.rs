@@ -33,6 +33,7 @@ pub(crate) struct CreateAgent {
     #[clap(long)]
     pub description: Option<String>,
 
+    // path to the SNMPWalk output file
     #[clap(long, parse(from_os_str), value_hint = clap::ValueHint::FilePath)]
     pub snmp_data_file: std::path::PathBuf,
 }
@@ -52,6 +53,7 @@ pub(crate) struct UpdateAgent {
     #[clap(long)]
     pub description: Option<String>,
 
+    // path to the SNMPWalk output file
     #[clap(long, parse(from_os_str), value_hint = clap::ValueHint::FilePath)]
     pub snmp_data_file: std::path::PathBuf,
 }
