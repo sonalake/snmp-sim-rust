@@ -9,7 +9,7 @@ use super::snmp_v1_handler::*;
 use super::snmp_v2_handler::*;
 use super::snmp_v3_handler::*;
 
-#[tracing::instrument(name = "handle_generic_snmp_message", level = "debug", skip(generic_request, sink))]
+#[tracing::instrument(level = "debug", name = "handle_generic_snmp_message", skip(generic_request, sink))]
 pub fn handle_generic_snmp_message(
     generic_request: GenericSnmpMessage,
     peer: SocketAddr,

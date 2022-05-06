@@ -1,4 +1,5 @@
 use crate::subcommands::agent::AgentCommands;
+use crate::subcommands::device::DeviceCommands;
 use async_trait::async_trait;
 use clap::Parser;
 use clap::Subcommand;
@@ -18,6 +19,13 @@ pub(crate) enum SnmpSimCliCommands {
     /// Manage SNMP Agents
     #[clap(subcommand)]
     Agent(AgentCommands),
+
+    /// List Devices
+    Devices,
+
+    /// Manage Devices
+    #[clap(subcommand)]
+    Device(DeviceCommands),
 }
 
 #[async_trait]
@@ -26,6 +34,8 @@ impl CommandHandler for SnmpSimCliCommands {
         match self {
             SnmpSimCliCommands::Agents => AgentCommands::Ls.handle(ctx).await,
             SnmpSimCliCommands::Agent(agent_cmd) => agent_cmd.handle(ctx).await,
+            SnmpSimCliCommands::Devices => DeviceCommands::Ls.handle(ctx).await,
+            SnmpSimCliCommands::Device(device_cmd) => device_cmd.handle(ctx).await,
         }
     }
 }

@@ -12,7 +12,7 @@ use rasn_snmp::v1::Pdus::GetRequest;
 use std::net::SocketAddr;
 use tokio_util::udp::UdpFramed;
 
-#[tracing::instrument(name = "handle_snmp_message_v1", level = "info", skip(sink, peer))]
+#[tracing::instrument(level = "debug", name = "handle_snmp_message_v1", skip(sink, peer))]
 pub async fn handle_snmp_message_v1(
     v1_request: rasn_snmp::v1::Message<rasn_snmp::v1::Pdus>,
     peer: SocketAddr,

@@ -5,7 +5,7 @@ use crate::domain::CreateResult;
 use sea_orm::{entity::prelude::*, ActiveValue, ConnectionTrait, DbErr, Delete, DeleteResult, EntityTrait};
 use uuid_dev::Uuid;
 
-#[tracing::instrument(name = "[DA] Create a new instance of agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[DA] Create a new instance of agent", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn create_agent<'db>(
     conn: &'db impl ConnectionTrait,
@@ -40,13 +40,13 @@ pub(crate) async fn create_agent<'db>(
     Ok(CreateResult::Created(agent.into()))
 }
 
-#[tracing::instrument(name = "[DA] Finding an agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[DA] Finding an agent", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn get_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -> Result<Option<AgentsModel>, DbErr> {
     Agents::find_by_id(id.to_string()).one(conn).await
 }
 
-#[tracing::instrument(name = "[DA] Deleting an agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[DA] Deleting an agent", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn delete_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -> Result<DeleteResult, DbErr> {
     Delete::one(AgentsActiveModel {
@@ -58,7 +58,7 @@ pub(crate) async fn delete_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid
     .await
 }
 
-#[tracing::instrument(name = "[DA] Listing agents", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[DA] Listing agents", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn list_agents<'db>(
     conn: &'db impl ConnectionTrait,
@@ -69,7 +69,7 @@ pub(crate) async fn list_agents<'db>(
     paginator.fetch_page(page - 1).await
 }
 
-#[tracing::instrument(name = "[DA] Updating agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[DA] Updating agent", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn update_agent<'db>(
     conn: &'db impl ConnectionTrait,

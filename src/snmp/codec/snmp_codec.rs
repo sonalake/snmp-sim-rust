@@ -53,7 +53,7 @@ impl Decoder for SnmpCodec {
     type Item = GenericSnmpMessage;
     type Error = CodecError;
 
-    #[tracing::instrument(name = "SnmpCodec::decode", level = "info", skip(self, data))]
+    #[tracing::instrument(level = "debug", name = "SnmpCodec::decode", skip(self, data))]
     fn decode(&mut self, data: &mut BytesMut) -> Result<Option<Self::Item>, Self::Error> {
         if data.is_empty() {
             // more bytes needs to be read
@@ -96,7 +96,7 @@ impl Decoder for SnmpCodec {
 impl Encoder<GenericSnmpMessage> for SnmpCodec {
     type Error = CodecError;
 
-    #[tracing::instrument(name = "SnmpCodec::encode", level = "info", skip(self, message))]
+    #[tracing::instrument(level = "debug", name = "SnmpCodec::encode", skip(self, message))]
     fn encode(&mut self, message: GenericSnmpMessage, result: &mut BytesMut) -> Result<(), Self::Error> {
         match message {
             GenericSnmpMessage::V1Message(content) => rasn::ber::encode(&content)

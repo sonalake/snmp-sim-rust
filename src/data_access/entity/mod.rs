@@ -3,3 +3,4 @@
 pub mod prelude;
 
 pub mod agents;
+pub mod managed_devices;

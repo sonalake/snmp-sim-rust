@@ -133,8 +133,83 @@ pub async fn seed_agents(conn: &DatabaseConnection, agents_count: usize) {
             &Some(Uuid::new_v4().to_string()),
             &Uuid::new_v4().to_string(),
         )
-        .await
-        .unwrap()
-        .unwrap_created();
+        .await;
+    }
+}
+
+pub async fn seed_devices(conn: &DatabaseConnection, agent_id: &Uuid, devices_count: usize) {
+    use snmp_sim::data_access::helpers::*;
+    for _ in 0..devices_count {
+        let _ = create_managed_device(
+            conn,
+            &Uuid::new_v4(),
+            &Uuid::new_v4().to_string(),
+            &Some(Uuid::new_v4().to_string()),
+            agent_id,
+            &domain_snmp_v1_attributes_json("public"),
+        )
+        .await;
+    }
+}
+//----- SNMP V1 protocol attributes for route and domain layers, raw and json format
+pub fn route_snmp_v1_attributes(community: &str) -> snmp_sim::routes::SnmpProtocolAttributes {
+    snmp_sim::routes::SnmpProtocolAttributes {
+        snmp_v1: Some(snmp_sim::routes::SnmpV1Attributes {
+            community: Some(community.to_string()),
+        }),
+        snmp_v2c: None,
+        snmp_v3: None,
+    }
+}
+
+pub fn domain_snmp_v1_attributes(community: &str) -> snmp_sim::domain::SnmpProtocolAttributes {
+    snmp_sim::domain::SnmpProtocolAttributes::SnmpV1(snmp_sim::domain::SnmpV1Attributes {
+        community: community.to_string(),
+    })
+}
+
+pub fn domain_snmp_v1_attributes_json(community: &str) -> String {
+    serde_json::to_string(&domain_snmp_v1_attributes(community)).unwrap()
+}
+
+//----- SNMP V2c protocol attributes for route and domain layers, raw and json format
+pub fn route_snmp_v2c_attributes(community: &str) -> snmp_sim::routes::SnmpProtocolAttributes {
+    snmp_sim::routes::SnmpProtocolAttributes {
+        snmp_v1: None,
+        snmp_v2c: Some(snmp_sim::routes::SnmpV2cAttributes {
+            community: Some(community.to_string()),
+        }),
+        snmp_v3: None,
+    }
+}
+
+pub fn domain_snmp_v2c_attributes(community: &str) -> snmp_sim::domain::SnmpProtocolAttributes {
+    snmp_sim::domain::SnmpProtocolAttributes::SnmpV2c(snmp_sim::domain::SnmpV2cAttributes {
+        community: community.to_string(),
+    })
+}
+
+pub fn domain_snmp_v2c_attributes_json(community: &str) -> String {
+    serde_json::to_string(&domain_snmp_v2c_attributes(community)).unwrap()
+}
+
+//----- SNMP V3 protocol attributes for route and domain layers, raw and json format
+pub fn _snmp_v3_attributes(
+    user: &str,
+    auth_alg: snmp_sim::routes::AuthenticationAlgorithm,
+    auth_key: &str,
+    enc_alg: snmp_sim::routes::EncryptionAlgorithm,
+    enc_key: &str,
+) -> snmp_sim::routes::SnmpProtocolAttributes {
+    snmp_sim::routes::SnmpProtocolAttributes {
+        snmp_v1: None,
+        snmp_v2c: None,
+        snmp_v3: Some(snmp_sim::routes::SnmpV3Attributes {
+            user: Some(user.to_string()),
+            authentication: Some(auth_alg),
+            authentication_password: auth_key.to_string(),
+            encryption: Some(enc_alg),
+            encryption_key: enc_key.to_string(),
+        }),
     }
 }

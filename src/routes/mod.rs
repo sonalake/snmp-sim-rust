@@ -1,8 +1,8 @@
 pub mod agents;
-// mod swagger_ui;
+pub mod managed_devices;
 
-// pub use self::swagger_ui::*;
 pub use agents::*;
+pub use managed_devices::*;
 
 use paperclip::actix::Apiv2Schema;
 use serde::Deserialize;

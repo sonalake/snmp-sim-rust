@@ -3,7 +3,7 @@ use sea_orm::ConnectionTrait;
 use uuid_dev::Uuid;
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Create an instance of Agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Create an instance of Agent", skip(conn))]
 pub(crate) async fn create_agent<'db>(
     conn: &'db impl ConnectionTrait,
     agent: &Agent,
@@ -22,7 +22,7 @@ pub(crate) async fn create_agent<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Finding an agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Finding an agent", skip(conn))]
 pub(crate) async fn get_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -> Result<Agent, DomainError> {
     crate::data_access::helpers::get_agent(conn, id)
         .await?
@@ -31,7 +31,7 @@ pub(crate) async fn get_agent<'db>(conn: &'db impl ConnectionTrait, id: &Uuid) -
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Deleting an agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Deleting an agent", skip(conn))]
 pub(crate) async fn delete_agent<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
@@ -46,7 +46,7 @@ pub(crate) async fn delete_agent<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Listing agents", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Listing agents", skip(conn))]
 pub(crate) async fn list_agents<'db>(
     conn: &'db impl ConnectionTrait,
     page: usize,
@@ -58,7 +58,7 @@ pub(crate) async fn list_agents<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(name = "[BL] Updating agent", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Updating agent", skip(conn))]
 pub(crate) async fn update_agent<'db>(
     conn: &'db impl ConnectionTrait,
     agent: Agent,

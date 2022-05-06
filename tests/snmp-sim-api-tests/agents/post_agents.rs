@@ -17,7 +17,7 @@ demonstrate! {
             let client = reqwest::Client::new();
         }
 
-        context "generated_name_realm" {
+        context "generated_agent_name" {
             before {
                 let name = Uuid::new_v4().to_string();
                 let snmp_data_url = Uuid::new_v4().to_string();
