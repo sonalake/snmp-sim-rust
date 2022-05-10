@@ -5,7 +5,9 @@ use std::path::Path;
 use std::str::FromStr;
 
 #[derive(serde::Deserialize, Clone)]
+/// Structure representing the database settings
 pub struct DatabaseSettings {
+    /// database connection URI
     connection_uri: String,
     #[serde(default = "default_tests_skip_drop")]
     pub tests_skip_drop: bool,
