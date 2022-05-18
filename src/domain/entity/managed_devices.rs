@@ -7,8 +7,8 @@ use sea_orm::ActiveValue;
 use std::str::FromStr;
 use uuid_dev::Uuid;
 
-#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 #[derive(Debug, Clone)]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) struct ManagedDevice {
     pub id: Uuid,
     pub created_at: DateTime<Utc>,
@@ -17,6 +17,8 @@ pub(crate) struct ManagedDevice {
     pub description: Option<String>,
     pub agent: ManagedDeviceAgent,
     pub snmp_protocol_attributes: SnmpProtocolAttributes,
+    pub snmp_host: String,
+    pub snmp_port: u16,
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
@@ -45,6 +47,8 @@ impl From<(Model, Option<AgentsModel>)> for ManagedDevice {
             modified_at: model.modified_at,
             agent: ManagedDeviceAgent::Agent(agent.unwrap().into()),
             snmp_protocol_attributes: serde_json::from_str(&model.snmp_protocol_attributes).unwrap(),
+            snmp_host: model.snmp_host,
+            snmp_port: model.snmp_port.try_into().unwrap(),
         }
     }
 }
@@ -59,6 +63,8 @@ impl From<(Model, Vec<AgentsModel>)> for ManagedDevice {
             modified_at: model.modified_at,
             agent: ManagedDeviceAgent::Agent(agent.first().unwrap().clone().into()),
             snmp_protocol_attributes: serde_json::from_str(&model.snmp_protocol_attributes).unwrap(),
+            snmp_host: model.snmp_host,
+            snmp_port: model.snmp_port.try_into().unwrap(),
         }
     }
 }
@@ -73,6 +79,8 @@ impl From<(ActiveModel, Option<AgentsModel>)> for ManagedDevice {
             modified_at: am.modified_at.unwrap(),
             agent: ManagedDeviceAgent::Agent(agent.unwrap().into()),
             snmp_protocol_attributes: serde_json::from_str(&am.snmp_protocol_attributes.unwrap()).unwrap(),
+            snmp_host: am.snmp_host.unwrap(),
+            snmp_port: am.snmp_port.unwrap().try_into().unwrap(),
         }
     }
 }
@@ -88,6 +96,8 @@ impl From<ManagedDevice> for Model {
             description: managed_device.description,
             agent_id,
             snmp_protocol_attributes: serde_json::to_string(&managed_device.snmp_protocol_attributes).unwrap(),
+            snmp_host: managed_device.snmp_host,
+            snmp_port: managed_device.snmp_port.try_into().unwrap(),
         }
     }
 }
@@ -105,6 +115,8 @@ impl From<ManagedDevice> for ActiveModel {
             snmp_protocol_attributes: ActiveValue::set(
                 serde_json::to_string(&managed_device.snmp_protocol_attributes).unwrap(),
             ),
+            snmp_host: ActiveValue::set(managed_device.snmp_host),
+            snmp_port: ActiveValue::set(managed_device.snmp_port.try_into().unwrap()),
         }
     }
 }

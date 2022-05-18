@@ -137,9 +137,15 @@ pub async fn seed_agents(conn: &DatabaseConnection, agents_count: usize) {
     }
 }
 
-pub async fn seed_devices(conn: &DatabaseConnection, agent_id: &Uuid, devices_count: usize) {
+pub async fn seed_devices(
+    conn: &DatabaseConnection,
+    agent_id: &Uuid,
+    devices_count: usize,
+    snmp_host: &str,
+    snmp_initial_port: u16,
+) {
     use snmp_sim::data_access::helpers::*;
-    for _ in 0..devices_count {
+    for idx in 0..devices_count {
         let _ = create_managed_device(
             conn,
             &Uuid::new_v4(),
@@ -147,6 +153,8 @@ pub async fn seed_devices(conn: &DatabaseConnection, agent_id: &Uuid, devices_co
             &Some(Uuid::new_v4().to_string()),
             agent_id,
             &domain_snmp_v1_attributes_json("public"),
+            snmp_host,
+            snmp_initial_port + idx as u16,
         )
         .await;
     }

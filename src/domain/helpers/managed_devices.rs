@@ -1,4 +1,5 @@
 use crate::domain::{CreateResult, DomainError, ManagedDevice, UpdateResult};
+use crate::udp_server::udp_server_delegate::UdpServerDelegate;
 use sea_orm::ConnectionTrait;
 use uuid_dev::Uuid;
 
@@ -18,6 +19,8 @@ pub(crate) async fn create_managed_device<'db>(
         serde_json::to_string(&managed_device.snmp_protocol_attributes)
             .unwrap()
             .as_ref(),
+        &managed_device.snmp_host,
+        managed_device.snmp_port,
     )
     .await
     .map_err(DomainError::from)?;
@@ -87,6 +90,8 @@ pub(crate) async fn update_managed_device<'db>(
         serde_json::to_string(&managed_device.snmp_protocol_attributes)
             .unwrap()
             .as_ref(),
+        &managed_device.snmp_host,
+        managed_device.snmp_port,
     )
     .await?;
 
@@ -94,27 +99,33 @@ pub(crate) async fn update_managed_device<'db>(
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(level = "debug", name = "[BL] Starting managed device", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Starting managed device", skip(conn, udp_server))]
 pub(crate) async fn start_managed_device<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
+    udp_server: &UdpServerDelegate,
 ) -> Result<UpdateResult<bool>, DomainError> {
-    let _device = get_managed_device(conn, id).await?;
+    let device = get_managed_device(conn, id).await?;
 
-    // TODO: ManagedDevice exists => start it
+    tracing::debug!("Start device: {:?}", device);
+
+    // ManagedDevice exists => start it
+    udp_server.start_snmp_device(device).await?;
 
     Ok(UpdateResult::Updated(true))
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-#[tracing::instrument(level = "debug", name = "[BL] Stopping managed device", skip(conn))]
+#[tracing::instrument(level = "debug", name = "[BL] Stopping managed device", skip(conn, udp_server))]
 pub(crate) async fn stop_managed_device<'db>(
     conn: &'db impl ConnectionTrait,
     id: &Uuid,
+    udp_server: &UdpServerDelegate,
 ) -> Result<UpdateResult<bool>, DomainError> {
-    let _device = get_managed_device(conn, id).await?;
+    let device = get_managed_device(conn, id).await?;
 
-    // TODO: ManagedDevice exists => stop it
+    // ManagedDevice exists => stop it
+    udp_server.stop_snmp_device(device).await?;
 
     Ok(UpdateResult::Updated(true))
 }

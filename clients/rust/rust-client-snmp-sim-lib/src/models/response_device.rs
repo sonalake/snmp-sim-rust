@@ -25,18 +25,24 @@ pub struct ResponseDevice {
     /// Device's name.
     #[serde(rename = "name")]
     pub name: String,
+    #[serde(rename = "snmp_host")]
+    pub snmp_host: String,
+    #[serde(rename = "snmp_port")]
+    pub snmp_port: i32,
     #[serde(rename = "snmp_protocol_attributes")]
     pub snmp_protocol_attributes: Box<crate::models::RequestDeviceSnmpProtocolAttributes>,
 }
 
 impl ResponseDevice {
     /// An managed device as a response body.
-    pub fn new(agent: crate::models::ResponseDeviceAgent, id: String, name: String, snmp_protocol_attributes: crate::models::RequestDeviceSnmpProtocolAttributes) -> ResponseDevice {
+    pub fn new(agent: crate::models::ResponseDeviceAgent, id: String, name: String, snmp_host: String, snmp_port: i32, snmp_protocol_attributes: crate::models::RequestDeviceSnmpProtocolAttributes) -> ResponseDevice {
         ResponseDevice {
             agent: Box::new(agent),
             description: None,
             id,
             name,
+            snmp_host,
+            snmp_port,
             snmp_protocol_attributes: Box::new(snmp_protocol_attributes),
         }
     }

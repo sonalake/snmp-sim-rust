@@ -13,6 +13,8 @@ pub struct Model {
     pub description: Option<String>,
     pub agent_id: String,
     pub snmp_protocol_attributes: String,
+    pub snmp_host: String,
+    pub snmp_port: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

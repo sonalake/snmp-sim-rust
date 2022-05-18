@@ -19,6 +19,10 @@ pub struct Device {
 
     pub agent: Agent,
 
+    pub snmp_host: String,
+
+    pub snmp_port: u16,
+
     pub snmp_protocol_attributes: SnmpProtocolAttributes,
 }
 
@@ -34,6 +38,8 @@ impl From<domain::ManagedDevice> for Device {
             description: managed_device.description.clone(),
             agent,
             snmp_protocol_attributes: managed_device.snmp_protocol_attributes.into(),
+            snmp_host: managed_device.snmp_host,
+            snmp_port: managed_device.snmp_port,
         }
     }
 }

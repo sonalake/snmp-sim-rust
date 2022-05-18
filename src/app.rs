@@ -1,13 +1,18 @@
 use crate::configuration::Settings;
 use crate::routes::{agents_config, devices_config};
 use crate::settings::DatabaseSettings;
-use actix_web::dev::ServiceFactory;
-use actix_web::middleware::{Compat, NormalizePath, TrailingSlash};
-use actix_web::{App, HttpServer};
+use crate::udp_server::{udp_server_delegate::UdpServerDelegate, udp_server_provider::UdpServerProvider};
+use actix_web::{
+    dev::ServiceFactory,
+    middleware::{Compat, NormalizePath, TrailingSlash},
+    web::Data,
+    App, HttpServer,
+};
 use anyhow::Context;
-use paperclip::actix::web::scope;
-use paperclip::actix::OpenApiExt;
-use paperclip::v2::models::DefaultApiRaw;
+use paperclip::{
+    actix::{web::scope, OpenApiExt},
+    v2::models::DefaultApiRaw,
+};
 use paperclip_restful::extractor_config::*;
 use sea_orm::{Database, DatabaseConnection};
 use sqlx::{Connection, SqliteConnection};
@@ -80,6 +85,10 @@ impl Service {
         let binding_address = format!("{}:{}", configuration.application.host, configuration.application.port);
         tracing::debug!("HttpServer binding address: {}", binding_address);
 
+        // creates only one instance of UdpServerProvider and only the actor address is cloned per each runner
+        
+        let udp_server_delegate = create_udp_server_delegate()?;
+
         // start an instance of http restful api
         HttpServer::new(move || {
             let app = App::new()
@@ -89,6 +98,7 @@ impl Service {
                 .app_data(path_extractor_config())
                 .app_data(query_extractor_config())
                 .app_data(actix_web::web::Data::new(db_conn.clone()))
+                .app_data(Data::new(udp_server_delegate.clone()))
                 .wrap_api()
                 .with_json_spec_at("/api/spec/v2")
                 .with_json_spec_v3_at("/api/spec/v3")
@@ -100,4 +110,12 @@ impl Service {
         .await
         .context("Failed to start service")
     }
+}
+
+#[tracing::instrument(level = "info", name = "create_udp_server_delegate")]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) fn create_udp_server_delegate() -> anyhow::Result<UdpServerDelegate> {
+    // start a supervised instance of UdpServer actor
+    let provider_addr = actix::Supervisor::start(|_| UdpServerProvider::new());
+    Ok(UdpServerDelegate::new(provider_addr))
 }

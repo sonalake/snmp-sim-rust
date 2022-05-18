@@ -1,3 +1,4 @@
+use crate::domain::ManagedDevice;
 use crate::snmp::codec::snmp_codec::GenericSnmpMessage;
 use crate::snmp::codec::snmp_codec::SnmpCodec;
 
@@ -9,9 +10,11 @@ use super::snmp_v1_handler::*;
 use super::snmp_v2_handler::*;
 use super::snmp_v3_handler::*;
 
-#[tracing::instrument(level = "debug", name = "handle_generic_snmp_message", skip(generic_request, sink))]
-pub fn handle_generic_snmp_message(
+#[tracing::instrument(level = "debug", name = "generic_snmp_message_handler", skip(generic_request, sink))]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) fn generic_snmp_message_handler(
     generic_request: GenericSnmpMessage,
+    device: &ManagedDevice,
     peer: SocketAddr,
     sink: &mut SplitSink<UdpFramed<SnmpCodec>, (GenericSnmpMessage, SocketAddr)>,
 ) {

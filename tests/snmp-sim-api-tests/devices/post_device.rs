@@ -28,6 +28,8 @@ demonstrate! {
             before {
                 let name = Uuid::new_v4().to_string();
                 let description = Some(Uuid::new_v4().to_string());
+                let snmp_host = "localhost";
+                let snmp_port = 1161;
             }
 
             context "seeded_database" {
@@ -45,6 +47,8 @@ demonstrate! {
                                 "description": description,
                                 "agent_id": agent_id,
                                 "snmp_protocol_attributes": route_snmp_v1_attributes("public"),
+                                "snmp_host": snmp_host,
+                                "snmp_port": snmp_port,
                             }))
                             .send()
                             .await
@@ -61,6 +65,8 @@ demonstrate! {
                         assert_eq!(device.description, description);
                         assert_eq!(device.agent.id, agent_id);
                         assert_eq!(device.snmp_protocol_attributes, route_snmp_v1_attributes("public"));
+                        assert_eq!(device.snmp_host, snmp_host);
+                        assert_eq!(device.snmp_port, snmp_port);
                     }
 
                     async it "creates_the_object_in_database" {
@@ -89,6 +95,8 @@ demonstrate! {
                                 "description": description,
                                 "agent_id": agent_id,
                                 "snmp_protocol_attributes": route_snmp_v1_attributes("public"),
+                                "snmp_host": snmp_host,
+                                "snmp_port": snmp_port,
                             }))
                             .send()
                             .await
@@ -105,6 +113,8 @@ demonstrate! {
                         assert_eq!(device.description, description);
                         assert_eq!(device.agent.id, agent_id);
                         assert_eq!(device.snmp_protocol_attributes, route_snmp_v1_attributes("public"));
+                        assert_eq!(device.snmp_host, snmp_host);
+                        assert_eq!(device.snmp_port, snmp_port);
                     }
 
                     async it "creates_the_object_in_database" {

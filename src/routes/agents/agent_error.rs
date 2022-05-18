@@ -64,6 +64,7 @@ impl From<DomainError> for AgentError {
             DomainError::NotFound(details) => AgentError::NotFound(details),
             DomainError::Conflict(details) => AgentError::Conflict(details),
             DomainError::Unexpected(details) => AgentError::Unexpected(details),
+            DomainError::UdpServerError(details) => AgentError::Unexpected(details.into()),
         }
     }
 }

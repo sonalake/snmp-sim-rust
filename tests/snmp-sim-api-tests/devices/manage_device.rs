@@ -28,7 +28,9 @@ demonstrate! {
                     &Uuid::new_v4().to_string(),
                     &Some(Uuid::new_v4().to_string()),
                     &agent_id,
-                    &domain_snmp_v1_attributes_json("public"))
+                    &domain_snmp_v1_attributes_json("public"),
+                    "0.0.0.0",
+                    30161)
                     .await
                     .unwrap()
                     .unwrap_created();
@@ -68,7 +70,9 @@ demonstrate! {
                     &Uuid::new_v4().to_string(),
                     &Some(Uuid::new_v4().to_string()),
                     &agent_id,
-                    &domain_snmp_v1_attributes_json("public"))
+                    &domain_snmp_v1_attributes_json("public"),
+                    "0.0.0.0",
+                    30161)
                     .await
                     .unwrap()
                     .unwrap_created();
