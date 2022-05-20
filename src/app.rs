@@ -86,7 +86,6 @@ impl Service {
         tracing::debug!("HttpServer binding address: {}", binding_address);
 
         // creates only one instance of UdpServerProvider and only the actor address is cloned per each runner
-        
         let udp_server_delegate = create_udp_server_delegate()?;
 
         // start an instance of http restful api

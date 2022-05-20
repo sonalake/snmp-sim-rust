@@ -137,28 +137,46 @@ pub async fn seed_agents(conn: &DatabaseConnection, agents_count: usize) {
     }
 }
 
+// Creates required number device instances and returns the list of their unique identifiers
 pub async fn seed_devices(
     conn: &DatabaseConnection,
     agent_id: &Uuid,
     devices_count: usize,
     snmp_host: &str,
     snmp_initial_port: u16,
-) {
+) -> std::vec::Vec<Uuid> {
     use snmp_sim::data_access::helpers::*;
-    for idx in 0..devices_count {
-        let _ = create_managed_device(
+
+    futures::future::join_all((0..devices_count).map(|idx| async move {
+        let device_id = Uuid::new_v4();
+        let device_name = Uuid::new_v4().to_string();
+        let device_description = Some(Uuid::new_v4().to_string());
+        let protocol = domain_snmp_v1_attributes_json("public");
+        let snmp_port = snmp_initial_port + idx as u16;
+        create_managed_device(
             conn,
-            &Uuid::new_v4(),
-            &Uuid::new_v4().to_string(),
-            &Some(Uuid::new_v4().to_string()),
-            agent_id,
-            &domain_snmp_v1_attributes_json("public"),
+            &device_id,
+            &device_name,
+            &device_description,
+            &agent_id,
+            &protocol,
             snmp_host,
-            snmp_initial_port + idx as u16,
+            snmp_port,
         )
-        .await;
-    }
+        .await
+    }))
+    .await
+    .into_iter()
+    .filter_map(|res| match res {
+        Ok(item) if item.is_created() => {
+            let (device, _agent) = item.unwrap_created();
+            Some(Uuid::parse_str(&device.id).unwrap())
+        }
+        _ => None,
+    })
+    .collect()
 }
+
 //----- SNMP V1 protocol attributes for route and domain layers, raw and json format
 pub fn route_snmp_v1_attributes(community: &str) -> snmp_sim::routes::SnmpProtocolAttributes {
     snmp_sim::routes::SnmpProtocolAttributes {
