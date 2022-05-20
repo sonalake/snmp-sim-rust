@@ -2,7 +2,7 @@ application:
   host: localhost
   port: 8180
   uri_prefix: ""
-  level: "debug"
+  level: "info"
 
 database:
   connection_uri: "sqlite://snmp-sim.db"

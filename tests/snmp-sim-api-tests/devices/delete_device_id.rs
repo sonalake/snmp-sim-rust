@@ -42,7 +42,7 @@ demonstrate! {
                     .unwrap()
                     .unwrap_created();
                 let agent_id = Uuid::from_str(&agent.id).unwrap();
-                seed_devices(db_conn, &agent_id, 20).await;
+                seed_devices(db_conn, &agent_id, 20, "0.0.0.0", 30161).await;
             }
 
             context "nonexistent" {
@@ -66,7 +66,9 @@ demonstrate! {
                         &Uuid::new_v4().to_string(),
                         &Some(Uuid::new_v4().to_string()),
                         &agent_id,
-                        &domain_snmp_v1_attributes_json("public"))
+                        &domain_snmp_v1_attributes_json("public"),
+                        "0.0.0.0",
+                        30161)
                         .await
                         .unwrap()
                         .unwrap_created();

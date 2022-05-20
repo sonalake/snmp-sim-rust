@@ -26,7 +26,7 @@ demonstrate! {
                     .unwrap()
                     .unwrap_created();
                 let agent_id = Uuid::from_str(&agent.id).unwrap();
-                seed_devices(db_conn, &agent_id, 5).await;
+                seed_devices(db_conn, &agent_id, 5, "0.0.0.0", 30161).await;
             }
 
             context "update_nonexisting" {
@@ -35,6 +35,8 @@ demonstrate! {
                     let device_id = Uuid::new_v4();
                     let name = Uuid::new_v4().to_string();
                     let description = Some(Uuid::new_v4().to_string());
+                    let snmp_host = "localhost";
+                    let snmp_port = 1161;
                     let response = Client::new()
                         .put(format!("{}/devices/{}", app.address, device_id))
                         .json(&serde_json::json!(
@@ -43,6 +45,8 @@ demonstrate! {
                                 "description": description,
                                 "agent_id": agent_id,
                                 "snmp_protocol_attributes": route_snmp_v1_attributes("public"),
+                                "snmp_host": snmp_host,
+                                "snmp_port": snmp_port,
                             }
                         ))
                         .send()
@@ -61,6 +65,8 @@ demonstrate! {
                     assert_eq!(json.agent.id, agent_id);
                     assert_eq!(json.description, description);
                     assert_eq!(json.snmp_protocol_attributes, route_snmp_v1_attributes("public"));
+                    assert_eq!(json.snmp_host, snmp_host);
+                    assert_eq!(json.snmp_port, snmp_port);
                 }
 
                 async it "creates_the_object" {
@@ -75,6 +81,8 @@ demonstrate! {
                     assert_eq!(updated_db.agent_id, agent_id.to_string());
                     assert_eq!(updated_db.description, description);
                     assert_eq!(updated_db.snmp_protocol_attributes, domain_snmp_v1_attributes_json("public"));
+                    assert_eq!(updated_db.snmp_host, snmp_host);
+                    assert_eq!(updated_db.snmp_port, snmp_port);
                 }
             }
 
@@ -85,13 +93,17 @@ demonstrate! {
                         &Uuid::new_v4().to_string(),
                         &Some(Uuid::new_v4().to_string()),
                         &agent_id,
-                        &domain_snmp_v1_attributes_json("public"))
+                        &domain_snmp_v1_attributes_json("public"),
+                        "0.0.0.0",
+                        30161)
                         .await
                         .unwrap()
                         .unwrap_created();
                     let device_id = Uuid::from_str(&device.id).unwrap();
                     let new_name = Uuid::new_v4().to_string();
                     let new_description: Option<String> = None;
+                    let new_snmp_host = "localhost";
+                    let new_snmp_port = 1161;
 
                     #[allow(unused)]
                     let response = Client::new()
@@ -102,6 +114,8 @@ demonstrate! {
                                 "description": new_description,
                                 "agent_id": agent_id,
                                 "snmp_protocol_attributes": route_snmp_v2c_attributes("public"),
+                                "snmp_host": new_snmp_host,
+                                "snmp_port": new_snmp_port,
                             }
                         ))
                         .send()
@@ -120,6 +134,8 @@ demonstrate! {
                     assert_eq!(json.description, new_description);
                     assert_eq!(json.agent.id, agent_id);
                     assert_eq!(json.snmp_protocol_attributes, route_snmp_v2c_attributes("public"));
+                    assert_eq!(json.snmp_host, new_snmp_host);
+                    assert_eq!(json.snmp_port, new_snmp_port);
                 }
 
                 async it "updates_the_object" {
@@ -132,6 +148,8 @@ demonstrate! {
                     assert_eq!(updated_db.agent_id, agent_id.to_string());
                     assert_eq!(updated_db.description, new_description);
                     assert_eq!(updated_db.snmp_protocol_attributes, domain_snmp_v2c_attributes_json("public"));
+                    assert_eq!(updated_db.snmp_host, new_snmp_host);
+                    assert_eq!(updated_db.snmp_port, new_snmp_port);
                 }
             }
         }

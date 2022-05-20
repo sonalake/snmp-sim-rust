@@ -16,6 +16,10 @@ pub struct Device {
     agent_id: Uuid,
 
     snmp_protocol_attributes: SnmpProtocolAttributes,
+
+    snmp_host: String,
+
+    snmp_port: u16,
 }
 
 #[derive(Debug, Deserialize, Apiv2Schema)]
@@ -43,6 +47,8 @@ impl TryFrom<Device> for crate::domain::ManagedDevice {
             snmp_protocol_attributes: crate::domain::SnmpProtocolAttributes::try_from(
                 managed_device.snmp_protocol_attributes,
             )?,
+            snmp_host: managed_device.snmp_host,
+            snmp_port: managed_device.snmp_port,
         })
     }
 }
@@ -61,6 +67,8 @@ impl TryFrom<(Uuid, Device)> for crate::domain::ManagedDevice {
             snmp_protocol_attributes: crate::domain::SnmpProtocolAttributes::try_from(
                 managed_device.snmp_protocol_attributes,
             )?,
+            snmp_host: managed_device.snmp_host,
+            snmp_port: managed_device.snmp_port,
         })
     }
 }

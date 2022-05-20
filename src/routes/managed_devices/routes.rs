@@ -1,6 +1,7 @@
 use super::{request, response};
 use crate::domain::{CreateResult, UpdateResult};
 use crate::routes::{DeviceError, GetAgentsQuery};
+use crate::udp_server::udp_server_delegate::UdpServerDelegate;
 use paperclip::actix::{
     api_v2_operation, delete, get, post, put,
     web::{self, Data, Json, ServiceConfig},
@@ -103,8 +104,9 @@ async fn update_device(
 async fn post_device_start(
     id: web::Path<Uuid>,
     conn: Data<DatabaseConnection>,
+    udp_server: web::Data<UdpServerDelegate>,
 ) -> Result<PutResponse<bool>, JsonError<DeviceError>> {
-    let result = crate::domain::start_managed_device(conn.as_ref(), id.as_ref())
+    let result = crate::domain::start_managed_device(conn.as_ref(), id.as_ref(), udp_server.as_ref())
         .await
         .map_err(DeviceError::from)?;
 
@@ -120,8 +122,9 @@ async fn post_device_start(
 async fn post_device_stop(
     id: web::Path<Uuid>,
     conn: Data<DatabaseConnection>,
+    udp_server: web::Data<UdpServerDelegate>,
 ) -> Result<PutResponse<bool>, JsonError<DeviceError>> {
-    let result = crate::domain::stop_managed_device(conn.as_ref(), id.as_ref())
+    let result = crate::domain::stop_managed_device(conn.as_ref(), id.as_ref(), udp_server.as_ref())
         .await
         .map_err(DeviceError::from)?;
 

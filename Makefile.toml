@@ -31,7 +31,7 @@ chmod u+x ~/.local/bin/openapi-generator
 description = "Runs the cargo rustfmt plugin."
 toolchain = "nightly"
 command = "cargo"
-args = ["fmt", "--", "--check"]
+args = ["fmt", "--all", "--check"]
 
 [tasks.lint]
 description = "Runs the cargo clippy plugin."

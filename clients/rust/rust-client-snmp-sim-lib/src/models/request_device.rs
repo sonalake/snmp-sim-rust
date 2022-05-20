@@ -21,17 +21,23 @@ pub struct RequestDevice {
     /// The name of this agent.
     #[serde(rename = "name")]
     pub name: String,
+    #[serde(rename = "snmp_host")]
+    pub snmp_host: String,
+    #[serde(rename = "snmp_port")]
+    pub snmp_port: i32,
     #[serde(rename = "snmp_protocol_attributes")]
     pub snmp_protocol_attributes: Box<crate::models::RequestDeviceSnmpProtocolAttributes>,
 }
 
 impl RequestDevice {
     /// An agent as a response body.
-    pub fn new(agent_id: String, name: String, snmp_protocol_attributes: crate::models::RequestDeviceSnmpProtocolAttributes) -> RequestDevice {
+    pub fn new(agent_id: String, name: String, snmp_host: String, snmp_port: i32, snmp_protocol_attributes: crate::models::RequestDeviceSnmpProtocolAttributes) -> RequestDevice {
         RequestDevice {
             agent_id,
             description: None,
             name,
+            snmp_host,
+            snmp_port,
             snmp_protocol_attributes: Box::new(snmp_protocol_attributes),
         }
     }

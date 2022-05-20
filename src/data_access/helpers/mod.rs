@@ -32,6 +32,8 @@ impl From<crate::data_access::entity::managed_devices::ActiveModel>
             description: am.description.unwrap(),
             agent_id: am.agent_id.unwrap(),
             snmp_protocol_attributes: am.snmp_protocol_attributes.unwrap(),
+            snmp_host: am.snmp_host.unwrap(),
+            snmp_port: am.snmp_port.unwrap(),
         }
     }
 }

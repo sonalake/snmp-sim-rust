@@ -65,7 +65,7 @@ demonstrate! {
                     .unwrap()
                     .unwrap_created();
                 let agent_id = Uuid::from_str(&agent.id).unwrap();
-                seed_devices(db_conn, &agent_id, 25).await;
+                seed_devices(db_conn, &agent_id, 25, "locahost", 30161).await;
             }
 
             context "request_first_page" {

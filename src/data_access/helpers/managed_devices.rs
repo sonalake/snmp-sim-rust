@@ -7,6 +7,7 @@ use crate::domain::CreateResult;
 use sea_orm::{entity::prelude::*, ActiveValue, ConnectionTrait, DbErr, Delete, DeleteResult, EntityTrait};
 use uuid_dev::Uuid;
 
+#[allow(clippy::too_many_arguments)]
 #[tracing::instrument(level = "debug", name = "[DA] Create a new instance of managed device", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn create_managed_device<'db>(
@@ -16,6 +17,8 @@ pub(crate) async fn create_managed_device<'db>(
     description: &Option<String>,
     agent_id: &Uuid,
     snmp_protocol_attributes: &str,
+    snmp_host: &str,
+    snmp_port: u16,
 ) -> Result<CreateResult<(DevicesModel, Option<AgentsModel>)>, DbErr> {
     let result = ManagedDevices::find_by_id(id.to_string())
         .find_with_related(Agents)
@@ -34,6 +37,8 @@ pub(crate) async fn create_managed_device<'db>(
         description: ActiveValue::set(description.clone()),
         agent_id: ActiveValue::set(agent_id.to_string()),
         snmp_protocol_attributes: ActiveValue::set(snmp_protocol_attributes.to_string()),
+        snmp_host: ActiveValue::set(snmp_host.to_string()),
+        snmp_port: ActiveValue::set(snmp_port.into()),
     };
 
     let insert_result = ManagedDevices::insert(managed_device.clone())
@@ -88,6 +93,7 @@ pub(crate) async fn list_managed_devices<'db>(
     // paginator.fetch_page(page - 1).await
 }
 
+#[allow(clippy::too_many_arguments)]
 #[tracing::instrument(level = "debug", name = "[DA] Updating managed device", skip(conn))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn update_managed_device<'db>(
@@ -97,6 +103,8 @@ pub(crate) async fn update_managed_device<'db>(
     managed_device_description: &Option<String>,
     agent_id: &Uuid,
     snmp_protocol_attributes: &str,
+    snmp_host: &str,
+    snmp_port: u16,
 ) -> Result<(DevicesModel, Option<AgentsModel>), DbErr> {
     let am: Option<DevicesModel> = ManagedDevices::find_by_id(id.to_string()).one(conn).await?;
     let mut managed_device: DevicesActiveModel = am.unwrap().into();
@@ -105,6 +113,8 @@ pub(crate) async fn update_managed_device<'db>(
     managed_device.description = ActiveValue::set(managed_device_description.clone());
     managed_device.agent_id = ActiveValue::set(agent_id.to_string());
     managed_device.snmp_protocol_attributes = ActiveValue::set(snmp_protocol_attributes.to_string());
+    managed_device.snmp_host = ActiveValue::set(snmp_host.to_string());
+    managed_device.snmp_port = ActiveValue::set(snmp_port.into());
 
     let device: DevicesModel = managed_device.clone().into();
 

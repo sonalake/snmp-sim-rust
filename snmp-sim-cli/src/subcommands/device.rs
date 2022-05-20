@@ -43,6 +43,14 @@ pub(crate) struct CreateDevice {
     #[clap(long)]
     pub agent_id: String,
 
+    // SNMP Device Listener Host Name
+    #[clap(long)]
+    pub host: String,
+
+    // SNMP Device Listener Port
+    #[clap(long)]
+    pub port: u16,
+
     // SNMP Protocol parameters as JSON string
     #[clap(long)]
     pub protocol: String,
@@ -66,6 +74,14 @@ pub(crate) struct UpdateDevice {
     // the referenced SNMP Agent identifier
     #[clap(long)]
     pub agent_id: String,
+
+    // SNMP Device Listener Host Name
+    #[clap(long)]
+    pub host: String,
+
+    // SNMP Device Listener Port
+    #[clap(long)]
+    pub port: u16,
 
     // SNMP Protocol parameters as JSON string
     #[clap(long)]
