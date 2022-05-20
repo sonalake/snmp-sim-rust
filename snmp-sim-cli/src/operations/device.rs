@@ -28,6 +28,8 @@ pub(crate) async fn create_device(ctx: &CliContext<'_>, create_device: CreateDev
     let mut device = RequestDevice::new(
         create_device.agent_id,
         create_device.name,
+        create_device.host,
+        create_device.port.into(),
         serde_json::from_str(&create_device.protocol).unwrap(),
     );
     device.description = create_device.description;
@@ -47,6 +49,8 @@ pub(crate) async fn update_device(ctx: &CliContext<'_>, update_device: UpdateDev
     let mut device = RequestDevice::new(
         update_device.agent_id,
         update_device.name,
+        update_device.host,
+        update_device.port.into(),
         serde_json::from_str(&update_device.protocol).unwrap(),
     );
     device.description = update_device.description;
