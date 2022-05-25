@@ -29,6 +29,7 @@ name = "generate_spec"
 shared-common = { path = "./crates/shared-common" }
 telemetry = { path = "./crates/telemetry" }
 paperclip-restful = { path = "./crates/paperclip-restful" }
+snmp-data-parser = { path = "./crates/snmp-data-parser" }
 
 actix = "0.13.0"
 actix-web = { version = "4.0.1", default_features = false, features = [
