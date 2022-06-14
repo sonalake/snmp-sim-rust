@@ -1,0 +1,43 @@
+[package]
+name = "actix-async"
+version = "0.2.0"
+edition = "2018"
+
+[features]
+default = ["macros", "tokio-rt"]
+macros = ["actix-async-codegen", "async-trait"]
+tokio-rt = ["std", "tokio/macros", "tokio/rt", "tokio/sync", "tokio/time"]
+std = []
+
+[dependencies]
+cache-padded = "1.2.0"
+futures-core = { version = "0.3", default-features = false, features = [
+   "alloc",
+] }
+pin-project-lite = "0.2.9"
+slab = { version = "0.4.6", default-features = false }
+
+# TODO: make spin optional dep.
+spin = { version = "0.9.3", default-features = false, features = [
+   "use_ticket_mutex",
+] }
+
+# proc macro support
+actix-async-codegen = { version = "0.1", path = "../actix-async-codegen", optional = true }
+async-trait = { version = "0.1.53", optional = true }
+
+# tokio runtime support
+tokio = { version = "1.18.2", optional = true }
+
+# tokio-uring for example
+tokio-uring = { version = "0.3.0", optional = true }
+
+[dev-dependencies]
+actix = { version = "0.13.0", default-features = false }
+async-std = { version = "1.11.0", features = ["attributes", "unstable"] }
+doc-comment = "0.3.3"
+futures-util = { version = "0.3.21", default-features = false, features = [
+   "alloc",
+] }
+futures-intrusive = { version = "^0.4", default-features = false }
+tokio = { version = "1.18.2", features = ["full"] }
