@@ -77,7 +77,7 @@ where
                 timeout: Some(RT::sleep(dur)),
                 timeout_response,
             },
-            _ => unreachable!(TIMEOUT_CONFIGURABLE),
+            _ => unreachable!("{}", TIMEOUT_CONFIGURABLE),
         }
     }
 
@@ -92,7 +92,7 @@ where
                 timeout,
                 timeout_response: Some(dur),
             },
-            _ => unreachable!(TIMEOUT_CONFIGURABLE),
+            _ => unreachable!("{}", TIMEOUT_CONFIGURABLE),
         }
     }
 }

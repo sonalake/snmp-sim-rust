@@ -44,6 +44,7 @@ pub mod line {
 
 pub mod parser {
 
+    use snmp_data_parser::parser::snmp_data::VeraxModifierExtractor;
     use snmp_data_parser::SnmpDataParser;
     use std::fs::File;
     use std::io::BufRead;
@@ -54,7 +55,7 @@ pub mod parser {
         let mut valids = BufReader::new(File::open("./tests/resources/parser-os-linux-std.txt").unwrap()).lines();
 
         let input = BufReader::new(File::open("./tests/resources/os-linux-std.txt").unwrap());
-        let reader = SnmpDataParser::new(input);
+        let reader = SnmpDataParser::new(input, VeraxModifierExtractor {});
 
         for data in reader {
             if let Ok(data) = data {

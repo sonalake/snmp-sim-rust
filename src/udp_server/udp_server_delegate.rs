@@ -1,7 +1,7 @@
 use crate::domain::ManagedDevice;
 use crate::udp_server::udp_server_error::UdpServerError;
 use crate::udp_server::udp_server_provider::{StartSnmpDevice, StopSnmpDevice, UdpServerProvider};
-use actix::Addr;
+use actix_async::address::Addr;
 
 #[derive(Clone)]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
@@ -34,7 +34,8 @@ async fn start_snmp_device(
 ) -> Result<(), UdpServerError> {
     service_config_provider
         .send(StartSnmpDevice { device })
-        .await?
+        .await
+        .map_err(|error| UdpServerError::StartFailed(error.to_string()))?
 }
 
 #[tracing::instrument(level = "info", name = "stop_snmp_device", skip(service_config_provider, device))]
@@ -44,5 +45,6 @@ async fn stop_snmp_device(
 ) -> Result<(), UdpServerError> {
     service_config_provider
         .send(StopSnmpDevice { device_id: device.id })
-        .await?
+        .await
+        .map_err(|error| UdpServerError::StartFailed(error.to_string()))?
 }

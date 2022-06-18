@@ -1,5 +1,6 @@
 pub mod snmp_data;
 
+use crate::parser::snmp_data::ModifierExtractor;
 use std::cell::RefCell;
 use std::io::BufRead;
 
@@ -16,10 +17,18 @@ pub enum ParserError {
 
 pub trait SnmpDataItems {
     /// Add the given property.
-    fn add_data(&mut self, property: Property) -> Result<(), ParserError>;
+    fn add_data<Extractor: ModifierExtractor>(
+        &mut self,
+        extractor: &Extractor,
+        property: Property,
+    ) -> Result<(), ParserError>;
 
     /// Parse the content from `line_parser` and add the data.
-    fn parse<B: BufRead>(&mut self, line_parser: &RefCell<PropertyParser<B>>) -> Result<(), ParserError> {
+    fn parse<B: BufRead, Extractor: ModifierExtractor>(
+        &mut self,
+        extractor: &Extractor,
+        line_parser: &RefCell<PropertyParser<B>>,
+    ) -> Result<(), ParserError> {
         loop {
             let line = match line_parser.borrow_mut().next() {
                 Some(val) if val.is_ok() => val.unwrap(),
@@ -28,7 +37,7 @@ pub trait SnmpDataItems {
                 None => return Ok(()),
             };
 
-            self.add_data(line)?
+            self.add_data(extractor, line)?
         }
     }
 }

@@ -26,26 +26,29 @@ path = "src/bin/generate_spec.rs"
 name = "generate_spec"
 
 [dependencies]
+actix-async = { path = "./crates/actix-async" }
 shared-common = { path = "./crates/shared-common" }
 telemetry = { path = "./crates/telemetry" }
 paperclip-restful = { path = "./crates/paperclip-restful" }
 snmp-data-parser = { path = "./crates/snmp-data-parser" }
+rasn-snmp = { path = "./crates/rasn/standards/snmp" }
+rasn-smi  = { path = "./crates/rasn/standards/smi" }
+rasn  = { path = "./crates/rasn" }
 
 actix = "0.13.0"
 actix-web = { version = "4.0.1", default_features = false, features = [
   "macros",
 ] }
 anyhow = "1.0.56"
-arrayref = "0.3.6"
 bytes = "1.1.0"
 config = { version = "0.13.0", default-features = false, features = ["yaml"] }
 futures = "0.3.21"
 futures-macro = "0.3.21"
 num-traits = "0.2.14"
 num-bigint = "0.4.3"
-rasn-snmp = "0.6.0"
-rasn-smi = "0.6.0"
-rasn = "0.6.1"
+# rasn-snmp = "0.6.0"
+# rasn-smi = "0.6.0"
+# rasn = "0.6.1"
 serde = { version = "1.0.136", features = ["derive"] }
 serde-aux = "3.0.1"
 thiserror = "1.0.30"
@@ -86,6 +89,10 @@ sea-orm = { version = "0.7", features = [
 chrono = "0.4.19"
 dirs = "4.0"
 strum = { version = "0.24", features = ["derive"] }
+strum_macros = "0.24"
+futures-util = { version = "0.3.21", default-features = false, features = [
+   "alloc",
+] }
 
 [dev-dependencies]
 snmp-sim = { path = ".", features = ["integration-tests"] }
@@ -115,13 +122,20 @@ opt-level = 3
 [workspace]
 members = [
   "snmp-sim-cli",
+  "crates/actix-async",
+  "crates/actix-async-codegen",
   "crates/openapi-generator",
   "crates/shared-common",
   "crates/telemetry",
   "crates/paperclip-restful",
   "clients/rust",
+  "crates/rasn",
+  "crates/rasn/standards/smi",
+  "crates/rasn/standards/snmp",
 ]
 
 [patch.crates-io]
 paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }
-#paperclip = { path = "../paperclip" }
+# rasn = { path = "../rasn" }
+# rasn-smi = { path = "../rasn/standards/smi" }
+# rasn-snmp = { path = "../rasn/standards/snmp" }

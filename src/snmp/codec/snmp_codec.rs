@@ -1,5 +1,5 @@
+use crate::snmp::codec::generic_snmp_message::GenericSnmpMessage;
 use crate::snmp::codec::snmp_codec_error::CodecError;
-use arrayref::array_ref;
 use bytes::Buf;
 use bytes::BytesMut;
 use num_traits::ToPrimitive;
@@ -7,19 +7,7 @@ use rasn::ber::de::DecoderOptions;
 use rasn::Decode;
 use tokio_util::codec::{Decoder, Encoder};
 
-use rasn_snmp::v3::Message as SnmpV3Message;
-use rasn_snmp::{v1::Message as SnmpV1Message, v1::Pdus as SnmpV1Pdus};
-use rasn_snmp::{v2::Pdus as SnmpV2Pdus, v2c::Message as SnmpV2CMessage};
-
-#[derive(Debug)]
-pub enum GenericSnmpMessage {
-    V1Message(SnmpV1Message<SnmpV1Pdus>),
-    V2Message(SnmpV2CMessage<SnmpV2Pdus>),
-    V3Message(Box<SnmpV3Message>), /* Large variant size differnce => use boxing to prevent the memory layout
-                                    * penalization of that enum */
-}
-
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct SnmpCodec {}
 
 mod header {
@@ -41,10 +29,6 @@ impl SnmpCodec {
     }
 }
 
-fn pop(header: &[u8]) -> &[u8; 3] {
-    array_ref!(header, 2, 3)
-}
-
 pub fn decode<T: Decode>(decoder: &mut rasn::ber::de::Decoder) -> Result<T, rasn::ber::de::Error> {
     T::decode(decoder)
 }
@@ -64,11 +48,20 @@ impl Decoder for SnmpCodec {
         }
 
         tracing::debug!("Received data: {:02X?}", data.as_ref());
-        let version: rasn::types::Integer = rasn::ber::decode(pop(data)).map_err(CodecError::Decoder)?;
 
-        let mut decoder = rasn::ber::de::Decoder::new(data, DecoderOptions::der());
+        let mut decoder = rasn::ber::de::Decoder::new(data, DecoderOptions::ber());
+        let version_header: Result<rasn_snmp::SnmpMessageHeader, CodecError> =
+            decode(&mut decoder).map_err(CodecError::Decoder);
+        let version = version_header
+            .unwrap()
+            .version
+            .to_u32()
+            .unwrap_or(std::u32::MIN);
+        tracing::debug!("Version: {:02X?}", version);
 
-        let result = match version.to_u32().unwrap_or(std::u32::MIN) {
+        let mut decoder = rasn::ber::de::Decoder::new(data, DecoderOptions::ber());
+
+        let result = match version {
             SnmpCodec::SNMP_VERSION1 => decode(&mut decoder)
                 .map(|de| Some(GenericSnmpMessage::V1Message(de)))
                 .map_err(CodecError::Decoder),
@@ -101,7 +94,7 @@ impl Encoder<GenericSnmpMessage> for SnmpCodec {
 
     #[tracing::instrument(level = "info", name = "SnmpCodec::encode", skip(self, message))]
     fn encode(&mut self, message: GenericSnmpMessage, result: &mut BytesMut) -> Result<(), Self::Error> {
-        match message {
+        let response = match message {
             GenericSnmpMessage::V1Message(content) => rasn::ber::encode(&content)
                 .map(|data| {
                     // Reserve space in the buffer
@@ -131,6 +124,8 @@ impl Encoder<GenericSnmpMessage> for SnmpCodec {
                     result.extend_from_slice(&data);
                 })
                 .map_err(CodecError::Encoder),
-        }
+        };
+        tracing::debug!("Sending data: {:02X?}", result.as_ref());
+        response
     }
 }
