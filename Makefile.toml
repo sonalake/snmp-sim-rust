@@ -49,14 +49,14 @@ cargo clippy --workspace --all-targets --all-features -- -D clippy::all
 command = "make"
 args = ["rust-client"]
 
-[tasks.generate]
+[tasks.db-entity]
 description = "Generates DB entity model and stores in location"
 script = '''
 sea-orm-cli generate entity -o ./src/data_access/entity
 sed -i 's/DateTime/DateTimeUtc/g' ./src/data_access/entity/*.rs
 '''
 
-[tasks.generate.mac]
+[tasks.db-entity.mac]
 script = '''
 sea-orm-cli generate entity -o ./src/data_access/entity
 gsed -i 's/DateTime/DateTimeUtc/g' ./src/data_access/entity/*.rs
