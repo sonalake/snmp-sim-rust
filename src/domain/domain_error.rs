@@ -49,6 +49,7 @@ impl From<sea_orm::DbErr> for DomainError {
             sea_orm::DbErr::Custom(_) => DomainError::Unexpected(db_error.into()),
             sea_orm::DbErr::Type(_) => DomainError::Validation(db_error.to_string()),
             sea_orm::DbErr::Json(json_error) => DomainError::Validation(json_error),
+            sea_orm::DbErr::Migration(_) => DomainError::Unexpected(db_error.into()),
         }
     }
 }
