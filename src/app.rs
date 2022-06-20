@@ -102,7 +102,10 @@ impl Service {
                 .with_json_spec_at("/api/spec/v2")
                 .with_json_spec_v3_at("/api/spec/v3")
                 .with_swagger_ui_at("/swagger");
-            register_services(app, &configuration.application.uri_prefix).build()
+
+            register_services(app, &configuration.application.uri_prefix)
+                .with_spec(spec_modifier)
+                .build()
         })
         .bind(binding_address)?
         .run()
