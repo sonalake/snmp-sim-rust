@@ -175,10 +175,10 @@ Every script is executed in the database only once, even if the migration is inv
 
 SeaORM can discover all tables in a database and generate a corresponding SeaORM entity files  for each table.
 
-Runnning the following command, the database entities implementations stored in `./src/data_access/entity` folder are auto-generated, so never modify the content of that folder, since it will be overwritten.
+Running the following command, the database entities implementations stored in `./src/data_access/entity` folder are auto-generated, so never modify the content of that folder, since it will be overwritten.
 
 ```bash
-make db-entity
+cargo make db-entity
 ```
 
 ## OpenAPI Specification
