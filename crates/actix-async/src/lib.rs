@@ -1,3 +1,4 @@
+#![allow(clippy::all)]
 //! actix API(mostly) with async/await friendly.
 //!
 //! # Example:

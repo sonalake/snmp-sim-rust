@@ -158,7 +158,7 @@ pub async fn seed_devices(
             &device_id,
             &device_name,
             &device_description,
-            &agent_id,
+            agent_id,
             &protocol,
             snmp_host,
             snmp_port,

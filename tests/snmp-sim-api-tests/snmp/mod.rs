@@ -47,7 +47,7 @@ impl DevicePort {
     }
 
     pub fn get_next_value(&mut self) -> u16 {
-        self.value = self.value + 1;
+        self.value += 1;
         self.value
     }
 }

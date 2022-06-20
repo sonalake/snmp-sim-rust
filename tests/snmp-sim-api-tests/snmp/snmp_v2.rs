@@ -35,7 +35,7 @@ demonstrate! {
                 let agent_id = Uuid::from_str(&agent.id).unwrap();
                 let device_ids = seed_devices(db_conn, &agent_id, 1, host_ipaddr, device_port).await;
                 #[allow(unused)]
-                let device_id = device_ids.first().unwrap().clone();
+                let device_id = *device_ids.first().unwrap();
             }
 
             async it "created" {

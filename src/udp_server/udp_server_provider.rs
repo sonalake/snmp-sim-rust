@@ -13,6 +13,7 @@ use uuid_dev::Uuid;
 ///
 /// The UDP server starts without no active listener. New listener
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+#[derive(Default)]
 pub(crate) struct UdpServerProvider {
     // we start only one instance of UdpServerProvider => access to the resource doesn't need to be mutexed
     udp_stream_handlers: RwLock<HashMap<Uuid, Addr<UdpStreamHandler>>>,
