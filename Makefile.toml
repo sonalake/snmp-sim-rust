@@ -53,7 +53,7 @@ args = ["rust-client"]
 description = "Generates DB entity model and stores in location"
 script = '''
 sea-orm-cli generate entity -o ./src/data_access/entity
-gsed -i 's/DateTime/DateTimeUtc/g' ./src/data_access/entity/*.rs
+sed -i 's/DateTime/DateTimeUtc/g' ./src/data_access/entity/*.rs
 '''
 
 [tasks.db-entity.mac]
