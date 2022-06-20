@@ -1,10 +1,10 @@
 use std::convert::Infallible;
 use thiserror::Error;
 
-#[derive(Debug, Error)]
+#[derive(Clone, Debug, Error)]
 pub enum UdpServerError {
-    #[error("Start failed with error {error:?}")]
-    StartFailed { error: std::io::Error },
+    #[error("Start failed with error {0}")]
+    StartFailed(String),
 
     #[error("Device is Already Running")]
     DeviceAlreadyRunning,
@@ -12,11 +12,8 @@ pub enum UdpServerError {
     #[error("Device is Not Running")]
     DeviceNotRunning,
 
-    #[error(transparent)]
-    IoError(#[from] std::io::Error),
-
-    #[error(transparent)]
-    MailboxError(#[from] actix::MailboxError),
+    #[error("MailboxError {0}")]
+    MailboxError(String),
 }
 
 impl From<Infallible> for UdpServerError {

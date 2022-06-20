@@ -1,0 +1,325 @@
+pub(crate) use self::consts::*;
+
+/// The class of tag identifying its category.
+#[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Debug)]
+pub enum Class {
+    /// Types defined in X.680.
+    Universal = 0,
+    /// Application specific types.
+    Application,
+    /// Context specific types (e.g. fields in a struct)
+    Context,
+    /// Private types.
+    Private,
+}
+
+impl Class {
+    /// Instantiate a `Class` from a u8.
+    ///
+    /// # Panics
+    /// If `value` is greater than 3.
+    pub fn from_u8(value: u8) -> Self {
+        match value {
+            0 => Class::Universal,
+            1 => Class::Application,
+            2 => Class::Context,
+            3 => Class::Private,
+            num => panic!("'{}' is not a valid class.", num),
+        }
+    }
+
+    /// Returns whether the given class is universal.
+    pub fn is_universal(self) -> bool {
+        self == Class::Universal
+    }
+}
+
+/// An abstract representation of an ASN.1 tag that uniquely identifies a type
+/// within a ASN.1 module for codecs.
+#[derive(Debug, Clone, Copy, Eq, PartialEq, PartialOrd, Ord)]
+pub struct Tag {
+    /// The class of the tag.
+    pub class: Class,
+    /// The sub-class of the tag.
+    pub value: u32,
+}
+
+macro_rules! consts {
+    ($($name:ident = $value:expr),+) => {
+        #[allow(missing_docs)]
+        impl Tag {
+            $(
+                #[allow(clippy::upper_case_acronyms)]
+                pub const $name: Tag = Tag::new(Class::Universal, $value);
+            )+
+        }
+
+        #[allow(non_camel_case_types)]
+        pub mod consts {
+            use super::*;
+
+            $(
+                #[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash, Debug)]
+                #[allow(clippy::upper_case_acronyms)]
+                pub struct $name;
+
+                impl crate::types::AsnType for $name {
+                    const TAG: Tag = Tag::$name;
+                }
+            )+
+        }
+
+    }
+}
+
+consts! {
+    EOC = 0,
+    BOOL = 1,
+    INTEGER = 2,
+    BIT_STRING = 3,
+    OCTET_STRING = 4,
+    NULL = 5,
+    OBJECT_IDENTIFIER = 6,
+    OBJECT_DESCRIPTOR = 7,
+    EXTERNAL = 8,
+    REAL = 9,
+    ENUMERATED = 10,
+    EMBEDDED_PDV = 11,
+    UTF8_STRING = 12,
+    RELATIVE_OID = 13,
+    SEQUENCE = 16,
+    SET = 17,
+    NUMERIC_STRING = 18,
+    PRINTABLE_STRING = 19,
+    TELETEX_STRING = 20,
+    VIDEOTEX_STRING = 21,
+    IA5_STRING = 22,
+    UTC_TIME = 23,
+    GENERALIZED_TIME = 24,
+    GRAPHIC_STRING = 25,
+    VISIBLE_STRING = 26,
+    GENERAL_STRING = 27,
+    UNIVERSAL_STRING = 28,
+    CHARACTER_STRING = 29,
+    BMP_STRING = 30
+}
+
+impl Tag {
+    /// The `Tag` constant to use to represent `CHOICE` type's `AsnType::TAG`.
+    pub const CHOICE: Self = Self::EOC;
+
+    /// Create a new tag from `class` and `value`.
+    pub const fn new(class: Class, value: u32) -> Self {
+        Self { class, value }
+    }
+
+    /// Set the value of the tag.
+    pub fn set_value(mut self, value: u32) -> Self {
+        self.value = value;
+        self
+    }
+
+    #[doc(hidden)]
+    pub const fn const_eq(self, rhs: &Self) -> bool {
+        self.class as u8 == rhs.class as u8 && self.value == rhs.value
+    }
+
+    /// Returns whether `Tag` is defined as `Tag::EOC`, and thus is an invalid
+    /// tag and must be CHOICE structure.
+    pub const fn is_choice(&self) -> bool {
+        self.const_eq(&Tag::CHOICE)
+    }
+}
+
+/// The root or node in tree reprensenting all of potential tags in a ASN.1 type.
+/// For most types this is only ever one level deep, except for CHOICE enums
+/// which will contain a set of nodes, that either point to a `Leaf` or another
+/// level of `Choice`.
+#[derive(Debug)]
+pub enum TagTree {
+    /// The end of branch in the tree.
+    Leaf(Tag),
+    /// A branch in the tree.
+    Choice(&'static [TagTree]),
+}
+
+impl TagTree {
+    /// Returns whether a given `TagTree` only contains unique entries.
+    pub const fn is_unique(&self) -> bool {
+        match self {
+            Self::Choice(tree) => Self::is_unique_set(tree),
+            Self::Leaf(_) => true,
+        }
+    }
+
+    /// Checks whether a given set of nodes only contains unique entries.
+    pub(crate) const fn is_unique_set(nodes: &'static [Self]) -> bool {
+        let mut index = 0;
+
+        while index < nodes.len() {
+            match &nodes[index] {
+                TagTree::Choice(inner_tags) => {
+                    if !Self::is_unique_set(inner_tags) {
+                        return false;
+                    }
+
+                    let mut inner_index = 0;
+                    while inner_index < inner_tags.len() {
+                        if Self::tree_contains(&inner_tags[inner_index], konst::slice::slice_from(nodes, index + 1)) {
+                            return false;
+                        }
+
+                        inner_index += 1;
+                    }
+                }
+
+                TagTree::Leaf(tag) => {
+                    // We're at the last element so there's nothing more to
+                    // compare to.
+                    if index + 1 == nodes.len() {
+                        return true;
+                    }
+
+                    if Self::tag_contains(tag, konst::slice::slice_from(nodes, index + 1)) {
+                        return false;
+                    }
+                }
+            }
+
+            index += 1;
+        }
+
+        true
+    }
+
+    /// Whether any `Leaf` in `needle` matches any `Leaf`s in `nodes`.
+    const fn tree_contains(needle: &TagTree, nodes: &'static [TagTree]) -> bool {
+        match needle {
+            TagTree::Choice(inner_tags) => {
+                let mut inner_index = 0;
+                while inner_index < inner_tags.len() {
+                    if Self::tree_contains(&inner_tags[inner_index], nodes) {
+                        return true;
+                    }
+
+                    inner_index += 1;
+                }
+                false
+            }
+
+            TagTree::Leaf(tag) => {
+                if Self::tag_contains(tag, nodes) {
+                    return true;
+                }
+
+                false
+            }
+        }
+    }
+
+    /// Whether `needle` matches any `Leaf`s in `nodes`.
+    pub(crate) const fn tag_contains(needle: &Tag, nodes: &'static [TagTree]) -> bool {
+        let mut index = 0;
+
+        while index < nodes.len() {
+            match &nodes[index] {
+                TagTree::Choice(nodes) => {
+                    if Self::tag_contains(needle, nodes) {
+                        return true;
+                    }
+                }
+
+                TagTree::Leaf(tag) => {
+                    if tag.const_eq(needle) {
+                        return true;
+                    }
+                }
+            }
+
+            index += 1;
+        }
+
+        false
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const _EXPECTED: TagTree = TagTree::Choice(&[
+        TagTree::Leaf(Tag::CHOICE),
+        TagTree::Leaf(Tag::BIT_STRING),
+        TagTree::Choice(&[
+            TagTree::Leaf(Tag::new(Class::Application, 0)),
+            TagTree::Leaf(Tag::new(Class::Application, 1)),
+        ]),
+        TagTree::Choice(&[
+            TagTree::Leaf(Tag::new(Class::Context, 0)),
+            TagTree::Leaf(Tag::new(Class::Context, 2)),
+        ]),
+        TagTree::Leaf(Tag::new(Class::Private, 0)),
+        TagTree::Leaf(Tag::new(Class::Private, 1)),
+    ]);
+
+    const _INVALID_FLAT: TagTree = TagTree::Choice(&[
+        TagTree::Leaf(Tag::BIT_STRING),
+        TagTree::Leaf(Tag::new(Class::Application, 0)),
+        TagTree::Leaf(Tag::new(Class::Application, 0)),
+        TagTree::Leaf(Tag::new(Class::Context, 0)),
+        TagTree::Leaf(Tag::new(Class::Context, 0)),
+        TagTree::Leaf(Tag::new(Class::Private, 0)),
+        TagTree::Leaf(Tag::new(Class::Private, 0)),
+    ]);
+
+    const _INVALID_NESTED: TagTree = TagTree::Choice(&[
+        TagTree::Leaf(Tag::CHOICE),
+        TagTree::Leaf(Tag::BIT_STRING),
+        TagTree::Choice(&[
+            TagTree::Leaf(Tag::new(Class::Application, 0)),
+            TagTree::Leaf(Tag::new(Class::Application, 1)),
+        ]),
+        TagTree::Choice(&[
+            TagTree::Choice(&[TagTree::Leaf(Tag::new(Class::Application, 0))]),
+            TagTree::Leaf(Tag::new(Class::Application, 0)),
+            TagTree::Leaf(Tag::new(Class::Context, 2)),
+        ]),
+        TagTree::Leaf(Tag::new(Class::Private, 1)),
+        TagTree::Leaf(Tag::new(Class::Private, 1)),
+    ]);
+
+    #[test]
+    fn is_unique() {
+        const _: () = assert!(_EXPECTED.is_unique());
+        const _: () = assert!(!_INVALID_FLAT.is_unique());
+        const _: () = assert!(!_INVALID_NESTED.is_unique());
+    }
+
+    #[test]
+    fn canonical_ordering() {
+        let mut tags = [
+            Tag::CHOICE,
+            Tag::new(Class::Application, 0),
+            Tag::BIT_STRING,
+            Tag::new(Class::Application, 1),
+            Tag::new(Class::Private, 1),
+            Tag::new(Class::Private, 0),
+            Tag::new(Class::Context, 2),
+            Tag::new(Class::Context, 0),
+        ];
+        let expected = [
+            Tag::CHOICE,
+            Tag::BIT_STRING,
+            Tag::new(Class::Application, 0),
+            Tag::new(Class::Application, 1),
+            Tag::new(Class::Context, 0),
+            Tag::new(Class::Context, 2),
+            Tag::new(Class::Private, 0),
+            Tag::new(Class::Private, 1),
+        ];
+
+        tags.sort();
+
+        assert_eq!(tags, expected);
+    }
+}

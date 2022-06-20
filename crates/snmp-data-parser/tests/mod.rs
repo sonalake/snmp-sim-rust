@@ -11,13 +11,10 @@ pub mod property {
         let input = BufReader::new(File::open("./tests/resources/os-linux-std.txt").unwrap());
         let reader = PropertyParser::from_reader(input);
 
-        for res in reader {
-            if let Ok(res) = res {
-                let output = format!("{:?}", res);
-                assert_eq!(output, valids.next().unwrap().unwrap());
-            }
+        for res in reader.flatten() {
+            assert_eq!(format!("{:?}", res), valids.next().unwrap().unwrap());
         }
-        assert_eq!(true, valids.next().is_none());
+        assert!(valids.next().is_none());
     }
 }
 
@@ -38,12 +35,13 @@ pub mod line {
             let output = format!("{:?}", line);
             assert_eq!(output, valids.next().unwrap().unwrap());
         }
-        assert_eq!(true, valids.next().is_none());
+        assert!(valids.next().is_none());
     }
 }
 
 pub mod parser {
 
+    use snmp_data_parser::parser::snmp_data::VeraxModifierExtractor;
     use snmp_data_parser::SnmpDataParser;
     use std::fs::File;
     use std::io::BufRead;
@@ -54,15 +52,11 @@ pub mod parser {
         let mut valids = BufReader::new(File::open("./tests/resources/parser-os-linux-std.txt").unwrap()).lines();
 
         let input = BufReader::new(File::open("./tests/resources/os-linux-std.txt").unwrap());
-        let reader = SnmpDataParser::new(input);
+        let reader = SnmpDataParser::new(input, VeraxModifierExtractor {});
 
-        for data in reader {
-            if let Ok(data) = data {
-                let output = format!("{:?}", data);
-
-                assert_eq!(output, valids.next().unwrap().unwrap());
-            }
+        for data in reader.flatten() {
+            assert_eq!(format!("{:?}", data), valids.next().unwrap().unwrap());
         }
-        assert_eq!(true, valids.next().is_none());
+        assert!(valids.next().is_none());
     }
 }

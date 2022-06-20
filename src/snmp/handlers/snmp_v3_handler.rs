@@ -1,10 +1,12 @@
-use crate::snmp::codec::snmp_codec::GenericSnmpMessage;
-use crate::snmp::codec::snmp_codec::SnmpCodec;
-use crate::snmp::codec::snmp_codec_error::CodecError;
+use crate::domain::ManagedDevice;
+//use crate::domain::SnmpProtocolVersion;
+//use crate::snmp::handlers::snmp_generic_handler::RequestContext;
+use crate::snmp::handlers::snmp_generic_handler::GenericHandlerError;
+use crate::udp_server::udp_stream_handler::UdpStreamHandler;
 
-use futures::stream::SplitSink;
+use actix_async::address::Addr;
+use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use std::net::SocketAddr;
-use tokio_util::udp::UdpFramed;
 
 // use futures::prelude::*;
 // use rasn::prelude::Integer;
@@ -13,11 +15,14 @@ use tokio_util::udp::UdpFramed;
 // use rasn_snmp::v1::GetResponse;
 // use rasn_snmp::v1::Pdus::GetRequest;
 
-#[tracing::instrument(level = "debug", name = "handle_snmp_message_v3", skip(_sink, _peer))]
-pub async fn handle_snmp_message_v3(
+#[tracing::instrument(level = "debug", name = "handle_snmp_message_v3", skip(_snmp_data))]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) async fn handle_snmp_message_v3(
     _message: rasn_snmp::v3::Message,
+    _device: ManagedDevice,
     _peer: SocketAddr,
-    _sink: &mut SplitSink<UdpFramed<SnmpCodec>, (GenericSnmpMessage, SocketAddr)>,
-) -> Result<(), CodecError> {
+    _stream_handler_actor: Addr<UdpStreamHandler>,
+    _snmp_data: SnmpData,
+) -> Result<(), GenericHandlerError> {
     Ok(())
 }

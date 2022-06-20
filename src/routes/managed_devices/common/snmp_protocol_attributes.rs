@@ -2,7 +2,7 @@ use crate::routes::DeviceError;
 use paperclip::actix::Apiv2Schema;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize, Apiv2Schema, Eq, PartialEq)]
+#[derive(Default, Debug, Clone, Deserialize, Serialize, Apiv2Schema, Eq, PartialEq)]
 pub struct SnmpProtocolAttributes {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snmp_v1: Option<SnmpV1Attributes>,

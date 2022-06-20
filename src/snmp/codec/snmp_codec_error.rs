@@ -13,6 +13,9 @@ pub enum CodecError {
     InvalidVersion(u32),
 
     #[error(transparent)]
+    IoError(#[from] std::io::Error),
+
+    #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }
 
@@ -25,11 +28,5 @@ impl std::fmt::Debug for CodecError {
 impl From<Infallible> for CodecError {
     fn from(_: Infallible) -> Self {
         unreachable!("could not convert Infallible to CodecError")
-    }
-}
-
-impl From<std::io::Error> for CodecError {
-    fn from(_: std::io::Error) -> Self {
-        todo!()
     }
 }

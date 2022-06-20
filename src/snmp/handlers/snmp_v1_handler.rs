@@ -1,38 +1,55 @@
-use crate::snmp::codec::snmp_codec::GenericSnmpMessage;
-use crate::snmp::codec::snmp_codec::SnmpCodec;
-use crate::snmp::codec::snmp_codec_error::CodecError;
+use crate::domain::to_string_default;
+use crate::domain::ManagedDevice;
+use crate::domain::SnmpProtocolVersion;
+use crate::domain::{handle_get_next_request, handle_get_request};
+use crate::snmp::handlers::snmp_generic_handler::GenericHandlerError;
+use crate::snmp::handlers::snmp_generic_handler::RequestContext;
+use crate::udp_server::udp_stream_handler::UdpStreamHandler;
 
-use futures::prelude::*;
-use futures::stream::SplitSink;
-use rasn::prelude::Integer;
-use rasn_smi::v1::ObjectSyntax;
-use rasn_smi::v1::SimpleSyntax;
-use rasn_snmp::v1::GetResponse;
-use rasn_snmp::v1::Pdus::GetRequest;
+use actix_async::address::Addr;
+use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use std::net::SocketAddr;
-use tokio_util::udp::UdpFramed;
 
-#[tracing::instrument(level = "debug", name = "handle_snmp_message_v1", skip(sink, peer))]
-pub async fn handle_snmp_message_v1(
+#[tracing::instrument(level = "debug", name = "handle_snmp_message_v1", skip(snmp_data))]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) async fn handle_snmp_message_v1(
     v1_request: rasn_snmp::v1::Message<rasn_snmp::v1::Pdus>,
+    device: ManagedDevice,
     peer: SocketAddr,
-    sink: &mut SplitSink<UdpFramed<SnmpCodec>, (GenericSnmpMessage, SocketAddr)>,
-) -> Result<(), CodecError> {
-    if let GetRequest(get_request_pdu) = v1_request.data {
-        // TODO: intern implementation to be replaced
-        // the following code repesents an example how to construct and send a SNMP get
-        // response message
-        let mut get_response_pdu = get_request_pdu.0.clone();
-        get_response_pdu.variable_bindings[0].value = ObjectSyntax::Simple(SimpleSyntax::Number(Integer::from(0_i32)));
-        let response: rasn_snmp::v1::Message<rasn_snmp::v1::Pdus> = rasn_snmp::v1::Message {
-            version: v1_request.version,
-            community: v1_request.community,
-            data: rasn_snmp::v1::Pdus::GetResponse(GetResponse(get_response_pdu)),
-        };
-
-        sink.send((GenericSnmpMessage::V1Message(response), peer))
-            .await?
-    }
+    stream_handler_actor: Addr<UdpStreamHandler>,
+    snmp_data: SnmpData,
+) -> Result<(), GenericHandlerError> {
+    match v1_request.data {
+        rasn_snmp::v1::Pdus::GetRequest(snmp_get_request) => {
+            handle_get_request(
+                snmp_get_request.try_into()?,
+                RequestContext::new(
+                    device,
+                    peer,
+                    stream_handler_actor,
+                    SnmpProtocolVersion::SNMPV1(to_string_default(&v1_request.community, "public")),
+                    snmp_data,
+                ),
+            )
+            .await?;
+        }
+        rasn_snmp::v1::Pdus::GetNextRequest(snmp_get_next_request) => {
+            handle_get_next_request(
+                snmp_get_next_request.try_into()?,
+                RequestContext::new(
+                    device,
+                    peer,
+                    stream_handler_actor,
+                    SnmpProtocolVersion::SNMPV1(to_string_default(&v1_request.community, "public")),
+                    snmp_data,
+                ),
+            )
+            .await?;
+        }
+        rasn_snmp::v1::Pdus::GetResponse(_) => { /* not handled by Agent */ }
+        rasn_snmp::v1::Pdus::SetRequest(_) => {}
+        rasn_snmp::v1::Pdus::Trap(_trap_request) => {}
+    };
 
     Ok(())
 }

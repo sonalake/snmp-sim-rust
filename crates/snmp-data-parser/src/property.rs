@@ -73,7 +73,7 @@ impl<B: BufRead> PropertyParser<B> {
 
         {
             let split = to_parse.split_at(end_name_index);
-            property.name = split.0.trim_matches(' ').to_string();
+            property.name = split.0.trim().to_string();
             to_parse = split.1;
         }
 
@@ -82,7 +82,7 @@ impl<B: BufRead> PropertyParser<B> {
         if to_parse.is_empty() {
             return Err(PropertyError::MissingValue { line: line.number() });
         } else {
-            property.value = to_parse.trim_matches(' ').to_string();
+            property.value = to_parse.trim().to_string();
         }
 
         Ok(property)
