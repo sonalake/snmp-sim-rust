@@ -29,9 +29,8 @@ pub enum AgentError {
     #[error("{0}")]
     Conflict(String),
 
-    //#[error(transparent)]
-    #[error("{0}")]
-    Unexpected(String),
+    #[error(transparent)]
+    Unexpected(#[from] anyhow::Error),
 }
 
 impl std::fmt::Debug for AgentError {
