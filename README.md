@@ -13,6 +13,7 @@ To only compile the application manually you'll need to install:
 - [sqlx-cli](https://crates.io/crates/sqlx-cli)
 - [sea-orm-cli](https://www.sea-ql.org/SeaORM/docs/generate-entity/sea-orm-cli/)
 - [openapi-generator](https://openapi-generator.tech/docs/installation/)
+- [gsed](https://formulae.brew.sh/formula/gnu-sed)
 
 To use the automated build/test tools, we recommend that you install:
 
