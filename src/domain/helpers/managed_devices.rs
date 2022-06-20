@@ -110,7 +110,10 @@ pub(crate) async fn start_managed_device<'db>(
     tracing::debug!("Start device: {:?}", device);
 
     // ManagedDevice exists => start it
-    udp_server.start_snmp_device(device).await?;
+    udp_server
+        .start_snmp_device(device)
+        .await
+        .map_err(|err| DomainError::Unexpected(err.into()))?;
 
     Ok(UpdateResult::Updated(true))
 }
@@ -125,7 +128,10 @@ pub(crate) async fn stop_managed_device<'db>(
     let device = get_managed_device(conn, id).await?;
 
     // ManagedDevice exists => stop it
-    udp_server.stop_snmp_device(device).await?;
+    udp_server
+        .stop_snmp_device(device)
+        .await
+        .map_err(|err| DomainError::Unexpected(err.into()))?;
 
     Ok(UpdateResult::Updated(true))
 }

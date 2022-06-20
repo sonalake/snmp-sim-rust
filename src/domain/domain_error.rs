@@ -1,4 +1,3 @@
-use crate::udp_server::udp_server_error::UdpServerError;
 use shared_common::error_chain_fmt;
 use std::convert::Infallible;
 
@@ -16,9 +15,6 @@ pub(crate) enum DomainError {
 
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
-
-    #[error(transparent)]
-    UdpServerError(#[from] UdpServerError),
 }
 
 impl std::fmt::Debug for DomainError {

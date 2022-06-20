@@ -37,8 +37,7 @@ async fn get_agent(
 ) -> Result<GetResponse<response::Agent>, JsonError<AgentError>> {
     let agent = crate::domain::get_agent(conn.as_ref(), id.as_ref())
         .await
-        .map_err(AgentError::from)
-        .map_err(JsonError::from)?;
+        .map_err(AgentError::from)?;
 
     Ok(agent).map(response::Agent::from).map(GetResponse::Ok)
 }
@@ -52,8 +51,7 @@ async fn delete_agent(
 ) -> Result<DeleteResponse<response::Agent>, JsonError<AgentError>> {
     let result = crate::domain::delete_agent(conn.as_ref(), id.as_ref())
         .await
-        .map_err(AgentError::from)
-        .map_err(JsonError::from)?;
+        .map_err(AgentError::from)?;
     match result {
         None => Ok(DeleteResponse::NoContent),
         Some(x) => Ok(DeleteResponse::Deleted(x.into())),
