@@ -113,7 +113,7 @@ pub(crate) async fn start_managed_device<'db>(
     udp_server
         .start_snmp_device(device)
         .await
-        .map_err(|err| DomainError::Unexpected(err.into()))?;
+        .map_err(DomainError::from)?;
 
     Ok(UpdateResult::Updated(true))
 }
@@ -131,7 +131,7 @@ pub(crate) async fn stop_managed_device<'db>(
     udp_server
         .stop_snmp_device(device)
         .await
-        .map_err(|err| DomainError::Unexpected(err.into()))?;
+        .map_err(DomainError::from)?;
 
     Ok(UpdateResult::Updated(true))
 }

@@ -64,6 +64,7 @@ impl From<DomainError> for DeviceError {
             DomainError::NotFound(details) => DeviceError::NotFound(details),
             DomainError::Conflict(details) => DeviceError::Conflict(details),
             DomainError::Unexpected(details) => DeviceError::Unexpected(details),
+            DomainError::UdpServerError(details) => DeviceError::Conflict(details.to_string()),
         }
     }
 }
