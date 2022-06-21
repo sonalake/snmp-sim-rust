@@ -1,5 +1,6 @@
 use actix_web::{http::StatusCode, HttpResponse, ResponseError};
 use paperclip::actix::Apiv2Schema;
+use paperclip::v2::models::DefaultOperationRaw;
 use paperclip::v2::schema::Apiv2Errors;
 use serde::Serialize;
 use std::fmt::{self, Display};
@@ -46,4 +47,8 @@ impl<E: ResponseError> ResponseError for JsonError<E> {
 
 impl<E: Apiv2Errors> Apiv2Errors for JsonError<E> {
     const ERROR_MAP: &'static [(u16, &'static str)] = E::ERROR_MAP;
+
+    fn update_error_definitions(op: &mut DefaultOperationRaw) {
+        E::update_error_definitions(op);
+    }
 }

@@ -1,8 +1,6 @@
-use paperclip::v2::models::DefaultApiRaw;
-
-use paperclip::v2::schema::Apiv2Schema;
-
 use crate::JsonErrorResponse;
+use paperclip::v2::models::DefaultApiRaw;
+use paperclip::v2::schema::Apiv2Schema;
 
 pub fn add_json_error(spec: &mut DefaultApiRaw) {
     for resp in spec

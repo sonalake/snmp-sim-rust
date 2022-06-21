@@ -29,9 +29,8 @@ pub enum AgentError {
     #[error("{0}")]
     Conflict(String),
 
-    //#[error(transparent)]
-    #[error("{0}")]
-    Unexpected(String),
+    #[error(transparent)]
+    Unexpected(#[from] anyhow::Error),
 }
 
 impl std::fmt::Debug for AgentError {
@@ -64,8 +63,8 @@ impl From<DomainError> for AgentError {
             DomainError::Validation(details) => AgentError::Validation(details),
             DomainError::NotFound(details) => AgentError::NotFound(details),
             DomainError::Conflict(details) => AgentError::Conflict(details),
-            DomainError::Unexpected(details) => AgentError::Unexpected(details.to_string()),
-            DomainError::UdpServerError(details) => AgentError::Unexpected(details.to_string()),
+            DomainError::Unexpected(details) => AgentError::Unexpected(details),
+            DomainError::UdpServerError(details) => AgentError::Conflict(details.to_string()),
         }
     }
 }

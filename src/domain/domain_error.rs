@@ -15,10 +15,10 @@ pub(crate) enum DomainError {
     Conflict(String),
 
     #[error(transparent)]
-    Unexpected(#[from] anyhow::Error),
+    UdpServerError(#[from] UdpServerError),
 
     #[error(transparent)]
-    UdpServerError(#[from] UdpServerError),
+    Unexpected(#[from] anyhow::Error),
 }
 
 impl std::fmt::Debug for DomainError {
