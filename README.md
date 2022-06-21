@@ -13,6 +13,7 @@ To only compile the application manually you'll need to install:
 - [sqlx-cli](https://crates.io/crates/sqlx-cli)
 - [sea-orm-cli](https://www.sea-ql.org/SeaORM/docs/generate-entity/sea-orm-cli/)
 - [openapi-generator](https://openapi-generator.tech/docs/installation/)
+- [gsed (Only required for Mac, other OS's use sed)](https://formulae.brew.sh/formula/gnu-sed)
 
 To use the automated build/test tools, we recommend that you install:
 
@@ -174,10 +175,10 @@ Every script is executed in the database only once, even if the migration is inv
 
 SeaORM can discover all tables in a database and generate a corresponding SeaORM entity files  for each table.
 
-Runnning the following command, the database entities implementations stored in `./src/data_access/entity` folder are auto-generated, so never modify the content of that folder, since it will be overwritten.
+Running the following command, the database entities implementations stored in `./src/data_access/entity` folder are auto-generated, so never modify the content of that folder, since it will be overwritten.
 
 ```bash
-make db-entity
+cargo make db-entity
 ```
 
 ## OpenAPI Specification
