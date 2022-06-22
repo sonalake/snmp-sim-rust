@@ -16,7 +16,7 @@ demonstrate! {
         use rasn_snmp::v1::*;
         use snmp_sim::udp_client::Client;
         use snmp_data_parser::parser::snmp_data::component::string_to_oid;
-        use crate::snmp::get_request_v1;
+        use crate::snmp::{get_request_v1, get_next_request_v1};
 
         before {
             let app = spawn_app().await;
@@ -351,6 +351,7 @@ demonstrate! {
                         }
                     }
                 }
+
                 describe "get_next_request" {
                     describe "with_known_oid" {
 
@@ -358,7 +359,7 @@ demonstrate! {
                             let remote_addr = format!("{host_ipaddr}:{device_port}");
                             let oid = string_to_oid(".1.3.6.1.2.1.1.1.0");
                             let response = Client::new(remote_addr.parse().unwrap()).unwrap()
-                                .send_request(get_request_v1(1, "public", vec![oid.clone()]))
+                                .send_request(get_next_request_v1(1, "public", vec![oid]))
                                 .await;
                         }
 
@@ -369,10 +370,11 @@ demonstrate! {
                                     assert_eq!(0, resp.0.error_status.to_u32().unwrap());
                                     assert_eq!(1, resp.0.variable_bindings.len());
                                     let var_bind = resp.0.variable_bindings.first().unwrap();
-                                    assert_eq!(oid, var_bind.name);
+                                    let expected_oid = string_to_oid(".1.3.6.1.2.1.1.2.0");
+                                    assert_eq!(expected_oid, var_bind.name);
                                     let expected_value = ObjectSyntax::Simple(
-                                        SimpleSyntax::String(
-                                            "Linux nmsworker-devel 2.6.18-164.el5 #1 SMP Thu Sep 3 03:28:30 EDT 2009 x86_64".into()));
+                                                SimpleSyntax::Object(
+                                                    string_to_oid(".1.3.6.1.4.1.8072.3.2.10")));
                                     assert_eq!(expected_value, var_bind.value);
                                 }
                                 else {

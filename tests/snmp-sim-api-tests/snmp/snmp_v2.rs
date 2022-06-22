@@ -14,7 +14,7 @@ demonstrate! {
         use num_traits::ToPrimitive;
         use rasn_snmp::v2::*;
         use rasn_smi::v2::*;
-        use crate::snmp::get_request_v2;
+        use crate::snmp::{get_request_v2, get_next_request_v2};
         use snmp_sim::udp_client::Client;
         use snmp_data_parser::parser::snmp_data::component::string_to_oid;
 
@@ -340,6 +340,45 @@ demonstrate! {
                                     let expected_value = VarBindValue::Value(ObjectSyntax::ApplicationWide(
                                         ApplicationSyntax::Address(
                                                 rasn_smi::v1::IpAddress(bytes::Bytes::from(value.octets().to_vec())))));
+                                    assert_eq!(expected_value, var_bind.value);
+                                }
+                                else {
+                                    println!("{:?}", response);
+                                    debug_assert!(false, "Not a valid response");
+                                }
+                            }
+                            else {
+                                println!("{:?}", response);
+                                debug_assert!(false, "Not a valid response");
+                            }
+                        }
+                    }
+                }
+
+                describe "get_next_request" {
+                    describe "with_known_oid" {
+
+                        before {
+                            let remote_addr = format!("{host_ipaddr}:{device_port}");
+                            let oid = string_to_oid(".1.3.6.1.2.1.1.1.0");
+                            let response = Client::new(remote_addr.parse().unwrap()).unwrap()
+                                .send_request(get_next_request_v2(1, "public", vec![oid]))
+                                .await;
+                        }
+
+                        async it "returns_valid_string" {
+                            if let Ok(GenericSnmpMessage::V2Message(msg)) = &response {
+                                if let Pdus::Response(resp) = &msg.data {
+                                    assert_eq!(0, resp.0.error_index.to_u32().unwrap());
+                                    assert_eq!(0, resp.0.error_status.to_u32().unwrap());
+                                    assert_eq!(1, resp.0.variable_bindings.len());
+                                    let var_bind = resp.0.variable_bindings.first().unwrap();
+                                    let expected_oid = string_to_oid(".1.3.6.1.2.1.1.2.0");
+                                    assert_eq!(expected_oid, var_bind.name);
+                                    let expected_value = VarBindValue::Value(
+                                                ObjectSyntax::Simple(
+                                                    SimpleSyntax::ObjectId(
+                                                        string_to_oid(".1.3.6.1.4.1.8072.3.2.10"))));
                                     assert_eq!(expected_value, var_bind.value);
                                 }
                                 else {

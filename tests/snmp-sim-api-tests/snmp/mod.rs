@@ -25,6 +25,20 @@ fn get_request(request_id: i32, protocol: &SnmpProtocolVersion, objects: Vec<Obj
 }
 
 #[allow(dead_code)]
+pub fn get_next_request_v1(request_id: i32, community: &str, objects: Vec<ObjectIdentifier>) -> GenericSnmpMessage {
+    get_next_request(request_id, &SnmpProtocolVersion::SNMPV1(community.to_string()), objects)
+}
+
+#[allow(dead_code)]
+pub fn get_next_request_v2(request_id: i32, community: &str, objects: Vec<ObjectIdentifier>) -> GenericSnmpMessage {
+    get_next_request(
+        request_id,
+        &SnmpProtocolVersion::SNMPV2C(community.to_string()),
+        objects,
+    )
+}
+
+#[allow(dead_code)]
 pub fn get_next_request(
     request_id: i32,
     protocol: &SnmpProtocolVersion,
