@@ -13,7 +13,7 @@ To only compile the application manually you'll need to install:
 - [sqlx-cli](https://crates.io/crates/sqlx-cli)
 - [sea-orm-cli](https://www.sea-ql.org/SeaORM/docs/generate-entity/sea-orm-cli/)
 - [openapi-generator](https://openapi-generator.tech/docs/installation/)
-- [gsed (Only required for Mac, other OS's use sed)](https://formulae.brew.sh/formula/gnu-sed)
+- [bunyan CLI](https://github.com/LukeMathWalker/bunyan)
 
 To use the automated build/test tools, we recommend that you install:
 
@@ -25,19 +25,22 @@ Once Brew is installed, you can install both  `docker` and GNU `make`:
 brew install docker make
 ```
 
-Since macOS provides an older version of GNU `make` (v3.81 dated April 1, 2006),
-we recommend installing and using `gmake`, which provides numerous features and
-performance enhancements.
-
 To use containerization platform, we recommend that you instasll:
 
 - [Docker](https://docs.docker.com/engine/install/)
 - [Docker compose](https://docs.docker.com/compose/install/)
 
-
 For testing purposes, we recommend that you install:
 
 - [Net-SNMP package](http://www.net-snmp.org/)
+
+## MacOS pre-requisutes
+
+- [gsed (Only required for Mac, other OS's use sed)](https://formulae.brew.sh/formula/gnu-sed)
+
+Since macOS provides an older version of GNU `make` (v3.81 dated April 1, 2006),
+we recommend installing and using `gmake`, which provides numerous features and
+performance enhancements.
 
 # How to build
 
@@ -117,6 +120,21 @@ The service implements an HTTP REST API and exposes it to access the simulator f
 [YAML](https://yaml.org/spec/1.2.2/) files are used to store the static service configuration. The configuration files can be extended via merging configuration parameters from environment variables.
 
 The SNMP Simulator uses [SQLite](https://sqlite.org/index.html) database as a persistent storage of runtime configuration.
+
+## Structured Logging
+
+SNMP Simulator outputs the tracing log records in bunyan-compatible JSON format. The JSON format is extremely friendly when it comes to searching: an engine like ElasticSearch can easily ingest all these records, infer a schema and index the request_id, name and email fields. It unlocks the full power of a querying engine to sift through our logs.
+While the JSON format if useful for machine processing, it's almost unreadable for humans. The [bunyan CLI](https://github.com/trentm/node-bunyan#cli-usage) comes to the rescue.
+
+You can simply install the bunyan tool by running the following command:
+```bash
+cargo install bunyan
+```
+
+And then, when you need to prettify the output logs, you can pipe the stdout of `snmp-sim-rust` into `bunyan` like:
+```bash
+cargo run | bunyan
+```
 
 ## Configuration
 
