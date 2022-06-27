@@ -133,3 +133,6 @@ members = [
 
 [patch.crates-io]
 paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }
+
+[build-dependencies]
+clap_mangen = "0.1"
