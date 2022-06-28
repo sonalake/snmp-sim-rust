@@ -6,7 +6,7 @@ fn main() -> std::io::Result<()> {
     println!("cargo:rerun-if-changed=migrations");
     println!("cargo:rerun-if-env-changed=MAN_DIR");
 
-    let package_name: &str = env!("CARGO_PKG_NAME").into();
+    let package_name: &str = env!("CARGO_PKG_NAME");
     let man_dir = std::path::PathBuf::from(std::env::var_os("MAN_DIR").map_or(OsString::from("./man"), |v| v));
 
     let cmd = clap::Command::new(package_name)
