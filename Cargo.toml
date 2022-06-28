@@ -34,6 +34,7 @@ snmp-data-parser = { path = "./crates/snmp-data-parser" }
 rasn-snmp = { path = "./crates/rasn/standards/snmp" }
 rasn-smi  = { path = "./crates/rasn/standards/smi" }
 rasn  = { path = "./crates/rasn" }
+clap = { version = "3.2.6", features = ["derive"] }
 
 actix = "0.13"
 actix-web = { version = "4.1", default_features = false, features = [
@@ -136,3 +137,4 @@ paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }
 
 [build-dependencies]
 clap_mangen = "0.1"
+clap = "3.2"
