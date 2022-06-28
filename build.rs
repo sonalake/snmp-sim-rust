@@ -5,7 +5,7 @@ fn main() -> std::io::Result<()> {
     
     let man_dir = std::path::PathBuf::from(std::env::var_os("MAN_DIR").ok_or_else(|| std::io::ErrorKind::NotFound)?);
 
-    let cmd = clap::Command::new("mybin")
+    let cmd = clap::Command::new("snmp_sim")
         .arg(clap::arg!(-n --name <NAME>))
         .arg(clap::arg!(-c --count <NUM>));
 
@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
     let mut buffer: Vec<u8> = Default::default();
     man.render(&mut buffer)?;
 
-    std::fs::write(man_dir.join("mybin.1"), buffer)?;
+    std::fs::write(man_dir.join("snmp_sim.1"), buffer)?;
 
     Ok(())
 }
