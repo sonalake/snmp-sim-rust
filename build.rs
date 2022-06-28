@@ -3,7 +3,7 @@ fn main() -> std::io::Result<()> {
     // trigger recompilation when a new migration is added
     // println!("cargo:rerun-if-changed=migrations");
     
-    let out_dir = std::path::PathBuf::from(std::env::var_os("OUT_DIR").ok_or_else(|| std::io::ErrorKind::NotFound)?);
+    let man_dir = std::path::PathBuf::from(std::env::var_os("MAN_DIR").ok_or_else(|| std::io::ErrorKind::NotFound)?);
 
     let cmd = clap::Command::new("mybin")
         .arg(clap::arg!(-n --name <NAME>))
@@ -13,7 +13,7 @@ fn main() -> std::io::Result<()> {
     let mut buffer: Vec<u8> = Default::default();
     man.render(&mut buffer)?;
 
-    std::fs::write(out_dir.join("mybin.1"), buffer)?;
+    std::fs::write(man_dir.join("mybin.1"), buffer)?;
 
     Ok(())
 }
