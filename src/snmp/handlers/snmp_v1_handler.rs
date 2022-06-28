@@ -1,9 +1,9 @@
 use crate::domain::to_string_default;
+use crate::domain::AgentContext;
 use crate::domain::ManagedDevice;
 use crate::domain::SnmpProtocolVersion;
 use crate::domain::{handle_get_next_request, handle_get_request};
 use crate::snmp::handlers::snmp_generic_handler::GenericHandlerError;
-use crate::snmp::handlers::snmp_generic_handler::RequestContext;
 use crate::udp_server::udp_stream_handler::UdpStreamHandler;
 
 use actix_async::address::Addr;
@@ -23,7 +23,7 @@ pub(crate) async fn handle_snmp_message_v1(
         rasn_snmp::v1::Pdus::GetRequest(snmp_get_request) => {
             handle_get_request(
                 snmp_get_request.try_into()?,
-                RequestContext::new(
+                AgentContext::new(
                     device,
                     peer,
                     stream_handler_actor,
@@ -36,7 +36,7 @@ pub(crate) async fn handle_snmp_message_v1(
         rasn_snmp::v1::Pdus::GetNextRequest(snmp_get_next_request) => {
             handle_get_next_request(
                 snmp_get_next_request.try_into()?,
-                RequestContext::new(
+                AgentContext::new(
                     device,
                     peer,
                     stream_handler_actor,

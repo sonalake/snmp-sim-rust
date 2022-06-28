@@ -1,7 +1,7 @@
+use crate::domain::AgentContext;
 use crate::domain::ManagedDevice;
 use crate::snmp::codec::generic_snmp_message::GenericSnmpMessage;
 use crate::snmp::codec::snmp_codec::SnmpCodec;
-use crate::snmp::handlers::snmp_generic_handler::RequestContext;
 use crate::udp_server::udp_server_error::UdpServerError;
 use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use snmp_data_parser::parser::snmp_data::VeraxModifierExtractor;
@@ -9,8 +9,8 @@ use snmp_data_parser::SnmpDataParser;
 
 use actix_async::address::Addr;
 use actix_async::prelude::*;
-use futures::stream::SplitSink;
-use futures::stream::StreamExt;
+use futures::future::{BoxFuture, Future};
+use futures::stream::{SplitSink, StreamExt};
 use futures::SinkExt;
 use futures_util::FutureExt;
 use std::cell::RefCell;
@@ -30,12 +30,12 @@ pub(crate) type UdpSplitSink = SplitSink<UdpFramed<SnmpCodec>, UdpSinkItem>;
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) type UdpServerHandler =
-    dyn Fn(GenericSnmpMessage, ManagedDevice, SocketAddr, Addr<UdpStreamHandler>, SnmpData);
+    dyn Fn(GenericSnmpMessage, ManagedDevice, SocketAddr, Addr<UdpStreamHandler>, SnmpData) -> BoxFuture<'static, ()>;
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) struct UdpStreamHandler {
     init_result: Option<Result<(), UdpServerError>>,
-    request_handler: &'static UdpServerHandler,
+    request_handler: Box<UdpServerHandler>,
     device: ManagedDevice,
     sink: RefCell<Option<UdpSplitSink>>,
     snmp_data: Option<SnmpData>,
@@ -53,13 +53,16 @@ pub(crate) struct UdpMessage(pub Result<(GenericSnmpMessage, SocketAddr), String
 message!(UdpMessage, ());
 
 impl UdpStreamHandler {
-    pub async fn new(
-        request_handler: &'static UdpServerHandler,
-        device: ManagedDevice,
-    ) -> Result<Addr<Self>, UdpServerError> {
+    pub async fn new<F, Fut>(request_handler: F, device: ManagedDevice) -> Result<Addr<Self>, UdpServerError>
+    where
+        F: Fn(GenericSnmpMessage, ManagedDevice, SocketAddr, Addr<UdpStreamHandler>, SnmpData) -> Fut + 'static,
+        Fut: Future<Output = ()> + Send + Sync + 'static,
+    {
         let mut actor = UdpStreamHandler {
             init_result: None,
-            request_handler,
+            request_handler: Box::new(move |message, device, peer, stream_handler_actor, snmp_data| {
+                Box::pin(request_handler(message, device, peer, stream_handler_actor, snmp_data))
+            }),
             device,
             sink: RefCell::new(None),
             snmp_data: None,
@@ -107,15 +110,21 @@ impl UdpStreamHandler {
 
         let std_socket =
             StdUdpSocket::bind(binding_address).map_err(|error| UdpServerError::StartFailed(error.to_string()))?;
+
         // socket must be set to unblocking mode to avoid thread hang
         std_socket
             .set_nonblocking(true)
             .map_err(|error| UdpServerError::StartFailed(error.to_string()))?;
         let socket =
             TokioUdpSocket::from_std(std_socket).map_err(|error| UdpServerError::StartFailed(error.to_string()))?;
+
+        // create a UdpFramed object using the SnmpCodec to work with the encoded/decoded frames directly, instead of raw UDP data
         let (sink, stream) = UdpFramed::new(socket, SnmpCodec::default()).split();
         let mut self_sink_mut = self.sink.borrow_mut();
         *self_sink_mut = Some(sink);
+
+        // Add the stream to the actor's context.
+        // Stream item will be treated as a concurrent message and the actor's handle will be called.
         ctx.add_stream(stream.map(|a| UdpMessage(a.map_err(|e| e.to_string()))));
 
         Ok(())
@@ -145,7 +154,8 @@ impl Handler<UdpMessage> for UdpStreamHandler {
                     peer,
                     ctx.address().unwrap(),
                     self.snmp_data.clone().unwrap(),
-                );
+                )
+                .await;
             }
 
             Err(error) => {
@@ -189,7 +199,7 @@ impl Handler<SendData> for UdpStreamHandler {
 
 #[tracing::instrument(level = "info", name = "send_data")]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-pub(crate) fn send_data(message: GenericSnmpMessage, request_context: &RequestContext) {
+pub(crate) fn send_data(message: GenericSnmpMessage, request_context: &AgentContext) {
     request_context.stream_handler_actor.do_send(SendData {
         message,
         peer: request_context.peer,

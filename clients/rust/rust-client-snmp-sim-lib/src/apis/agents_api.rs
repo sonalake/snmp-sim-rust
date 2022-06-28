@@ -19,6 +19,10 @@ use super::{Error, configuration};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AgentsGetError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -26,6 +30,10 @@ pub enum AgentsGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AgentsIdDeleteError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -33,6 +41,10 @@ pub enum AgentsIdDeleteError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AgentsIdGetError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -40,6 +52,10 @@ pub enum AgentsIdGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AgentsIdPutError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -47,6 +63,10 @@ pub enum AgentsIdPutError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AgentsPostError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
