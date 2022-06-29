@@ -5,7 +5,9 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
-struct Value {}
+struct Value {
+    /* To be filled with args/values */
+}
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
