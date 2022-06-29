@@ -1,6 +1,6 @@
+use crate::domain::AgentContext;
 use crate::domain::{ErrorStatus, GetNextRequest, GetRequest, GetResponse, GetResponseError, Variable};
 use crate::snmp::codec::generic_snmp_message::GenericSnmpMessage;
-use crate::snmp::handlers::snmp_generic_handler::RequestContext;
 use crate::udp_server::udp_stream_handler::send_data;
 
 use actix::prelude::*;
@@ -54,7 +54,7 @@ impl SystemService for SnmpAgentCommandResponder {}
 #[rtype(result = "Result<(), SnmpAgentCommandResponderError>")]
 struct Get {
     pub request: GetRequest,
-    pub request_context: RequestContext,
+    pub request_context: AgentContext,
 }
 
 impl Handler<Get> for SnmpAgentCommandResponder {
@@ -124,7 +124,7 @@ impl Handler<Get> for SnmpAgentCommandResponder {
 #[rtype(result = "Result<(), SnmpAgentCommandResponderError>")]
 struct GetNext {
     pub request: GetNextRequest,
-    pub request_context: RequestContext,
+    pub request_context: AgentContext,
 }
 
 impl Handler<GetNext> for SnmpAgentCommandResponder {
@@ -201,7 +201,7 @@ impl Handler<GetNext> for SnmpAgentCommandResponder {
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn handle_get_request(
     request: GetRequest,
-    request_context: RequestContext,
+    request_context: AgentContext,
 ) -> Result<(), SnmpAgentCommandResponderError> {
     tracing::info!("Get SnmpAgentCommandResponder from registry");
     let act = SnmpAgentCommandResponder::from_registry();
@@ -218,7 +218,7 @@ pub(crate) async fn handle_get_request(
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) async fn handle_get_next_request(
     request: GetNextRequest,
-    request_context: RequestContext,
+    request_context: AgentContext,
 ) -> Result<(), SnmpAgentCommandResponderError> {
     let act = SnmpAgentCommandResponder::from_registry();
     act.try_send(GetNext {

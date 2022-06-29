@@ -1,3 +1,5 @@
+pub mod _agents_get_400_response;
+pub use self::_agents_get_400_response::AgentsGet400Response;
 pub mod request_agent;
 pub use self::request_agent::RequestAgent;
 pub mod request_device;

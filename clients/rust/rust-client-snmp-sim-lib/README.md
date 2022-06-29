@@ -41,6 +41,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [AgentsGet400Response](docs/AgentsGet400Response.md)
  - [RequestAgent](docs/RequestAgent.md)
  - [RequestDevice](docs/RequestDevice.md)
  - [RequestDeviceSnmpProtocolAttributes](docs/RequestDeviceSnmpProtocolAttributes.md)

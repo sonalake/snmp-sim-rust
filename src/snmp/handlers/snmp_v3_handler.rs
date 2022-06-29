@@ -1,6 +1,6 @@
 use crate::domain::ManagedDevice;
 //use crate::domain::SnmpProtocolVersion;
-//use crate::snmp::handlers::snmp_generic_handler::RequestContext;
+//use crate::snmp::handlers::snmp_generic_handler::AgentContext;
 use crate::snmp::handlers::snmp_generic_handler::GenericHandlerError;
 use crate::udp_server::udp_stream_handler::UdpStreamHandler;
 

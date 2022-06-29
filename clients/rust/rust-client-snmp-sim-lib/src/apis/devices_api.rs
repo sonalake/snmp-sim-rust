@@ -19,6 +19,10 @@ use super::{Error, configuration};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesGetError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -26,6 +30,10 @@ pub enum DevicesGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesIdDeleteError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -33,6 +41,10 @@ pub enum DevicesIdDeleteError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesIdGetError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -40,6 +52,10 @@ pub enum DevicesIdGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesIdPutError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -47,6 +63,10 @@ pub enum DevicesIdPutError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesIdStartPutError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -54,6 +74,10 @@ pub enum DevicesIdStartPutError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesIdStopPutError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
@@ -61,6 +85,10 @@ pub enum DevicesIdStopPutError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DevicesPostError {
+    Status400(crate::models::AgentsGet400Response),
+    Status404(crate::models::AgentsGet400Response),
+    Status409(crate::models::AgentsGet400Response),
+    Status500(crate::models::AgentsGet400Response),
     UnknownValue(serde_json::Value),
 }
 
