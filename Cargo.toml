@@ -51,7 +51,7 @@ serde-aux = "3.0"
 thiserror = "1.0"
 tokio = "1.19"
 tokio-util = { version = "0.7", features = ["codec", "net"] }
-tracing-actix-web = "0.5"
+tracing-actix-web = "0.6"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = [
   "registry",
@@ -90,6 +90,8 @@ strum_macros = "0.24"
 futures-util = { version = "0.3", default-features = false, features = [
    "alloc",
 ] }
+cached = "0.34"
+num_cpus = "1"
 
 [dev-dependencies]
 snmp-sim = { path = ".", features = ["integration-tests"] }

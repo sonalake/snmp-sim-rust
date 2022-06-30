@@ -4,6 +4,7 @@ use crate::snmp::codec::generic_snmp_message::GenericSnmpMessage;
 use crate::udp_server::udp_stream_handler::send_data;
 
 use actix::prelude::*;
+use cached::proc_macro::cached;
 use rasn::prelude::ObjectIdentifier;
 use shared_common::error_chain_fmt;
 use snmp_data_parser::parser::ParserError;
@@ -43,11 +44,10 @@ impl From<Infallible> for SnmpAgentCommandResponderError {
 struct SnmpAgentCommandResponder;
 
 impl Actor for SnmpAgentCommandResponder {
-    type Context = Context<Self>;
+    type Context = SyncContext<Self>;
 }
 
 impl Supervised for SnmpAgentCommandResponder {}
-impl SystemService for SnmpAgentCommandResponder {}
 
 // SNMP GetRequest Handler
 #[derive(Message, Debug)]
@@ -65,7 +65,7 @@ impl Handler<Get> for SnmpAgentCommandResponder {
         name = "SnmpAgentCommandResponder::handle_get_request",
         skip(self, get_msg, _ctx)
     )]
-    fn handle(&mut self, get_msg: Get, _ctx: &mut Context<Self>) -> Self::Result {
+    fn handle(&mut self, get_msg: Get, _ctx: &mut Self::Context) -> Self::Result {
         let get_request = get_msg.request;
         let variables = get_request
             .objects
@@ -135,7 +135,7 @@ impl Handler<GetNext> for SnmpAgentCommandResponder {
         name = "SnmpAgentCommandResponder::handle_get_next_request",
         skip(self, get_next_msg, _ctx)
     )]
-    fn handle(&mut self, get_next_msg: GetNext, _ctx: &mut Context<Self>) -> Self::Result {
+    fn handle(&mut self, get_next_msg: GetNext, _ctx: &mut Self::Context) -> Self::Result {
         let get_next_request = get_next_msg.request;
         let variables = get_next_request
             .objects
@@ -203,15 +203,12 @@ pub(crate) async fn handle_get_request(
     request: GetRequest,
     request_context: AgentContext,
 ) -> Result<(), SnmpAgentCommandResponderError> {
-    tracing::info!("Get SnmpAgentCommandResponder from registry");
-    let act = SnmpAgentCommandResponder::from_registry();
-
-    tracing::info!("Sending message to SnmpAgentCommandResponder actor");
-    act.try_send(Get {
-        request,
-        request_context,
-    })
-    .map_err(|err| SnmpAgentCommandResponderError::SendError(err.to_string()))
+    command_responder_actor()
+        .try_send(Get {
+            request,
+            request_context,
+        })
+        .map_err(|err| SnmpAgentCommandResponderError::SendError(err.to_string()))
 }
 
 #[tracing::instrument(level = "info", name = "handle_get_next_request")]
@@ -220,10 +217,15 @@ pub(crate) async fn handle_get_next_request(
     request: GetNextRequest,
     request_context: AgentContext,
 ) -> Result<(), SnmpAgentCommandResponderError> {
-    let act = SnmpAgentCommandResponder::from_registry();
-    act.try_send(GetNext {
-        request,
-        request_context,
-    })
-    .map_err(|err| SnmpAgentCommandResponderError::SendError(err.to_string()))
+    command_responder_actor()
+        .try_send(GetNext {
+            request,
+            request_context,
+        })
+        .map_err(|err| SnmpAgentCommandResponderError::SendError(err.to_string()))
+}
+
+#[cached]
+fn command_responder_actor() -> Addr<SnmpAgentCommandResponder> {
+    SyncArbiter::start(num_cpus::get(), || SnmpAgentCommandResponder)
 }
