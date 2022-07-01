@@ -1,6 +1,6 @@
 use serde_aux::field_attributes::deserialize_number_from_string;
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Clone)]
 /// Structure representing the application settings
 pub struct ApplicationSettings {
     /// The IP address or the TCP/IP hostname of the SNMP Simulator HTTP server

@@ -4,7 +4,7 @@ use config::Environment;
 use config::File;
 use std::path::PathBuf;
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Clone)]
 /// Represents the implemented settings of the SNMP Simulator service.
 pub struct Settings {
     pub application: ApplicationSettings,

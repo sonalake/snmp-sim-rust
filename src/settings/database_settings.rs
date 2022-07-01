@@ -4,7 +4,7 @@ use std::fs;
 use std::path::Path;
 use std::str::FromStr;
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Clone)]
 /// Structure representing the database settings
 pub struct DatabaseSettings {
     /// database connection URI
