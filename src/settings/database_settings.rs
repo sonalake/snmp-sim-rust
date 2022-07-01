@@ -8,10 +8,16 @@ use std::str::FromStr;
 /// Structure representing the database settings
 pub struct DatabaseSettings {
     /// database connection URI
+    #[serde(default = "default_connection_uri")]
     connection_uri: String,
     #[serde(default = "default_tests_skip_drop")]
     pub tests_skip_drop: bool,
 }
+
+fn default_connection_string() -> String {
+    "sqlite://~/.snmp-sim/snmp-sim.db".to_string()
+}
+
 
 fn default_tests_skip_drop() -> bool {
     false

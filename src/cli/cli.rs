@@ -1,4 +1,5 @@
 use configuration::Settings;
+use clap::Parser;
 
 fn main() -> Result<(), serde::yaml::Error> {
 

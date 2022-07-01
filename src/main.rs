@@ -1,7 +1,6 @@
 use anyhow::Context;
 use snmp_sim::app::Service;
 use snmp_sim::configuration::get_configuration;
-use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
