@@ -4,7 +4,7 @@ use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;
 
-fn main() -> Result<(), serde::yaml::Error> {
+fn write_data_to_file() -> Result<(), serde::yaml::Error> {
 
     // Assigns path to base.yaml file to variable. Immutable
     let path = Path::new("./configuration/base.yaml")
@@ -20,7 +20,7 @@ fn main() -> Result<(), serde::yaml::Error> {
 
     // If file does not exist, write serialized data to it
     if !std::path::Path::new(path).exists(){
-        
+
         // Assigns the file to mutable variable
         let mut buffer = File::create("base.yaml")?;
 
