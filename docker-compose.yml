@@ -1,11 +1,12 @@
 version: '3.9'
 services:
   snmp-sim:
-    image: snmp-sim
+    image: fhorvath80/snmp-sim-rust
     build:
       context: .
     ports:
-      - 8161:8161/udp
+      - 8080:8080/tcp
+      - 30160-30200:30160-30200/udp
     restart: unless-stopped
     logging:
       options:

@@ -3,9 +3,10 @@ use crate::domain::SnmpAgentCommandResponderError;
 use crate::domain::ValidationError;
 use crate::snmp::codec::generic_snmp_message::GenericSnmpMessage;
 use crate::udp_server::udp_stream_handler::UdpStreamHandler;
-use macro_rules_attribute::macro_rules_attribute;
 
 use actix_async::address::Addr;
+use macro_rules_attribute::macro_rules_attribute;
+use shared_common::dyn_async;
 use shared_common::error_chain_fmt;
 use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use std::convert::Infallible;
@@ -37,28 +38,6 @@ impl From<Infallible> for GenericHandlerError {
         unreachable!("could not convert Infallible to GenericHandlerError")
     }
 }
-
-#[macro_export]
-macro_rules! dyn_async {(
-    $( #[$attr:meta] )* // includes doc strings
-    $pub:vis
-    async
-    fn $fname:ident<$lt:lifetime> ( $($args:tt)* ) $(-> $Ret:ty)?
-    {
-        $($body:tt)*
-    }
-) => (
-    $( #[$attr] )*
-    #[allow(unused_parens)]
-    $pub
-    fn $fname<$lt> ( $($args)* ) -> ::std::pin::Pin<::std::boxed::Box<
-        dyn ::std::future::Future<Output = ($($Ret)?)>
-            + ::std::marker::Send + $lt
-    >>
-    {
-        ::std::boxed::Box::pin(async move { $($body)* })
-    }
-)}
 
 #[tracing::instrument(
     level = "debug",
