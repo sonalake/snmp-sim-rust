@@ -8,6 +8,7 @@ use crate::udp_server::udp_stream_handler::UdpStreamHandler;
 use actix_async::address::Addr;
 use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 #[tracing::instrument(level = "debug", name = "handle_snmp_message_v2", skip(snmp_data))]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
@@ -16,7 +17,7 @@ pub(crate) async fn handle_snmp_message_v2(
     device: ManagedDevice,
     peer: SocketAddr,
     stream_handler_actor: Addr<UdpStreamHandler>,
-    snmp_data: SnmpData,
+    snmp_data: Arc<SnmpData>,
 ) -> Result<(), GenericHandlerError> {
     match v2_request.data {
         rasn_snmp::v2::Pdus::GetRequest(snmp_get_request) => {

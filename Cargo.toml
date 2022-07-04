@@ -90,8 +90,9 @@ strum_macros = "0.24"
 futures-util = { version = "0.3", default-features = false, features = [
    "alloc",
 ] }
-cached = "0.34"
+cached = "0.35.0"
 num_cpus = "1"
+macro_rules_attribute = "0.1"
 
 [dev-dependencies]
 snmp-sim = { path = ".", features = ["integration-tests"] }

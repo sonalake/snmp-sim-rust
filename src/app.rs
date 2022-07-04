@@ -85,11 +85,10 @@ impl Service {
         let binding_address = format!("{}:{}", configuration.application.host, configuration.application.port);
         tracing::debug!("HttpServer binding address: {}", binding_address);
 
-        // creates only one instance of UdpServerProvider and only the actor address is cloned per each worker
-        let udp_server_delegate = create_udp_server_delegate()?;
-
         // start an instance of http restful api
         HttpServer::new(move || {
+            // creates one instance of UdpServerProvider per each actor
+            let udp_server_delegate = create_udp_server_delegate();
             let app = App::new()
                 .wrap(Compat::new(TracingLogger::default()))
                 .wrap(NormalizePath::new(TrailingSlash::Trim))
@@ -97,7 +96,7 @@ impl Service {
                 .app_data(path_extractor_config())
                 .app_data(query_extractor_config())
                 .app_data(actix_web::web::Data::new(db_conn.clone()))
-                .app_data(Data::new(udp_server_delegate.clone()))
+                .app_data(Data::new(udp_server_delegate))
                 .wrap_api()
                 .with_json_spec_at("/api/spec/v2")
                 .with_json_spec_v3_at("/api/spec/v3")
@@ -116,9 +115,7 @@ impl Service {
 
 #[tracing::instrument(level = "info", name = "create_udp_server_delegate")]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-pub(crate) fn create_udp_server_delegate() -> anyhow::Result<UdpServerDelegate> {
+pub(crate) fn create_udp_server_delegate() -> UdpServerDelegate {
     // start an instance of UdpServerProvider actor
-    Ok(UdpServerDelegate::new(actix_async::prelude::Actor::start(
-        UdpServerProvider::new(),
-    )))
+    UdpServerDelegate::new(actix_async::prelude::Actor::start(UdpServerProvider::new()))
 }

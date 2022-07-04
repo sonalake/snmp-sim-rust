@@ -6,6 +6,7 @@ use actix_async::address::Addr;
 use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use std::fmt;
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) struct AgentContext {
@@ -13,7 +14,7 @@ pub(crate) struct AgentContext {
     pub peer: SocketAddr,
     pub stream_handler_actor: Addr<UdpStreamHandler>,
     pub version: SnmpProtocolVersion,
-    pub snmp_data: SnmpData,
+    pub snmp_data: Arc<SnmpData>,
 }
 
 impl AgentContext {
@@ -22,7 +23,7 @@ impl AgentContext {
         peer: SocketAddr,
         stream_handler_actor: Addr<UdpStreamHandler>,
         version: SnmpProtocolVersion,
-        snmp_data: SnmpData,
+        snmp_data: Arc<SnmpData>,
     ) -> Self {
         AgentContext {
             device,

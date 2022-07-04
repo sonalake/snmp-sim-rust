@@ -49,7 +49,7 @@ impl Handler<StartSnmpDevice> for UdpServerProvider {
             Err(UdpServerError::DeviceAlreadyRunning)
         } else {
             let device_id = msg.device.id;
-            let udp_stream_handler_addr = UdpStreamHandler::new(&generic_snmp_message_handler, msg.device).await?;
+            let udp_stream_handler_addr = UdpStreamHandler::new(generic_snmp_message_handler, msg.device).await?;
             self.udp_stream_handlers
                 .write()
                 .await

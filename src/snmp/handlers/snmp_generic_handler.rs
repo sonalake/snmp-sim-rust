@@ -3,12 +3,14 @@ use crate::domain::SnmpAgentCommandResponderError;
 use crate::domain::ValidationError;
 use crate::snmp::codec::generic_snmp_message::GenericSnmpMessage;
 use crate::udp_server::udp_stream_handler::UdpStreamHandler;
+use macro_rules_attribute::macro_rules_attribute;
 
 use actix_async::address::Addr;
 use shared_common::error_chain_fmt;
 use snmp_data_parser::parser::snmp_data::component::SnmpData;
 use std::convert::Infallible;
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 use super::snmp_v1_handler::*;
 use super::snmp_v2_handler::*;
@@ -36,18 +38,41 @@ impl From<Infallible> for GenericHandlerError {
     }
 }
 
+#[macro_export]
+macro_rules! dyn_async {(
+    $( #[$attr:meta] )* // includes doc strings
+    $pub:vis
+    async
+    fn $fname:ident<$lt:lifetime> ( $($args:tt)* ) $(-> $Ret:ty)?
+    {
+        $($body:tt)*
+    }
+) => (
+    $( #[$attr] )*
+    #[allow(unused_parens)]
+    $pub
+    fn $fname<$lt> ( $($args)* ) -> ::std::pin::Pin<::std::boxed::Box<
+        dyn ::std::future::Future<Output = ($($Ret)?)>
+            + ::std::marker::Send + $lt
+    >>
+    {
+        ::std::boxed::Box::pin(async move { $($body)* })
+    }
+)}
+
 #[tracing::instrument(
     level = "debug",
     name = "generic_snmp_message_handler",
     skip(generic_request, stream_handler_actor, snmp_data)
 )]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
-pub(crate) async fn generic_snmp_message_handler(
+#[macro_rules_attribute(dyn_async!)]
+pub(crate) async fn generic_snmp_message_handler<'fut>(
     generic_request: GenericSnmpMessage,
     device: ManagedDevice,
     peer: SocketAddr,
     stream_handler_actor: Addr<UdpStreamHandler>,
-    snmp_data: SnmpData,
+    snmp_data: Arc<SnmpData>,
 ) {
     // Handle the generic_request
     if let Err(error) = match generic_request {

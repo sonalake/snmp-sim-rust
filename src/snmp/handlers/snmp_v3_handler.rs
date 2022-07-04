@@ -1,4 +1,5 @@
 use crate::domain::ManagedDevice;
+use std::sync::Arc;
 //use crate::domain::SnmpProtocolVersion;
 //use crate::snmp::handlers::snmp_generic_handler::AgentContext;
 use crate::snmp::handlers::snmp_generic_handler::GenericHandlerError;
@@ -22,7 +23,7 @@ pub(crate) async fn handle_snmp_message_v3(
     _device: ManagedDevice,
     _peer: SocketAddr,
     _stream_handler_actor: Addr<UdpStreamHandler>,
-    _snmp_data: SnmpData,
+    _snmp_data: Arc<SnmpData>,
 ) -> Result<(), GenericHandlerError> {
     Ok(())
 }
