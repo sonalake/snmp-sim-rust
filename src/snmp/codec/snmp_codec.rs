@@ -82,7 +82,6 @@ impl Decoder for SnmpCodec {
         // changed to accept the data as immutable then the input data needs to
         // be shorten by the decoced data length => the snmp-parser crate
         // implements that feature correctly
-        #[allow(mutable_borrow_reservation_conflict)]
         data.advance(decoder.decoded_len());
 
         result
