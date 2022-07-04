@@ -22,9 +22,11 @@ fn write_data_to_file() -> Result<(), serde::yaml::Error> {
     if !std::path::Path::new(path).exists(){
 
         // Assigns the file to mutable variable
-        let mut buffer = File::create("base.yaml")?;
+        let mut buffer = File::create(path)?;
 
         buffer.write(s)?;
+
+        Ok(())
     }
 
     Ok(())
