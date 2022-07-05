@@ -82,9 +82,8 @@ demonstrate! {
                 }
 
                 async it "returns_20_devices" {
-                    let _json: Vec<response::Device> = response.json().await.unwrap();
-                    // TODO [FHO] pagination disabled for devices
-                    //assert_eq!(20, json.len());
+                    let json: Vec<response::Device> = response.json().await.unwrap();
+                    assert_eq!(20, json.len());
                 }
             }
 

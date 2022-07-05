@@ -4,7 +4,7 @@ use crate::data_access::entity::managed_devices::{
 };
 use crate::data_access::helpers::get_agent;
 use crate::domain::CreateResult;
-use sea_orm::{entity::prelude::*, ActiveValue, ConnectionTrait, DbErr, Delete, DeleteResult, EntityTrait};
+use sea_orm::{entity::prelude::*, query::*, ActiveValue, ConnectionTrait, DbErr, Delete, DeleteResult, EntityTrait};
 use uuid_dev::Uuid;
 
 #[allow(clippy::too_many_arguments)]
@@ -84,13 +84,12 @@ pub(crate) async fn list_managed_devices<'db>(
     page: usize,
     page_size: usize,
 ) -> Result<Vec<(DevicesModel, Vec<AgentsModel>)>, DbErr> {
-    //let paginator =
     ManagedDevices::find()
         .find_with_related(Agents)
+        .offset(((page - 1) * page_size).try_into().unwrap())
+        .limit(page_size.try_into().unwrap())
         .all(conn)
         .await
-    //     .paginate(conn, page_size);
-    // paginator.fetch_page(page - 1).await
 }
 
 #[allow(clippy::too_many_arguments)]
