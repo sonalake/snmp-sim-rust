@@ -41,13 +41,22 @@ RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 RUN cargo build --release --bin "${APP_NAME}"
 
+WORKDIR /${APP_NAME}/snmp-sim-cli/
+
+RUN cargo build --release
+
+WORKDIR /${APP_NAME}/target/${RELEASE_OR_DEBUG}
+
 ### Minimal runtime image
 FROM ${BASE_IMAGE} as runtime
 ARG RELEASE_OR_DEBUG
 ARG APP_NAME
 
 COPY --from=builder /${APP_NAME}/target/${RELEASE_OR_DEBUG}/${APP_NAME} /service
+COPY --from=builder /${APP_NAME}/target/${RELEASE_OR_DEBUG}/snmp-sim-cli /snmp-sim-cli
 COPY --from=builder /${APP_NAME}/configuration/base.yaml /configuration/base.yaml
-COPY --from=builder /lib/x86_64-linux-gnu/libm* /lib/x86_64-linux-gnu/
+COPY --from=builder /${APP_NAME}/os-linux-std.txt /os-linux-std.txt
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libssl* /lib/x86_64-linux-gnu
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libcrypto* /lib/x86_64-linux-gnu
 
 ENTRYPOINT ["/service"]
