@@ -33,15 +33,7 @@ use std::io::ErrorKind;
 //     Ok(())
 // }
 
-fn generate_default_config(y) -> Result<(), serde::yaml::Error> {
-    // Overwrite variable to see if variable passed in
-    let overwrite: bool
-
-    if y == None{
-        overwrite = False;
-    } else{
-        overwrite == True;
-    };
+fn generate_default_config(overwrite:bool) -> Result<(), serde::yaml::Error> {
 
     // Path to file
     let path = Path::new("./configuration/base.yaml");
@@ -53,7 +45,7 @@ fn generate_default_config(y) -> Result<(), serde::yaml::Error> {
     let s = serde_yaml::to_string(&settings)?;
     
     // Creates file in directory
-    let f = File::create("./configuration/base.yaml");
+    let f = File::create(&path);
 
     // match statement, if file creates
     // let f = match f {

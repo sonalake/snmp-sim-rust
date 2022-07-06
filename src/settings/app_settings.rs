@@ -29,7 +29,7 @@ fn default_port() -> u16 {
 }
 
 fn default_uri_prefix() -> String {
-    "mngmt/v1".to_string()
+    "".to_string()
 }
 
 fn default_verbosity_level() -> String {

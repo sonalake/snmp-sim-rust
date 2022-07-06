@@ -18,7 +18,6 @@ fn default_connection_uri() -> String {
     "sqlite://~/.snmp-sim/snmp-sim.db".to_string()
 }
 
-
 fn default_tests_skip_drop() -> bool {
     false
 }
