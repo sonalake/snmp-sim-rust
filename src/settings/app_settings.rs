@@ -19,3 +19,19 @@ pub struct ApplicationSettings {
     #[serde(default = "default_verbosity_level")]
     pub level: String,
 }
+
+fn default_host() -> String {
+    "0.0.0.0".to_string()
+}
+
+fn default_port() -> u16 {
+    8080
+}
+
+fn default_uri_prefix() -> String {
+    "mngmt/v1".to_string()
+}
+
+fn default_verbosity_level() -> String {
+    "error".to_string()
+}

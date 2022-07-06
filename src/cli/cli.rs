@@ -3,6 +3,7 @@ use clap::Parser;
 use std::io::prelude::*;
 use std::fs::File;
 use std::path::Path;
+use std::io::ErrorKind;
 
 // fn write_data_to_file() -> Result<(), serde::yaml::Error> {
 
@@ -32,9 +33,18 @@ use std::path::Path;
 //     Ok(())
 // }
 
-fn generate_default_config() -> Result<(), serde::yaml::Error> {
+fn generate_default_config(y) -> Result<(), serde::yaml::Error> {
     // Overwrite variable to see if variable passed in
     let overwrite: bool
+
+    if y == None{
+        overwrite = False;
+    } else{
+        overwrite == True;
+    };
+
+    // Path to file
+    let path = Path::new("./configuration/base.yaml");
 
     // Insert code for variable holding default values
     let settings = Settings::default();
@@ -46,8 +56,22 @@ fn generate_default_config() -> Result<(), serde::yaml::Error> {
     let f = File::create("./configuration/base.yaml");
 
     // match statement, if file creates
+    // let f = match f {
+    //     Ok(file) => file,
+    //     Err(error) => panic!("This file already exists {:?}", error),
+    // };
+
     let f = match f {
         Ok(file) => file,
-        Err(error) => panic!("This file already exists {:?}", error),
+        Err(error) => match error.kind() {
+            ErrorKind::AlreadyExists => match File::open(path) {
+                Ok(fo) => {
+                    if overwrite == True {
+                        fo,
+                    };
+                }
+                Err(err) => panic!("This file already exists {:?}", err);
+            }
+        },
     };
 }

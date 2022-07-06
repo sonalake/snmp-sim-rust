@@ -14,7 +14,7 @@ pub struct DatabaseSettings {
     pub tests_skip_drop: bool,
 }
 
-fn default_connection_string() -> String {
+fn default_connection_uri() -> String {
     "sqlite://~/.snmp-sim/snmp-sim.db".to_string()
 }
 
