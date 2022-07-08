@@ -83,13 +83,16 @@ pub(crate) async fn list_managed_devices<'db>(
     conn: &'db impl ConnectionTrait,
     page: usize,
     page_size: usize,
-) -> Result<Vec<(DevicesModel, Vec<AgentsModel>)>, DbErr> {
-    ManagedDevices::find()
+) -> Result<(usize, Vec<(DevicesModel, Vec<AgentsModel>)>), DbErr> {
+    let num_items: usize = ManagedDevices::find().count(conn).await?;
+    let devices = ManagedDevices::find()
         .find_with_related(Agents)
         .offset(((page - 1) * page_size).try_into().unwrap())
         .limit(page_size.try_into().unwrap())
         .all(conn)
-        .await
+        .await?;
+
+    Ok((num_items, devices))
 }
 
 #[allow(clippy::too_many_arguments)]

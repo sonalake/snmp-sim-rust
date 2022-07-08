@@ -11,8 +11,11 @@ docs/RequestDeviceSnmpProtocolAttributes.md
 docs/RequestDeviceSnmpProtocolAttributesSnmpV1.md
 docs/RequestDeviceSnmpProtocolAttributesSnmpV3.md
 docs/ResponseAgent.md
+docs/ResponseAgents.md
+docs/ResponseAgentsAgentsInner.md
 docs/ResponseDevice.md
-docs/ResponseDeviceAgent.md
+docs/ResponseDevices.md
+docs/ResponseDevicesDevicesInner.md
 git_push.sh
 src/apis/agents_api.rs
 src/apis/configuration.rs
@@ -27,5 +30,8 @@ src/models/request_device_snmp_protocol_attributes.rs
 src/models/request_device_snmp_protocol_attributes_snmp_v1.rs
 src/models/request_device_snmp_protocol_attributes_snmp_v3.rs
 src/models/response_agent.rs
+src/models/response_agents.rs
+src/models/response_agents_agents_inner.rs
 src/models/response_device.rs
-src/models/response_device_agent.rs
+src/models/response_devices.rs
+src/models/response_devices_devices_inner.rs

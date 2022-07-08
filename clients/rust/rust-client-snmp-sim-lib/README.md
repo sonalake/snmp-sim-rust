@@ -48,8 +48,11 @@ Class | Method | HTTP request | Description
  - [RequestDeviceSnmpProtocolAttributesSnmpV1](docs/RequestDeviceSnmpProtocolAttributesSnmpV1.md)
  - [RequestDeviceSnmpProtocolAttributesSnmpV3](docs/RequestDeviceSnmpProtocolAttributesSnmpV3.md)
  - [ResponseAgent](docs/ResponseAgent.md)
+ - [ResponseAgents](docs/ResponseAgents.md)
+ - [ResponseAgentsAgentsInner](docs/ResponseAgentsAgentsInner.md)
  - [ResponseDevice](docs/ResponseDevice.md)
- - [ResponseDeviceAgent](docs/ResponseDeviceAgent.md)
+ - [ResponseDevices](docs/ResponseDevices.md)
+ - [ResponseDevicesDevicesInner](docs/ResponseDevicesDevicesInner.md)
 
 
 To get access to the crate's generated documentation, use:

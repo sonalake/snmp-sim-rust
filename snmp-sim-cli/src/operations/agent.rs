@@ -11,8 +11,8 @@ pub(crate) async fn list_agents(ctx: &CliContext<'_>) -> Result<(), anyhow::Erro
     let mut configuration = Configuration::new();
     configuration.base_path = ctx.url();
 
-    let agents = agents_get(&configuration, None, None).await?;
-    for agent in agents.iter() {
+    let response = agents_get(&configuration, None, None).await?;
+    for agent in response.agents.iter() {
         println!("{:#?}", agent);
     }
 

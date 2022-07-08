@@ -71,7 +71,7 @@ pub enum AgentsPostError {
 }
 
 
-pub async fn agents_get(configuration: &configuration::Configuration, page: Option<i64>, page_size: Option<i64>) -> Result<Vec<crate::models::ResponseAgent>, Error<AgentsGetError>> {
+pub async fn agents_get(configuration: &configuration::Configuration, page: Option<i64>, page_size: Option<i64>) -> Result<crate::models::ResponseAgents, Error<AgentsGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;

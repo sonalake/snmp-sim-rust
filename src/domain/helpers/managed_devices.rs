@@ -61,10 +61,10 @@ pub(crate) async fn list_managed_devices<'db>(
     conn: &'db impl ConnectionTrait,
     page: usize,
     page_size: usize,
-) -> Result<Vec<ManagedDevice>, DomainError> {
-    let result = crate::data_access::helpers::list_managed_devices(conn, page, page_size).await?;
+) -> Result<(usize, Vec<ManagedDevice>), DomainError> {
+    let (num_items, devices) = crate::data_access::helpers::list_managed_devices(conn, page, page_size).await?;
 
-    Ok(result.into_iter().map(ManagedDevice::from).collect())
+    Ok((num_items, devices.into_iter().map(ManagedDevice::from).collect()))
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]

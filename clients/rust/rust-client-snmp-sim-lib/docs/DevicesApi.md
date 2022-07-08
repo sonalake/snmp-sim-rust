@@ -16,7 +16,7 @@ Method | HTTP request | Description
 
 ## devices_get
 
-> Vec<crate::models::ResponseDevice> devices_get(page, page_size)
+> crate::models::ResponseDevices devices_get(page, page_size)
 List managed devices
 
 ### Parameters
@@ -29,7 +29,7 @@ Name | Type | Description  | Required | Notes
 
 ### Return type
 
-[**Vec<crate::models::ResponseDevice>**](ResponseDevice.md)
+[**crate::models::ResponseDevices**](ResponseDevices.md)
 
 ### Authorization
 

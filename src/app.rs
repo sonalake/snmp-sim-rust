@@ -117,5 +117,5 @@ impl Service {
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) fn create_udp_server_delegate() -> UdpServerDelegate {
     // start an instance of UdpServerProvider actor
-    UdpServerDelegate::new(actix_async::prelude::Actor::start(UdpServerProvider::new()))
+    UdpServerDelegate::new(actix_async::prelude::Actor::start(UdpServerProvider::default()))
 }
