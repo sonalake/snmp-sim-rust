@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 ## agents_get
 
-> Vec<crate::models::ResponseAgent> agents_get(page, page_size)
+> crate::models::ResponseAgents agents_get(page, page_size)
 List agents
 
 ### Parameters
@@ -27,7 +27,7 @@ Name | Type | Description  | Required | Notes
 
 ### Return type
 
-[**Vec<crate::models::ResponseAgent>**](ResponseAgent.md)
+[**crate::models::ResponseAgents**](ResponseAgents.md)
 
 ### Authorization
 

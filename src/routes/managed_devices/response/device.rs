@@ -43,3 +43,14 @@ impl From<domain::ManagedDevice> for Device {
         }
     }
 }
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, Apiv2Schema)]
+#[openapi(rename = "ResponseDevices")]
+/// An managed device and the number of all items as a response body.
+pub struct Devices {
+    /// The number of all items
+    pub num_items: usize,
+
+    /// The list of devices
+    pub devices: Vec<Device>,
+}

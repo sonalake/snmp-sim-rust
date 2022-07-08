@@ -40,3 +40,14 @@ impl From<&domain::Agent> for Agent {
         }
     }
 }
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, Apiv2Schema)]
+#[openapi(rename = "ResponseAgents")]
+/// List of agents and the number of all items as a response body.
+pub struct Agents {
+    /// The number of all items
+    pub num_items: usize,
+
+    /// List of agents
+    pub agents: Vec<Agent>,
+}

@@ -74,8 +74,8 @@ demonstrate! {
                 }
 
                 async it "returns_20_agents" {
-                    let json: Vec<response::Agent> = response.json().await.unwrap();
-                    assert_eq!(20, json.len());
+                    let json: response::Agents = response.json().await.unwrap();
+                    assert_eq!(20, json.agents.len());
                 }
             }
 

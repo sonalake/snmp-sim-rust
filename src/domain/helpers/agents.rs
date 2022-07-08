@@ -51,10 +51,10 @@ pub(crate) async fn list_agents<'db>(
     conn: &'db impl ConnectionTrait,
     page: usize,
     page_size: usize,
-) -> Result<Vec<Agent>, DomainError> {
-    let result = crate::data_access::helpers::list_agents(conn, page, page_size).await?;
+) -> Result<(usize, Vec<Agent>), DomainError> {
+    let (num_items, agents) = crate::data_access::helpers::list_agents(conn, page, page_size).await?;
 
-    Ok(result.into_iter().map(Agent::from).collect())
+    Ok((num_items, agents.into_iter().map(Agent::from).collect()))
 }
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]

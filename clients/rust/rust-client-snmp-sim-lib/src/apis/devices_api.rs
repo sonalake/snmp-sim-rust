@@ -93,7 +93,7 @@ pub enum DevicesPostError {
 }
 
 
-pub async fn devices_get(configuration: &configuration::Configuration, page: Option<i64>, page_size: Option<i64>) -> Result<Vec<crate::models::ResponseDevice>, Error<DevicesGetError>> {
+pub async fn devices_get(configuration: &configuration::Configuration, page: Option<i64>, page_size: Option<i64>) -> Result<crate::models::ResponseDevices, Error<DevicesGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;

@@ -1,4 +1,4 @@
-# ResponseDevice
+# ResponseDevicesDevicesInner
 
 ## Properties
 

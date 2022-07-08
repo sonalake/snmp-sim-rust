@@ -64,9 +64,10 @@ pub(crate) async fn list_agents<'db>(
     conn: &'db impl ConnectionTrait,
     page: usize,
     page_size: usize,
-) -> Result<Vec<AgentsModel>, DbErr> {
+) -> Result<(usize, Vec<AgentsModel>), DbErr> {
     let paginator = Agents::find().paginate(conn, page_size);
-    paginator.fetch_page(page - 1).await
+
+    Ok((paginator.num_items().await?, paginator.fetch_page(page - 1).await?))
 }
 
 #[tracing::instrument(level = "debug", name = "[DA] Updating agent", skip(conn))]

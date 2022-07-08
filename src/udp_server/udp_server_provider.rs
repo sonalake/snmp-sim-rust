@@ -5,27 +5,21 @@ use crate::udp_server::udp_stream_handler::StopActor;
 use crate::udp_server::udp_stream_handler::UdpStreamHandler;
 use actix_async::address::Addr;
 use actix_async::prelude::*;
+use lazy_static::lazy_static;
 use std::collections::HashMap;
 use tokio::sync::RwLock;
 use uuid_dev::Uuid;
+
+lazy_static! {
+    static ref UDP_SERVER_HANDLERS: RwLock<HashMap<Uuid, Addr<UdpStreamHandler>>> = RwLock::new(HashMap::new());
+}
 
 /// UDP Server implementation which supports handling of multiple UDP listeners
 ///
 /// The UDP server starts without no active listener. New listener
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 #[derive(Default)]
-pub(crate) struct UdpServerProvider {
-    // we start only one instance of UdpServerProvider => access to the resource doesn't need to be mutexed
-    udp_stream_handlers: RwLock<HashMap<Uuid, Addr<UdpStreamHandler>>>,
-}
-
-impl UdpServerProvider {
-    pub fn new() -> Self {
-        UdpServerProvider {
-            udp_stream_handlers: RwLock::new(HashMap::new()),
-        }
-    }
-}
+pub(crate) struct UdpServerProvider;
 
 actor!(UdpServerProvider);
 
@@ -40,8 +34,7 @@ message!(StartSnmpDevice, Result<(), UdpServerError>);
 impl Handler<StartSnmpDevice> for UdpServerProvider {
     #[tracing::instrument(level = "info", name = "UdpServerProvider::StartSnmpDevice", skip(self, _ctx))]
     async fn handle(&self, msg: StartSnmpDevice, _ctx: Context<'_, Self>) -> Result<(), UdpServerError> {
-        if self
-            .udp_stream_handlers
+        if UDP_SERVER_HANDLERS
             .read()
             .await
             .contains_key(&msg.device.id)
@@ -50,7 +43,7 @@ impl Handler<StartSnmpDevice> for UdpServerProvider {
         } else {
             let device_id = msg.device.id;
             let udp_stream_handler_addr = UdpStreamHandler::new(generic_snmp_message_handler, msg.device).await?;
-            self.udp_stream_handlers
+            UDP_SERVER_HANDLERS
                 .write()
                 .await
                 .insert(device_id, udp_stream_handler_addr);
@@ -71,12 +64,7 @@ message!(StopSnmpDevice, Result<(), UdpServerError>);
 impl Handler<StopSnmpDevice> for UdpServerProvider {
     #[tracing::instrument(level = "info", name = "UdpServerProvider::StopSnmpDevice", skip(self, _ctx))]
     async fn handle(&self, msg: StopSnmpDevice, _ctx: Context<'_, Self>) -> Result<(), UdpServerError> {
-        if let Some(addr) = self
-            .udp_stream_handlers
-            .write()
-            .await
-            .remove(&msg.device_id)
-        {
+        if let Some(addr) = UDP_SERVER_HANDLERS.write().await.remove(&msg.device_id) {
             // device is running, send a message to the actor to stop message handling
             if let Err(error) = addr.send(StopActor {}).await {
                 tracing::error!("{error}");

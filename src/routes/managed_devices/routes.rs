@@ -69,14 +69,16 @@ async fn delete_device(
 async fn list_devices(
     conn: Data<DatabaseConnection>,
     web::Query(query): web::Query<GetAgentsQuery>,
-) -> Result<GetResponse<Vec<response::Device>>, JsonError<DeviceError>> {
-    let results = crate::domain::list_managed_devices(conn.as_ref(), query.page.unwrap(), query.page_size.unwrap())
-        .await
-        .map_err(DeviceError::from)?;
+) -> Result<GetResponse<response::Devices>, JsonError<DeviceError>> {
+    let (num_items, devices) =
+        crate::domain::list_managed_devices(conn.as_ref(), query.page.unwrap(), query.page_size.unwrap())
+            .await
+            .map_err(DeviceError::from)?;
 
-    Ok(GetResponse::Ok(
-        results.into_iter().map(response::Device::from).collect(),
-    ))
+    Ok(GetResponse::Ok(response::Devices {
+        num_items,
+        devices: devices.into_iter().map(response::Device::from).collect(),
+    }))
 }
 
 #[put("/devices/{id}")]

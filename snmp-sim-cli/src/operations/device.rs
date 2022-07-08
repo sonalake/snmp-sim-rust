@@ -11,8 +11,8 @@ pub(crate) async fn list_devices(ctx: &CliContext<'_>) -> Result<(), anyhow::Err
     let mut configuration = Configuration::new();
     configuration.base_path = ctx.url();
 
-    let devices = devices_get(&configuration, None, None).await?;
-    for device in devices.iter() {
+    let response = devices_get(&configuration, None, None).await?;
+    for device in response.devices.iter() {
         println!("{:#?}", device);
     }
 
