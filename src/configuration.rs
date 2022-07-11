@@ -4,10 +4,13 @@ use config::Environment;
 use config::File;
 use std::path::PathBuf;
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Clone)]
 /// Represents the implemented settings of the SNMP Simulator service.
 pub struct Settings {
+    //#[serde(default = "default_application_config")]
     pub application: ApplicationSettings,
+
+    //#[serde(default = "default_database_config")]
     pub database: DatabaseSettings,
 }
 
