@@ -43,7 +43,7 @@ demonstrate! {
                             {
                                 "name": name,
                                 "description": description,
-                                "agent_id": agent_id,
+                                "agent": &serde_json::json!({"id": agent_id}),
                                 "snmp_protocol_attributes": route_snmp_v1_attributes("public"),
                                 "snmp_host": snmp_host,
                                 "snmp_port": snmp_port,
@@ -112,7 +112,7 @@ demonstrate! {
                             {
                                 "name": new_name,
                                 "description": new_description,
-                                "agent_id": agent_id,
+                                "agent": &serde_json::json!({"id": agent_id}),
                                 "snmp_protocol_attributes": route_snmp_v2c_attributes("public"),
                                 "snmp_host": new_snmp_host,
                                 "snmp_port": new_snmp_port,

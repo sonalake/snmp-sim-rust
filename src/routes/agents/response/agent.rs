@@ -46,8 +46,8 @@ impl From<&domain::Agent> for Agent {
 /// List of agents and the number of all items as a response body.
 pub struct Agents {
     /// The number of all items
-    pub num_items: usize,
+    pub count: usize,
 
     /// List of agents
-    pub agents: Vec<Agent>,
+    pub items: Vec<Agent>,
 }

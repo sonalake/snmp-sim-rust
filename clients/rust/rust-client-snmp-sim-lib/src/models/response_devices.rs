@@ -14,20 +14,20 @@
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ResponseDevices {
-    /// The list of devices
-    #[serde(rename = "devices")]
-    pub devices: Vec<crate::models::ResponseDevicesDevicesInner>,
     /// The number of all items
-    #[serde(rename = "num_items")]
-    pub num_items: i64,
+    #[serde(rename = "count")]
+    pub count: i64,
+    /// The list of devices
+    #[serde(rename = "items")]
+    pub items: Vec<crate::models::ResponseDevicesItemsInner>,
 }
 
 impl ResponseDevices {
     /// An managed device and the number of all items as a response body.
-    pub fn new(devices: Vec<crate::models::ResponseDevicesDevicesInner>, num_items: i64) -> ResponseDevices {
+    pub fn new(count: i64, items: Vec<crate::models::ResponseDevicesItemsInner>) -> ResponseDevices {
         ResponseDevices {
-            devices,
-            num_items,
+            count,
+            items,
         }
     }
 }

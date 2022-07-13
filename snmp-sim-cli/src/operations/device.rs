@@ -2,7 +2,7 @@ use crate::cli::CliContext;
 use crate::subcommands::device::{CreateDevice, Device, UpdateDevice};
 use rust_client_snmp_sim_lib::apis::configuration::Configuration;
 use rust_client_snmp_sim_lib::apis::devices_api::*;
-use rust_client_snmp_sim_lib::models::RequestDevice;
+use rust_client_snmp_sim_lib::models::{RequestDevice, RequestDeviceAgent};
 use tracing::{self, trace};
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
@@ -12,7 +12,7 @@ pub(crate) async fn list_devices(ctx: &CliContext<'_>) -> Result<(), anyhow::Err
     configuration.base_path = ctx.url();
 
     let response = devices_get(&configuration, None, None).await?;
-    for device in response.devices.iter() {
+    for device in response.items.iter() {
         println!("{:#?}", device);
     }
 
@@ -26,7 +26,9 @@ pub(crate) async fn create_device(ctx: &CliContext<'_>, create_device: CreateDev
     configuration.base_path = ctx.url();
 
     let mut device = RequestDevice::new(
-        create_device.agent_id,
+        RequestDeviceAgent {
+            id: create_device.agent_id,
+        },
         create_device.name,
         create_device.host,
         create_device.port.into(),
@@ -47,7 +49,9 @@ pub(crate) async fn update_device(ctx: &CliContext<'_>, update_device: UpdateDev
     configuration.base_path = ctx.url();
 
     let mut device = RequestDevice::new(
-        update_device.agent_id,
+        RequestDeviceAgent {
+            id: update_device.agent_id,
+        },
         update_device.name,
         update_device.host,
         update_device.port.into(),

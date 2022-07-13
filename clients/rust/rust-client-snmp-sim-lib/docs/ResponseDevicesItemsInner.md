@@ -1,12 +1,13 @@
-# RequestDevice
+# ResponseDevicesItemsInner
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**agent** | [**crate::models::RequestDeviceAgent**](RequestDevice_agent.md) |  | 
-**description** | Option<**String**> |  | [optional]
-**name** | **String** | The name of this agent. | 
+**agent** | [**crate::models::ResponseAgentsItemsInner**](ResponseAgents_items_inner.md) |  | 
+**description** | Option<**String**> | Device's optional description. | [optional]
+**id** | **String** | The unique identifier of this managed device. | 
+**name** | **String** | Device's name. | 
 **snmp_host** | **String** |  | 
 **snmp_port** | **i32** |  | 
 **snmp_protocol_attributes** | [**crate::models::RequestDeviceSnmpProtocolAttributes**](RequestDevice_snmp_protocol_attributes.md) |  | 

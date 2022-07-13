@@ -13,13 +13,21 @@ pub struct Device {
 
     description: Option<String>,
 
-    agent_id: Uuid,
+    agent: Agent,
 
     snmp_protocol_attributes: SnmpProtocolAttributes,
 
     snmp_host: String,
 
     snmp_port: u16,
+}
+
+#[derive(Debug, Deserialize, Apiv2Schema)]
+#[openapi(rename = "RequestAgent")]
+/// An agent as a response body.
+pub struct Agent {
+    /// The name of this agent.
+    id: Uuid,
 }
 
 #[derive(Debug, Deserialize, Apiv2Schema)]
@@ -43,7 +51,7 @@ impl TryFrom<Device> for crate::domain::ManagedDevice {
             modified_at: chrono::Utc::now(),
             name: managed_device.name,
             description: managed_device.description,
-            agent: crate::domain::ManagedDeviceAgent::Id(managed_device.agent_id),
+            agent: crate::domain::ManagedDeviceAgent::Id(managed_device.agent.id),
             snmp_protocol_attributes: crate::domain::SnmpProtocolAttributes::try_from(
                 managed_device.snmp_protocol_attributes,
             )?,
@@ -63,7 +71,7 @@ impl TryFrom<(Uuid, Device)> for crate::domain::ManagedDevice {
             description: managed_device.description,
             created_at: chrono::Utc::now(),
             modified_at: chrono::Utc::now(),
-            agent: crate::domain::ManagedDeviceAgent::Id(managed_device.agent_id),
+            agent: crate::domain::ManagedDeviceAgent::Id(managed_device.agent.id),
             snmp_protocol_attributes: crate::domain::SnmpProtocolAttributes::try_from(
                 managed_device.snmp_protocol_attributes,
             )?,

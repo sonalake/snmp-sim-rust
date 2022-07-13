@@ -65,13 +65,13 @@ async fn list_agents(
     conn: Data<DatabaseConnection>,
     web::Query(query): web::Query<GetAgentsQuery>,
 ) -> Result<GetResponse<response::Agents>, JsonError<AgentError>> {
-    let (num_items, agents) = crate::domain::list_agents(conn.as_ref(), query.page.unwrap(), query.page_size.unwrap())
+    let (count, agents) = crate::domain::list_agents(conn.as_ref(), query.page.unwrap(), query.page_size.unwrap())
         .await
         .map_err(AgentError::from)?;
 
     Ok(GetResponse::Ok(response::Agents {
-        num_items,
-        agents: agents.iter().map(response::Agent::from).collect(),
+        count,
+        items: agents.iter().map(response::Agent::from).collect(),
     }))
 }
 

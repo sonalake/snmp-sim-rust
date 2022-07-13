@@ -44,15 +44,16 @@ Class | Method | HTTP request | Description
  - [AgentsGet400Response](docs/AgentsGet400Response.md)
  - [RequestAgent](docs/RequestAgent.md)
  - [RequestDevice](docs/RequestDevice.md)
+ - [RequestDeviceAgent](docs/RequestDeviceAgent.md)
  - [RequestDeviceSnmpProtocolAttributes](docs/RequestDeviceSnmpProtocolAttributes.md)
  - [RequestDeviceSnmpProtocolAttributesSnmpV1](docs/RequestDeviceSnmpProtocolAttributesSnmpV1.md)
  - [RequestDeviceSnmpProtocolAttributesSnmpV3](docs/RequestDeviceSnmpProtocolAttributesSnmpV3.md)
  - [ResponseAgent](docs/ResponseAgent.md)
  - [ResponseAgents](docs/ResponseAgents.md)
- - [ResponseAgentsAgentsInner](docs/ResponseAgentsAgentsInner.md)
+ - [ResponseAgentsItemsInner](docs/ResponseAgentsItemsInner.md)
  - [ResponseDevice](docs/ResponseDevice.md)
  - [ResponseDevices](docs/ResponseDevices.md)
- - [ResponseDevicesDevicesInner](docs/ResponseDevicesDevicesInner.md)
+ - [ResponseDevicesItemsInner](docs/ResponseDevicesItemsInner.md)
 
 
 To get access to the crate's generated documentation, use:

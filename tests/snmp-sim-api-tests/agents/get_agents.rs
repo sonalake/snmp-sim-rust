@@ -75,7 +75,7 @@ demonstrate! {
 
                 async it "returns_20_agents" {
                     let json: response::Agents = response.json().await.unwrap();
-                    assert_eq!(20, json.agents.len());
+                    assert_eq!(20, json.items.len());
                 }
             }
 

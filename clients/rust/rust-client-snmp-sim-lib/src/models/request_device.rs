@@ -14,8 +14,8 @@
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct RequestDevice {
-    #[serde(rename = "agent_id")]
-    pub agent_id: String,
+    #[serde(rename = "agent")]
+    pub agent: Box<crate::models::RequestDeviceAgent>,
     #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The name of this agent.
@@ -31,9 +31,9 @@ pub struct RequestDevice {
 
 impl RequestDevice {
     /// An agent as a response body.
-    pub fn new(agent_id: String, name: String, snmp_host: String, snmp_port: i32, snmp_protocol_attributes: crate::models::RequestDeviceSnmpProtocolAttributes) -> RequestDevice {
+    pub fn new(agent: crate::models::RequestDeviceAgent, name: String, snmp_host: String, snmp_port: i32, snmp_protocol_attributes: crate::models::RequestDeviceSnmpProtocolAttributes) -> RequestDevice {
         RequestDevice {
-            agent_id,
+            agent: Box::new(agent),
             description: None,
             name,
             snmp_host,

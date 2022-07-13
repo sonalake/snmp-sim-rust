@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**agent** | [**crate::models::ResponseAgentsAgentsInner**](ResponseAgents_agents_inner.md) |  | 
+**agent** | [**crate::models::ResponseAgentsItemsInner**](ResponseAgents_items_inner.md) |  | 
 **description** | Option<**String**> | Device's optional description. | [optional]
 **id** | **String** | The unique identifier of this managed device. | 
 **name** | **String** | Device's name. | 

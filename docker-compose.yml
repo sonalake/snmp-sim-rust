@@ -12,3 +12,5 @@ services:
       options:
         max-size: "100k"
         max-file: "3"
+    volumes:
+      - ${PWD}/snmp-sim.db:/root/.snmp-sim/snmp-sim.db

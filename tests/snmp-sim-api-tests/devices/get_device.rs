@@ -83,7 +83,7 @@ demonstrate! {
 
                 async it "returns_20_devices" {
                     let json: response::Devices = response.json().await.unwrap();
-                    assert_eq!(20, json.devices.len());
+                    assert_eq!(20, json.items.len());
                 }
             }
 

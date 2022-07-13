@@ -14,20 +14,20 @@
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 pub struct ResponseAgents {
-    /// List of agents
-    #[serde(rename = "agents")]
-    pub agents: Vec<crate::models::ResponseAgentsAgentsInner>,
     /// The number of all items
-    #[serde(rename = "num_items")]
-    pub num_items: i64,
+    #[serde(rename = "count")]
+    pub count: i64,
+    /// List of agents
+    #[serde(rename = "items")]
+    pub items: Vec<crate::models::ResponseAgentsItemsInner>,
 }
 
 impl ResponseAgents {
     /// List of agents and the number of all items as a response body.
-    pub fn new(agents: Vec<crate::models::ResponseAgentsAgentsInner>, num_items: i64) -> ResponseAgents {
+    pub fn new(count: i64, items: Vec<crate::models::ResponseAgentsItemsInner>) -> ResponseAgents {
         ResponseAgents {
-            agents,
-            num_items,
+            count,
+            items,
         }
     }
 }

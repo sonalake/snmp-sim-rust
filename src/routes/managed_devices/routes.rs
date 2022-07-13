@@ -70,14 +70,14 @@ async fn list_devices(
     conn: Data<DatabaseConnection>,
     web::Query(query): web::Query<GetAgentsQuery>,
 ) -> Result<GetResponse<response::Devices>, JsonError<DeviceError>> {
-    let (num_items, devices) =
+    let (count, devices) =
         crate::domain::list_managed_devices(conn.as_ref(), query.page.unwrap(), query.page_size.unwrap())
             .await
             .map_err(DeviceError::from)?;
 
     Ok(GetResponse::Ok(response::Devices {
-        num_items,
-        devices: devices.into_iter().map(response::Device::from).collect(),
+        count,
+        items: devices.into_iter().map(response::Device::from).collect(),
     }))
 }
 

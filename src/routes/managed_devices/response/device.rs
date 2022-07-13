@@ -49,8 +49,8 @@ impl From<domain::ManagedDevice> for Device {
 /// An managed device and the number of all items as a response body.
 pub struct Devices {
     /// The number of all items
-    pub num_items: usize,
+    pub count: usize,
 
     /// The list of devices
-    pub devices: Vec<Device>,
+    pub items: Vec<Device>,
 }

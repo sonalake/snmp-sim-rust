@@ -12,7 +12,7 @@ pub(crate) async fn list_agents(ctx: &CliContext<'_>) -> Result<(), anyhow::Erro
     configuration.base_path = ctx.url();
 
     let response = agents_get(&configuration, None, None).await?;
-    for agent in response.agents.iter() {
+    for agent in response.items.iter() {
         println!("{:#?}", agent);
     }
 
