@@ -94,6 +94,8 @@ futures-util = { version = "0.3", default-features = false, features = [
 cached = "0.35.0"
 num_cpus = "1"
 macro_rules_attribute = "0.1"
+serde_yaml = "0.8"
+async-trait = "0.1"
 
 [dev-dependencies]
 snmp-sim = { path = ".", features = ["integration-tests"] }
@@ -141,3 +143,4 @@ paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }
 
 [build-dependencies]
 clap = "3.2"
+clap_mangen = "0.1"

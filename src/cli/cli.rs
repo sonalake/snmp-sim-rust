@@ -1,96 +1,45 @@
 use clap::Parser;
-use configuration::Settings;
-use std::fs::File;
-use std::fs::OpenOptions;
-use std::io::prelude::*;
-use std::io::ErrorKind;
-use std::path::Path;
+use clap::Subcommand;
+use crate::cli::subcommands::config::ConfigCommands;
+use async_trait::async_trait;
 
-// fn write_data_to_file() -> Result<(), serde::yaml::Error> {
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+#[async_trait]
+pub(crate) trait CommandHandler {
+    async fn handle(self, ctx: &CliContext) -> anyhow::Result<()>;
+}
 
-//     // Assigns path to base.yaml file to variable. Immutable
-//     let path = Path::new("./configuration/base.yaml")
+#[derive(Debug)]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) struct CliContext();
 
-//     // Insert code for variable holding default values
-//     let settings = Settings::default();
+#[derive(Debug, Subcommand)]
+#[cfg_attr(feature = "integration-tests", visibility::make(pub))]
+pub(crate) enum SnmpServiceCliCommands {
+    /// Manage SNMP Agents
+    #[clap(subcommand)]
+    Config(ConfigCommands),
+}
 
-//     // Insert code for serializing variable
-//     let s = serde_yaml::to_string(&settings)?;
+#[async_trait]
+impl CommandHandler for SnmpServiceCliCommands {
+    async fn handle(self, ctx: &CliContext) -> anyhow::Result<()> {
+        match self {
+            SnmpServiceCliCommands::Config(config_cmd) => config_cmd.handle(ctx).await,
+        }
+    }
+}
 
-//     // Assigns the file to mutable variable
-//     let mut buffer = File::create("base.yaml")?;
-
-//     // If file does not exist, write serialized data to it
-//     if !std::path::Path::new(path).exists(){
-
-//         // Assigns the file to mutable variable
-//         let mut buffer = File::create(path)?;
-
-//         buffer.write(s)?;
-
-//         Ok(())
-//     }
+// fn cli_implementation() -> Result<()> {
+//     // CLI Implementation into a variable
+//     let cli_imp = write_default_config(true);
 
 //     Ok(())
 // }
 
-// fn generate_default_config(overwrite:bool) -> Result<(), serde::yaml::Error> {
-
-//     // Path to file
-//     let path = Path::new("./configuration/base.yaml");
-
-//     // Insert code for variable holding default values
-//     let settings = Settings::default();
-
-//     // Insert code for serializing variable
-//     let s = serde_yaml::to_string(&settings)?;
-
-//     // Creates file in directory
-//     let f = File::create(&path);
-
-//     // match statement, if file creates
-//     // let f = match f {
-//     //     Ok(file) => file,
-//     //     Err(error) => panic!("This file already exists {:?}", error),
-//     // };
-
-//     let f = match f {
-//         Ok(file) => file,
-//         Err(error) => match error.kind() {
-//             // ErrorKind::AlreadyExists => match File::open(&path) {
-//             //     Ok(fo) => {
-//             //         if overwrite == True {
-//             //             fo,
-//             //         };
-//             //     }
-//             ErrorKind::AlreadyExists if overwrite => File::open(path)?;
-
-//             Err(err) => Err("This file already exists {:?}", err);
-//         },
-//     };
-// }
-
-fn write_default_config(overwrite: bool) -> Result<(), WriteConfigError> {
-    // Path to file
-    let path = Path::new("./configuration/base.yaml");
-
-    // Insert code for variable holding default values
-    let settings = Settings::default();
-
-    // Insert code for serializing variable
-    let s = serde_yaml::to_string(&settings)?;
-
-    // Creates file in directory
-    let f = match std::fs::File::create(&path) {
-        Ok(file) => Ok(file),
-        Err(error) => match error.kind() {
-            ErrorKind::AlreadyExists if overwrite => Ok(OpenOptions::new().write(true).truncate(true).open(path)?),
-            ErrorKind::AlreadyExists => Err(WriteConfigError::AlreadyExists),
-            _ => Err(WriteConfigError::IoError(error)),
-        },
-    }?;
-
-    f.write_all(&s.as_bytes())?;
-
-    Ok(())
+#[derive(Parser, Debug)]
+#[clap(about, version, author)]
+struct SnmpServiceCli {
+    #[clap(subcommand)]
+    command: SnmpServiceCliCommands,
 }

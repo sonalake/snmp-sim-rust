@@ -1,4 +1,5 @@
 pub mod app;
+pub mod cli;
 pub mod configuration;
 pub mod data_access;
 pub mod domain;
