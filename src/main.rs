@@ -1,6 +1,4 @@
 use anyhow::Context;
-use clap::Parser;
-//use cli::cli::cli_implementation;
 use snmp_sim::app::Service;
 use snmp_sim::configuration::get_configuration;
 

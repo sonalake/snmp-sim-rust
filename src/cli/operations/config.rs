@@ -1,9 +1,9 @@
+use crate::cli::write_config_error::WriteConfigError;
 use crate::configuration::Settings;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use std::io::ErrorKind;
 use std::path::Path;
-use crate::cli::write_config_error::WriteConfigError;
 
 pub async fn write_default_config(overwrite: bool) -> Result<(), anyhow::Error> {
     // Path to file

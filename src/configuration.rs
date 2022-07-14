@@ -2,8 +2,8 @@ use crate::settings::*;
 use config::Config;
 use config::Environment;
 use config::File;
-use std::path::PathBuf;
 use std::default::Default;
+use std::path::PathBuf;
 
 #[derive(serde::Deserialize, serde::Serialize, Clone, Default)]
 /// Represents the implemented settings of the SNMP Simulator service.

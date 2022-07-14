@@ -1,7 +1,7 @@
-use clap::Parser;
-use clap::Subcommand;
 use crate::cli::subcommands::config::ConfigCommands;
 use async_trait::async_trait;
+use clap::Parser;
+use clap::Subcommand;
 
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 #[async_trait]
@@ -16,7 +16,7 @@ pub(crate) struct CliContext();
 #[derive(Debug, Subcommand)]
 #[cfg_attr(feature = "integration-tests", visibility::make(pub))]
 pub(crate) enum SnmpServiceCliCommands {
-    /// Manage SNMP Agents
+    /// Manage Config
     #[clap(subcommand)]
     Config(ConfigCommands),
 }
@@ -29,13 +29,6 @@ impl CommandHandler for SnmpServiceCliCommands {
         }
     }
 }
-
-// fn cli_implementation() -> Result<()> {
-//     // CLI Implementation into a variable
-//     let cli_imp = write_default_config(true);
-
-//     Ok(())
-// }
 
 #[derive(Parser, Debug)]
 #[clap(about, version, author)]
