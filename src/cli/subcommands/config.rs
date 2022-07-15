@@ -16,7 +16,7 @@ pub(crate) enum ConfigCommands {
 pub(crate) struct CreateConfig {
     // Overwrite status, false as default
     // short has to be a 'y' character, check documentation on short macro
-    #[clap(short)]
+    #[clap(short = 'y')]
     // pub overwrite: Option<bool>,
     pub overwrite: bool,
 }
