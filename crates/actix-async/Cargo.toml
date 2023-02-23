@@ -39,5 +39,5 @@ doc-comment = "0.3.3"
 futures-util = { version = "0.3.21", default-features = false, features = [
    "alloc",
 ] }
-futures-intrusive = { version = "^0.4", default-features = false }
+futures-intrusive = { version = "^0.5", default-features = false }
 tokio = { version = "1.18.2", features = ["full"] }
