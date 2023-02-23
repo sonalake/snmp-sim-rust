@@ -90,7 +90,7 @@ strum_macros = "0.24"
 futures-util = { version = "0.3", default-features = false, features = [
    "alloc",
 ] }
-cached = "0.36.0"
+cached = "0.42.0"
 num_cpus = "1"
 macro_rules_attribute = "0.1"
 lazy_static = "*"
