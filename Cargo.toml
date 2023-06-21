@@ -11,7 +11,7 @@ repository = "https://github.com/sonalake/snmp-sim-rust.git"
 readme = "README.md"
 keywords = ["snmp", "simulator"]
 categories = ["command-line-utilities", "simulation", "simulation::snmp"]
-default-run = "snmp_sim"
+default-run = "snmp-sim"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
@@ -19,7 +19,7 @@ path = "src/lib.rs"
 
 [[bin]]
 path = "src/main.rs"
-name = "snmp_sim"
+name = "snmp-sim"
 
 [[bin]]
 path = "src/bin/generate_spec.rs"
@@ -34,6 +34,7 @@ snmp-data-parser = { path = "./crates/snmp-data-parser" }
 rasn-snmp = { path = "./crates/rasn/standards/snmp" }
 rasn-smi  = { path = "./crates/rasn/standards/smi" }
 rasn  = { path = "./crates/rasn" }
+clap = { version = "3.2.6", features = ["derive"] }
 
 actix = "0.13"
 actix-web = { version = "4.1", default_features = false, features = [
@@ -110,6 +111,7 @@ lazy_static = "1.4"
 static_init = "1.0"
 ctor = "0.1.22"
 signal-child = "1"
+clap = "3.2"
 
 [features]
 integration-tests = ["visibility"]
@@ -138,3 +140,7 @@ members = [
 
 [patch.crates-io]
 paperclip = { git = "https://github.com/sonalake/paperclip", branch = "master" }
+
+[build-dependencies]
+clap_mangen = "0.1"
+clap = "3.2"
